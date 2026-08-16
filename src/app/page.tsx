@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import {
   Terminal,
@@ -12,7 +12,13 @@ import {
   BookOpen,
   ExternalLink,
   ChevronDown,
-  FileText,
+  BadgeCheck,
+  Award,
+  KeyRound,
+  ShieldCheck,
+  ScanLine,
+  Bot,
+  Radar,
 } from "lucide-react";
 
 const projects = [
@@ -20,18 +26,21 @@ const projects = [
     title: "Tmap — Network Recon Framework",
     desc: "Interactive network discovery framework with terminal UI, automated smart port parsing, and deep enumeration workflows across 1000+ ports.",
     tech: ["Python", "Nmap", "Linux", "Shell"],
+    icon: ScanLine,
     github: "https://github.com/An1En",
   },
   {
     title: "Orbia RAG Chatbot",
     desc: "AI-powered company knowledge assistant using RAG pipeline. Scrapes 50+ documents, chunks into 146 searchable fragments, retrieves context via keyword search, and generates answers via OpenRouter LLM.",
     tech: ["Python", "FastAPI", "OpenRouter", "ChromaDB", "LangChain", "Vercel"],
+    icon: Bot,
     link: "https://orbia-rag.vercel.app",
   },
   {
-    title: "SHADOW AI Assistant",
+    title: "SHADOW AI — CYBERSECURITY PENTESTING ASSISTANT",
     desc: "AI-powered cybersecurity pentesting assistant with real-time LLM integration, automated writeup and professional report generation from session data, and intelligent vulnerability analysis and exploit guidance.",
     tech: ["Next.js", "TypeScript", "OpenRouter", "GPT-4o-mini", "Tailwind CSS", "Vercel"],
+    icon: Radar,
     link: "/chatbot",
   },
 ];
@@ -57,24 +66,61 @@ const skills = [
 
 const certifications = [
   {
+    title: "Certified Red Team Analyst (CRTA)",
+    issuer: "Cyberwarfare Labs",
+    date: "2026",
+    skills: ["Red Teaming", "MITRE ATT&CK", "Active Directory", "Pentesting"],
+    link: "https://labs.cyberwarfare.live/credential/achievement/6a81ab8c0c2bad5922885a8e",
+  },
+  {
     title: "Red Hat Certified System Administrator",
     issuer: "Red Hat — Virtual Instructor-Led Training",
     date: "2025",
+    skills: [
+      "Linux Administration",
+      "Shell Scripting",
+      "User & Group Management",
+      "SELinux",
+      "Storage Management",
+      "Networking",
+      "Systemd",
+      "Package Management",
+    ],
   },
   {
     title: "Fundamentals of Encryption & Quantum Safe Techniques",
-    issuer: "IBM",
+    issuer: "IBM — Cognitive Class",
     date: "2025",
+    link: "https://courses.cognitiveclass.ai/certificates/ea5a46db8b7c4eda9cd2d6c900882c84",
+    skills: [
+      "Cryptography",
+      "Encryption",
+      "Data Security",
+      "Symmetric/Asymmetric Encryption",
+      "Hashing",
+      "Public Key Infrastructure (PKI)",
+      "Information Security",
+    ],
   },
   {
     title: "Python Programmer",
     issuer: "NICEDT",
     date: "2025",
+    skills: ["Python", "Object-Oriented Programming", "Data Structures", "Scripting", "Automation"],
   },
   {
-    title: "Claude 101 Certificate",
-    issuer: "Anthropic",
+    title: "Cybersecurity Job Simulation",
+    issuer: "Deloitte",
     date: "2026",
+    id: "6986b79e76e6ae0d55b1e576",
+    skills: [
+      "Cybersecurity",
+      "Log Analysis",
+      "Incident Response",
+      "Threat Detection",
+      "SOC (Security Operations Center)",
+      "Risk Assessment",
+    ],
   },
 ];
 
@@ -91,6 +137,7 @@ export default function Home() {
   const [typedText, setTypedText] = useState("");
   const fullText = "cybersecurity_researcher && pentester";
   const [showCursor, setShowCursor] = useState(true);
+  const [certsOpen, setCertsOpen] = useState(false);
 
   useEffect(() => {
     let i = 0;
@@ -166,7 +213,7 @@ export default function Home() {
                 { label: "CTFs Played", value: "55+" },
                 { label: "Tools Built", value: "3" },
                 { label: "Writeups Published", value: "2+" },
-                { label: "Certifications", value: "4" },
+                { label: "Certifications", value: "5" },
               ].map((stat) => (
                 <motion.div
                   key={stat.label}
@@ -265,28 +312,32 @@ export default function Home() {
               <h2 className="text-2xl font-bold text-white">projects</h2>
             </div>
 
-            <div className="space-y-6">
+            <div className="grid md:grid-cols-2 gap-6">
               {projects.map((project, i) => (
                 <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.1 }}
+                  key={project.title}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  whileHover={{ y: -8, scale: 1.02 }}
+                  transition={{ delay: i * 0.1, duration: 0.5 }}
                   viewport={{ once: true }}
-                  className="glass p-6 group"
+                  className="glass p-6 flex flex-col group relative overflow-hidden cursor-pointer"
                 >
-                  <div className="flex items-start justify-between mb-3">
-                    <h3 className="text-lg font-bold text-[#00ff41]">
-                      <span className="text-gray-500">[</span>{" "}
-                      {project.title}{" "}
-                      <span className="text-gray-500">]</span>
-                    </h3>
-                    <div className="flex gap-2">
+                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#00ff41] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute -top-12 -right-12 w-40 h-40 bg-[#00ff41]/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="w-11 h-11 flex items-center justify-center border border-[#00ff41]/30 text-[#00ff41] group-hover:bg-[#00ff41] group-hover:text-black transition-all duration-300 shadow-[0_0_12px_rgba(0,255,65,0.1)] group-hover:shadow-[0_0_20px_rgba(0,255,65,0.4)]">
+                      <project.icon size={20} />
+                    </div>
+                    <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-x-1 group-hover:translate-x-0">
                       {project.github && (
                         <a
                           href={project.github}
                           target="_blank"
-                          className="text-gray-500 hover:text-[#00ff41] transition-colors"
+                          rel="noopener noreferrer"
+                          aria-label={`${project.title} — GitHub`}
+                          className="text-gray-500 hover:text-[#00ff41] transition-colors hover:scale-110"
                         >
                           <Code2 size={16} />
                         </a>
@@ -294,15 +345,22 @@ export default function Home() {
                       {project.link && (
                         <a
                           href={project.link}
-                          target="_blank"
-                          className="text-gray-500 hover:text-[#00ff41] transition-colors"
+                          target={project.link.startsWith("/") ? undefined : "_blank"}
+                          rel="noopener noreferrer"
+                          aria-label={`${project.title} — Live`}
+                          className="text-gray-500 hover:text-[#00ff41] transition-colors hover:scale-110"
                         >
                           <ExternalLink size={16} />
                         </a>
                       )}
                     </div>
                   </div>
-                  <p className="text-gray-400 text-sm mb-4 leading-relaxed">{project.desc}</p>
+
+                  <h3 className="text-lg font-bold text-[#00ff41] mb-2">
+                    <span className="text-gray-500">[</span> {project.title}{" "}
+                    <span className="text-gray-500">]</span>
+                  </h3>
+                  <p className="text-gray-400 text-sm mb-4 leading-relaxed flex-1">{project.desc}</p>
                   <div className="flex flex-wrap gap-2">
                     {project.tech.map((t) => (
                       <span key={t} className="skill-badge text-xs">
@@ -363,30 +421,100 @@ export default function Home() {
             viewport={{ once: true }}
           >
             <div className="flex items-center gap-3 mb-8">
-              <FileText size={20} className="text-[#00ff41]" />
+              <BadgeCheck size={20} className="text-[#00ff41]" />
               <h2 className="text-2xl font-bold text-white">certifications</h2>
             </div>
 
-            <div className="space-y-4">
-              {certifications.map((cert, i) => (
+            <div className="terminal-box p-5 mb-6">
+              <div className="flex items-center gap-2 mb-6 text-xs text-gray-500">
+                <span className="w-3 h-3 rounded-full bg-[#ff0033]" />
+                <span className="w-3 h-3 rounded-full bg-[#ffcc00]" />
+                <span className="w-3 h-3 rounded-full bg-[#00ff41]" />
+                <span className="ml-2">~/certs.sh --decrypt</span>
+              </div>
+              <div className="font-mono text-sm text-gray-400 mb-4">
+                <span className="text-[#00ff41]">$</span>{" "}
+                <span className="text-[#00ffcc]">./certs.sh</span> --verify --show-badges
+                <span className="text-gray-600"> {"//"} click to decrypt &amp; reveal credentials</span>
+              </div>
+              <button
+                onClick={() => setCertsOpen(!certsOpen)}
+                className="hacker-btn text-sm flex items-center gap-2"
+                aria-expanded={certsOpen}
+              >
+                {certsOpen ? <ShieldCheck size={16} /> : <KeyRound size={16} />}
+                {certsOpen ? "encrypt & hide" : `decrypt & reveal [${certifications.length}]`}
+              </button>
+            </div>
+
+            <AnimatePresence>
+              {certsOpen && (
                 <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                  viewport={{ once: true }}
-                  className="glass p-4 flex items-start gap-4"
+                  key="cert-cards"
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                  className="overflow-hidden"
                 >
-                  <div className="w-2 h-2 rounded-full bg-[#00ff41] mt-2 shrink-0" />
-                  <div>
-                    <h3 className="text-white font-bold text-sm">{cert.title}</h3>
-                    <p className="text-gray-500 text-xs mt-1">
-                      {cert.issuer} • {cert.date}
-                    </p>
+                  <div className="grid md:grid-cols-2 gap-4" style={{ perspective: 1200 }}>
+                    {certifications.map((cert, i) => (
+                      <motion.div
+                        key={cert.title}
+                        initial={{ opacity: 0, rotateX: 90, y: 24 }}
+                        animate={{ opacity: 1, rotateX: 0, y: 0 }}
+                        exit={{ opacity: 0, rotateX: 90, y: 24 }}
+                        transition={{ delay: i * 0.12, duration: 0.5, ease: "easeOut" }}
+                        whileHover={{ scale: 1.03 }}
+                        className="glass p-5 group relative overflow-hidden"
+                      >
+                        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#00ff41] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                        <div className="flex items-start justify-between gap-3 mb-3">
+                          <div className="w-10 h-10 flex items-center justify-center border border-[#00ff41]/30 text-[#00ff41] group-hover:bg-[#00ff41] group-hover:text-black transition-all duration-300">
+                            <Award size={18} />
+                          </div>
+                          {cert.link && (
+                            <a
+                              href={cert.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label={`Verify ${cert.title}`}
+                              className="text-gray-500 hover:text-[#00ff41] transition-colors flex items-center gap-1 text-xs font-mono"
+                            >
+                              <ShieldCheck size={14} /> verify
+                            </a>
+                          )}
+                        </div>
+
+                        <h3 className="text-white font-bold text-sm mb-1">
+                          <span className="text-[#00ff41]">[+]</span> {cert.title}
+                        </h3>
+                        <p className="text-gray-500 text-xs mb-3">
+                          {cert.issuer} • {cert.date}
+                          {cert.id && (
+                            <>
+                              <span className="mx-1 text-gray-600">|</span>
+                              ID: {cert.id}
+                            </>
+                          )}
+                        </p>
+
+                        {cert.skills && (
+                          <div className="flex flex-wrap gap-1.5">
+                            {cert.skills.map((s) => (
+                              <span key={s} className="skill-badge text-[10px]">
+                                {s}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </motion.div>
+                    ))}
                   </div>
                 </motion.div>
-              ))}
-            </div>
+              )}
+            </AnimatePresence>
           </motion.div>
         </div>
       </section>

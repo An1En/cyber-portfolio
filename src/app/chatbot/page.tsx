@@ -326,7 +326,7 @@ ${chatLog}
             <div className="flex items-center gap-3">
               <Shield className="text-[#00ff41]" size={24} />
               <div>
-                <h1 className="text-lg font-bold text-white">SHADOW AI Assistant</h1>
+                <h1 className="text-lg font-bold text-white">SHADOW AI — CYBERSECURITY PENTESTING ASSISTANT</h1>
                 <p className="text-xs text-gray-500 font-mono">
                   <span className={`${sessionActive ? "text-[#00ff41]" : "text-gray-500"}`}>●</span>{" "}
                   {sessionActive ? "Session Active" : loading ? "Processing..." : "Ready"}
