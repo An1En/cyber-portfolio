@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Terminal,
   Mail,
@@ -28,6 +29,7 @@ const projects = [
     desc: "Interactive network discovery framework with terminal UI, automated smart port parsing, and deep enumeration workflows across 1000+ ports.",
     tech: ["Python", "Nmap", "Linux", "Shell"],
     icon: ScanLine,
+    media: "/tmap-demo.gif",
     github: "https://github.com/An1En",
   },
   {
@@ -35,6 +37,8 @@ const projects = [
     desc: "AI-powered company knowledge assistant using RAG pipeline. Scrapes 50+ documents, chunks into 146 searchable fragments, retrieves context via keyword search, and generates answers via OpenRouter LLM.",
     tech: ["Python", "FastAPI", "OpenRouter", "ChromaDB", "LangChain", "Vercel"],
     icon: Bot,
+    media: "/orbia-demo.gif",
+    github: "https://github.com/An1En/orbia-rag-chatbot",
     link: "https://orbia-rag-chatbot.vercel.app",
   },
   {
@@ -42,6 +46,7 @@ const projects = [
     desc: "AI-powered cybersecurity pentesting assistant with real-time LLM integration, automated writeup and professional report generation from session data, and intelligent vulnerability analysis and exploit guidance.",
     tech: ["Next.js", "TypeScript", "OpenRouter", "GPT-4o-mini", "Tailwind CSS", "Vercel"],
     icon: Radar,
+    media: "/shadow-ai-demo.gif",
     link: "/chatbot",
   },
 ];
@@ -135,10 +140,20 @@ const writeups = [
 ];
 
 export default function Home() {
+  const router = useRouter();
   const [typedText, setTypedText] = useState("");
   const fullText = "cybersecurity_researcher && pentester";
   const [showCursor, setShowCursor] = useState(true);
   const [certsOpen, setCertsOpen] = useState(false);
+
+  const openProject = (url?: string) => {
+    if (!url) return;
+    if (url.startsWith("/")) {
+      router.push(url);
+    } else {
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+  };
 
   useEffect(() => {
     let i = 0;
@@ -215,15 +230,21 @@ export default function Home() {
             {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { label: "CTFs Played", value: "55+" },
-                { label: "Tools Built", value: "3" },
-                { label: "Writeups Published", value: "2+" },
-                { label: "Certifications", value: "5" },
+                { label: "CTFs Played", value: "55+", link: "https://learn.cylabacademy.org/users/An1En" },
+                { label: "Tools Built", value: "3", section: "projects" },
+                { label: "Writeups Published", value: "2+", section: "writeups" },
+                { label: "Certifications", value: "5", section: "certifications" },
               ].map((stat) => (
                 <motion.div
                   key={stat.label}
                   whileHover={{ scale: 1.05 }}
-                  className="glass p-4 text-center"
+                  onClick={() =>
+                    stat.link
+                      ? window.open(stat.link, "_blank", "noopener,noreferrer")
+                      : stat.section &&
+                        document.getElementById(stat.section)?.scrollIntoView({ behavior: "smooth" })
+                  }
+                  className={`glass p-4 text-center ${stat.link || stat.section ? "cursor-pointer" : ""}`}
                 >
                   <div className="text-2xl font-bold text-[#00ff41]">{stat.value}</div>
                   <div className="text-xs text-gray-500 mt-1 font-mono">{stat.label}</div>
@@ -327,11 +348,12 @@ export default function Home() {
                   transition={{ delay: i * 0.1, duration: 0.5 }}
                   viewport={{ once: true }}
                   className="glass p-6 flex flex-col group relative overflow-hidden cursor-pointer"
+                  onClick={() => openProject(project.link ?? project.github)}
                 >
                   <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#00ff41] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <div className="absolute -top-12 -right-12 w-40 h-40 bg-[#00ff41]/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                  <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-start justify-between mb-4 relative z-10 transition-all duration-300 group-hover:opacity-0 group-hover:-translate-y-1">
                     <div className="w-11 h-11 flex items-center justify-center border border-[#00ff41]/30 text-[#00ff41] group-hover:bg-[#00ff41] group-hover:text-black transition-all duration-300 shadow-[0_0_12px_rgba(0,255,65,0.1)] group-hover:shadow-[0_0_20px_rgba(0,255,65,0.4)]">
                       <project.icon size={20} />
                     </div>
@@ -342,6 +364,7 @@ export default function Home() {
                           target="_blank"
                           rel="noopener noreferrer"
                           aria-label={`${project.title} — GitHub`}
+                          onClick={(e) => e.stopPropagation()}
                           className="text-gray-500 hover:text-[#00ff41] transition-colors hover:scale-110"
                         >
                           <Code2 size={16} />
@@ -353,6 +376,7 @@ export default function Home() {
                           target={project.link.startsWith("/") ? undefined : "_blank"}
                           rel="noopener noreferrer"
                           aria-label={`${project.title} — Live`}
+                          onClick={(e) => e.stopPropagation()}
                           className="text-gray-500 hover:text-[#00ff41] transition-colors hover:scale-110"
                         >
                           <ExternalLink size={16} />
@@ -361,12 +385,31 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <h3 className="text-lg font-bold text-[#00ff41] mb-2">
+                  {project.media && (
+                    <div className="absolute inset-0 overflow-hidden pointer-events-none bg-black">
+                      <img
+                        src={project.media}
+                        alt={`${project.title} live demo`}
+                        className="project-media w-full h-full object-contain"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                      <div className="project-scan absolute left-0 right-0 top-0 h-24">
+                        <div className="project-scanline" />
+                      </div>
+                      <div className="project-live absolute top-2 left-2 flex items-center gap-1.5 bg-black/70 border border-[#00ff41]/30 px-2 py-0.5 text-[10px] font-mono text-[#00ff41]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#00ff41] animate-pulse" />
+                        LIVE
+                      </div>
+                    </div>
+                  )}
+
+                  <h3 className="text-lg font-bold text-[#00ff41] mb-2 relative z-10 transition-all duration-300 delay-75 group-hover:opacity-0">
                     <span className="text-gray-500">[</span> {project.title}{" "}
                     <span className="text-gray-500">]</span>
                   </h3>
-                  <p className="text-gray-400 text-sm mb-4 leading-relaxed flex-1">{project.desc}</p>
-                  <div className="flex flex-wrap gap-2">
+                  <p className="text-gray-400 text-sm mb-4 leading-relaxed flex-1 relative z-10 transition-all duration-300 delay-150 group-hover:opacity-0">{project.desc}</p>
+                  <div className="flex flex-wrap gap-2 relative z-10 transition-all duration-300 delay-225 group-hover:opacity-0">
                     {project.tech.map((t) => (
                       <span key={t} className="skill-badge text-xs">
                         {t}
@@ -471,7 +514,10 @@ export default function Home() {
                         exit={{ opacity: 0, rotateX: 90, y: 24 }}
                         transition={{ delay: i * 0.12, duration: 0.5, ease: "easeOut" }}
                         whileHover={{ scale: 1.03 }}
-                        className="glass p-5 group relative overflow-hidden"
+                        onClick={() =>
+                          cert.link && window.open(cert.link, "_blank", "noopener,noreferrer")
+                        }
+                        className={`glass p-5 group relative overflow-hidden ${cert.link ? "cursor-pointer" : ""}`}
                       >
                         <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#00ff41] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
@@ -485,6 +531,7 @@ export default function Home() {
                               target="_blank"
                               rel="noopener noreferrer"
                               aria-label={`Verify ${cert.title}`}
+                              onClick={(e) => e.stopPropagation()}
                               className="text-gray-500 hover:text-[#00ff41] transition-colors flex items-center gap-1 text-xs font-mono"
                             >
                               <ShieldCheck size={14} /> verify

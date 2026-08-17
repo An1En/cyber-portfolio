@@ -326,6 +326,55 @@ body {
   color: rgba(0, 255, 65, 0.7);
 }
 
+/* Project media hover-reveal */
+.project-media {
+  opacity: 0;
+  transform: scale(1.06);
+  transition: opacity 0.5s ease-out, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.group:hover .project-media {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.project-scan {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.group:hover .project-scan {
+  animation: hover-scan 1s cubic-bezier(0.4, 0, 0.2, 1) 0.2s forwards;
+}
+
+.project-scanline {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 255, 65, 0.85) 0%,
+    rgba(0, 255, 65, 0.25) 4px,
+    rgba(0, 255, 65, 0.06) 34px,
+    transparent 100%
+  );
+  box-shadow: 0 0 14px rgba(0, 255, 65, 0.7);
+}
+
+@keyframes hover-scan {
+  0% { transform: translateY(-110%); }
+  100% { transform: translateY(430%); }
+}
+
+.project-live {
+  opacity: 0;
+  transition: opacity 0.35s ease 0.35s;
+}
+
+.group:hover .project-live {
+  opacity: 1;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .typewriter {
