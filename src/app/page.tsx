@@ -35,7 +35,7 @@ const projects = [
     desc: "AI-powered company knowledge assistant using RAG pipeline. Scrapes 50+ documents, chunks into 146 searchable fragments, retrieves context via keyword search, and generates answers via OpenRouter LLM.",
     tech: ["Python", "FastAPI", "OpenRouter", "ChromaDB", "LangChain", "Vercel"],
     icon: Bot,
-    link: "https://orbia-rag.vercel.app",
+    link: "https://orbia-rag-chatbot.vercel.app",
   },
   {
     title: "SHADOW AI — CYBERSECURITY PENTESTING ASSISTANT",
