@@ -19,6 +19,7 @@ import {
   ScanLine,
   Bot,
   Radar,
+  X,
 } from "lucide-react";
 
 const projects = [
@@ -203,6 +204,10 @@ export default function Home() {
                 <a href="https://medium.com/@anlenjeban7" target="_blank" className="hacker-btn text-sm flex items-center gap-2">
                   <BookOpen size={16} />
                   Medium
+                </a>
+                <a href="https://x.com/4n1En" target="_blank" className="hacker-btn text-sm flex items-center gap-2">
+                  <X size={16} />
+                  X
                 </a>
               </div>
             </div>
@@ -584,6 +589,9 @@ export default function Home() {
                 </a>
                 <a href="https://medium.com/@anlenjeban7" target="_blank" className="hacker-btn text-sm flex items-center gap-2">
                   <BookOpen size={16} /> Medium
+                </a>
+                <a href="https://x.com/4n1En" target="_blank" className="hacker-btn text-sm flex items-center gap-2">
+                  <X size={16} /> X
                 </a>
               </div>
             </div>
