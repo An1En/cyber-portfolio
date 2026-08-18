@@ -126,6 +126,11 @@ body {
   color: #00ff41;
 }
 
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
 /* Glassmorphism cards */
 .glass {
   background: rgba(0, 255, 65, 0.03);
@@ -375,10 +380,52 @@ body {
   opacity: 1;
 }
 
+/* Scan beam sweep (framer-driven, one-shot per section) */
+.scan-beam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 45%;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(0, 255, 65, 0.22),
+    rgba(0, 255, 65, 0.05),
+    transparent
+  );
+  pointer-events: none;
+}
+
+/* Redaction bar used by RedactReveal (declassification wipe) */
+.redact-bar {
+  position: absolute;
+  inset: -3px;
+  background: repeating-linear-gradient(
+    135deg,
+    #0a0a0a 0 6px,
+    #04220c 6px 12px
+  );
+  border-top: 1px solid rgba(0, 255, 65, 0.25);
+  border-bottom: 1px solid rgba(0, 255, 65, 0.25);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .typewriter {
     white-space: normal;
     animation: none;
+  }
+}
+
+/* Respect prefers-reduced-motion: collapse all animations to instant */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
 }
