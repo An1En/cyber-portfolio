@@ -91,6 +91,13 @@ const certifications = [
     link: "https://labs.cyberwarfare.live/credential/achievement/6a81ab8c0c2bad5922885a8e",
   },
   {
+    title: "Active Directory Red Team Specialist (AD-RTS)",
+    issuer: "Cyberwarfare Labs",
+    date: "2026",
+    skills: ["AD Exploitation", "Certificate Services", "Exchange Attacks", "Lateral Movement", "ESXi Red Ops", "Data Exfiltration"],
+    link: "https://labs.cyberwarfare.live/credential/achievement/6a89f33f65159096bad04283",
+  },
+  {
     title: "Red Hat Certified System Administrator",
     issuer: "Red Hat — Virtual Instructor-Led Training",
     date: "2025",
@@ -171,7 +178,7 @@ const statCards = [
   { label: "CTFs Played", value: "55+", link: "https://learn.cylabacademy.org/users/An1En" },
   { label: "Tools Built", value: "3", section: "projects" },
   { label: "Writeups Published", value: "2+", section: "writeups" },
-  { label: "Certifications", value: "5", section: "certifications" },
+  { label: "Certifications", value: "6", section: "certifications" },
 ];
 
 const socials = [
