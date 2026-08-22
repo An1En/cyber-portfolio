@@ -133,20 +133,6 @@ const certifications = [
     date: "2025",
     skills: ["Python", "Object-Oriented Programming", "Data Structures", "Scripting", "Automation"],
   },
-  {
-    title: "Cybersecurity Job Simulation",
-    issuer: "Deloitte",
-    date: "2026",
-    id: "6986b79e76e6ae0d55b1e576",
-    skills: [
-      "Cybersecurity",
-      "Log Analysis",
-      "Incident Response",
-      "Threat Detection",
-      "SOC (Security Operations Center)",
-      "Risk Assessment",
-    ],
-  },
 ];
 
 const writeups = [
@@ -178,7 +164,7 @@ const statCards = [
   { label: "CTFs Played", value: "55+", link: "https://learn.cylabacademy.org/users/An1En" },
   { label: "Tools Built", value: "3", section: "projects" },
   { label: "Writeups Published", value: "2+", section: "writeups" },
-  { label: "Certifications", value: "6", section: "certifications" },
+  { label: "Certifications", value: "5", section: "certifications" },
 ];
 
 const socials = [
