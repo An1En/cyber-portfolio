@@ -139,6 +139,12 @@ const certifications = [
 
 const writeups = [
   {
+    title: "AD RTS — TELECOM INC: A Full Attack Chain Walkthrough",
+    desc: "Complete attack chain against an Active Directory environment — from anonymous LDAP enumeration and AS-REP Roasting through Exchange impersonation, GodPotato privilege escalation, ESC1 certificate abuse, to VMware ESXi hypervisor compromise.",
+    link: "https://medium.com/@anlenjeban7/ad-rts-telecom-inc-a-full-attack-chain-walkthrough-81d3a15fadfb",
+    tags: ["Active Directory", "Red Team", "Lateral Movement", "ESC1", "Privilege Escalation"],
+  },
+  {
     title: "HackTheBox — Oopsie Walkthrough",
     desc: "Detailed analysis of IDOR, Unrestricted File Upload, and SUID PATH Hijacking vulnerabilities with full exploitation chain and remediation strategies.",
     link: "https://medium.com/@anlenjeban7/hackthebox-oopsie-walkthrough-489bc2208d96",
@@ -165,7 +171,7 @@ const ROLE_TEXT = "cybersecurity_researcher && pentester";
 const statCards = [
   { label: "CTFs Played", value: "55+", link: "https://learn.cylabacademy.org/users/An1En" },
   { label: "Tools Built", value: "3", section: "projects" },
-  { label: "Writeups Published", value: "2+", section: "writeups" },
+  { label: "Writeups Published", value: "3", section: "writeups" },
   { label: "Certifications", value: "5", section: "certifications" },
 ];
 
