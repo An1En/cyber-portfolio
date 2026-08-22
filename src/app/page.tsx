@@ -171,7 +171,7 @@ const ROLE_TEXT = "cybersecurity_researcher && pentester";
 const statCards = [
   { label: "CTFs Played", value: "55+", link: "https://learn.cylabacademy.org/users/An1En" },
   { label: "Tools Built", value: "3", section: "projects" },
-  { label: "Writeups Published", value: "3", section: "writeups" },
+  { label: "Writeups Published", value: "2", section: "writeups" },
   { label: "Certifications", value: "5", section: "certifications" },
 ];
 
