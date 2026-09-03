@@ -139,6 +139,12 @@ const certifications = [
 
 const writeups = [
   {
+    title: "CloudSEK CTF 2026 — OSINT & Web Security Writeup",
+    desc: "Comprehensive writeup covering OSINT reconnaissance through username enumeration and GitHub API exploitation, plus web security attacks including Host header injection and password reset poisoning for full admin account takeover.",
+    link: "https://medium.com/@anlenjeban7/cloudsek-ctf-2026-writeup",
+    tags: ["OSINT", "Web Security", "CTF", "Host Header Injection", "Password Reset Poisoning", "CloudSEK"],
+  },
+  {
     title: "AD RTS — TELECOM INC: A Full Attack Chain Walkthrough",
     desc: "Complete attack chain against an Active Directory environment — from anonymous LDAP enumeration and AS-REP Roasting through Exchange impersonation, GodPotato privilege escalation, ESC1 certificate abuse, to VMware ESXi hypervisor compromise.",
     link: "https://medium.com/@anlenjeban7/ad-rts-telecom-inc-a-full-attack-chain-walkthrough-81d3a15fadfb",
@@ -171,7 +177,7 @@ const ROLE_TEXT = "cybersecurity_researcher && pentester";
 const statCards = [
   { label: "CTFs Played", value: "55+", link: "https://learn.cylabacademy.org/users/An1En" },
   { label: "Tools Built", value: "3", section: "projects" },
-  { label: "Writeups Published", value: "2", section: "writeups" },
+  { label: "Writeups Published", value: "3", section: "writeups" },
   { label: "Certifications", value: "5", section: "certifications" },
 ];
 
