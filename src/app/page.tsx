@@ -141,7 +141,7 @@ const writeups = [
   {
     title: "CloudSEK CTF 2026 — OSINT & Web Security Writeup",
     desc: "Comprehensive writeup covering OSINT reconnaissance through username enumeration and GitHub API exploitation, plus web security attacks including Host header injection and password reset poisoning for full admin account takeover.",
-    link: "https://medium.com/@anlenjeban7/cloudsek-ctf-2026-writeup",
+    link: "https://medium.com/@anlenjeban7/cloud-sek-ctf-2026-56a8e24508eb",
     tags: ["OSINT", "Web Security", "CTF", "Host Header Injection", "Password Reset Poisoning", "CloudSEK"],
   },
   {
