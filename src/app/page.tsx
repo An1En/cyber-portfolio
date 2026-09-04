@@ -90,6 +90,7 @@ const certifications = [
     id: "6a81ab8c0c2bad5922885a8e",
     skills: ["Red Teaming", "MITRE ATT&CK", "Active Directory", "Pentesting"],
     link: "https://labs.cyberwarfare.live/credential/achievement/6a81ab8c0c2bad5922885a8e",
+    image: "/cert-crta.png",
   },
   {
     title: "Active Directory Red Team Specialist (AD-RTS)",
@@ -98,6 +99,7 @@ const certifications = [
     id: "6a89f33f65159096bad04283",
     skills: ["AD Exploitation", "Certificate Services", "Exchange Attacks", "Lateral Movement", "ESXi Red Ops", "Data Exfiltration"],
     link: "https://labs.cyberwarfare.live/credential/achievement/6a89f33f65159096bad04283",
+    image: "/cert-ad-rts.png",
   },
   {
     title: "Red Hat Certified System Administrator",
@@ -113,6 +115,7 @@ const certifications = [
       "Systemd",
       "Package Management",
     ],
+    image: "/cert-rhcsa.png",
   },
   {
     title: "Fundamentals of Encryption & Quantum Safe Techniques",
@@ -128,6 +131,7 @@ const certifications = [
       "Public Key Infrastructure (PKI)",
       "Information Security",
     ],
+    image: "/cert-ibm.jpeg",
   },
   {
     title: "Python Programmer",
@@ -182,8 +186,9 @@ const statCards = [
 ];
 
 const socials = [
-  { label: "GitHub", href: "https://github.com/An1En", icon: Code2 },
+  { label: "Email", href: "mailto:anlenjeban7@gmail.com", icon: Mail },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/an1en", icon: Globe },
+  { label: "GitHub", href: "https://github.com/An1En", icon: Code2 },
   { label: "Medium", href: "https://medium.com/@anlenjeban7", icon: BookOpen },
   { label: "X", href: "https://x.com/4n1En", icon: X },
 ];
@@ -526,7 +531,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Certifications: brute-force decrypt reveal */}
+      {/* Certifications: visual display with images */}
       <section ref={certsRef} className="py-20 px-4" id="certifications">
         <div className="max-w-4xl mx-auto">
           <ScrollDivider target={certsRef} />
@@ -535,112 +540,87 @@ export default function Home() {
               <BadgeCheck size={20} className="text-[#00ff41]" />
               <h2 className="text-2xl font-bold text-white">certifications</h2>
               <span className="ml-auto text-[10px] text-gray-600 font-mono hidden sm:inline">
-                CIPHER: AES-256
+                VERIFIED: {certifications.length} CREDENTIALS
               </span>
             </div>
           </GlitchIn>
 
-          <GlitchIn delay={0.05}>
-            <div className="terminal-box p-5 mb-6">
-              <div className="flex items-center gap-2 mb-6 text-xs text-gray-500">
-                <span className="w-3 h-3 rounded-full bg-[#ff0033]" />
-                <span className="w-3 h-3 rounded-full bg-[#ffcc00]" />
-                <span className="w-3 h-3 rounded-full bg-[#00ff41]" />
-                <span className="ml-2">~/certs.sh --decrypt</span>
-              </div>
-              <div className="font-mono text-sm text-gray-400 mb-4">
-                <span className="text-[#00ff41]">$</span>{" "}
-                <span className="text-[#00ffcc]">./certs.sh</span> --verify --show-badges
-                <span className="text-gray-600"> {"//"} click to decrypt &amp; reveal credentials</span>
-              </div>
-              <button
-                onClick={() => setCertsOpen(!certsOpen)}
-                className="hacker-btn text-sm flex items-center gap-2"
-                aria-expanded={certsOpen}
-              >
-                {certsOpen ? <ShieldCheck size={16} /> : <KeyRound size={16} />}
-                {certsOpen ? "encrypt & hide" : `decrypt & reveal [${certifications.length}]`}
-              </button>
-            </div>
-          </GlitchIn>
-
-          <AnimatePresence>
-            {certsOpen && (
-              <motion.div
-                key="cert-cards"
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-                className="overflow-hidden"
-              >
-                <div className="grid md:grid-cols-2 gap-4">
-                  {certifications.map((cert, i) => (
-                    <motion.div
-                      key={cert.title}
-                      initial={{ opacity: 0, x: -18 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.2, delay: i * 0.1, ease: [0.4, 0, 0.2, 1] }}
-                      whileHover={{ scale: 1.03 }}
-                      onClick={() =>
-                        cert.link && window.open(cert.link, "_blank", "noopener,noreferrer")
-                      }
-                      className={`glass p-5 group relative overflow-hidden ${cert.link ? "cursor-pointer" : ""}`}
-                    >
-                      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#00ff41] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                      <div className="flex items-start justify-between gap-3 mb-3">
-                        <div className="w-10 h-10 flex items-center justify-center border border-[#00ff41]/30 text-[#00ff41] group-hover:bg-[#00ff41] group-hover:text-black transition-all duration-300">
-                          <Award size={18} />
-                        </div>
-                        {cert.link && (
-                          <a
-                            href={cert.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label={`Verify ${cert.title}`}
-                            onClick={(e) => e.stopPropagation()}
-                            className="text-gray-500 hover:text-[#00ff41] transition-colors flex items-center gap-1 text-xs font-mono"
-                          >
-                            <ShieldCheck size={14} /> verify
-                          </a>
-                        )}
+          <div className="grid md:grid-cols-2 gap-6">
+            {certifications.map((cert, i) => (
+              <GlitchIn key={cert.title} delay={i * 0.1}>
+                <motion.div
+                  whileHover={{ scale: 1.02, y: -5 }}
+                  className="glass p-4 group relative overflow-hidden"
+                >
+                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#00ff41] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  
+                  {/* Certificate Image */}
+                  {cert.image && (
+                    <div className="relative mb-4 overflow-hidden rounded border border-[#00ff41]/20">
+                      <img
+                        src={cert.image}
+                        alt={cert.title}
+                        className="w-full h-40 object-cover object-top transition-transform duration-500 group-hover:scale-110"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                      <div className="absolute bottom-2 left-2 flex items-center gap-1.5 bg-black/70 border border-[#00ff41]/30 px-2 py-0.5 text-[10px] font-mono text-[#00ff41]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#00ff41] animate-pulse" />
+                        VERIFIED
                       </div>
+                    </div>
+                  )}
 
-                      <div className="text-[10px] font-mono mb-2">
-                        <span className="text-[#ffcc00]">[+] decrypting credential_{String(i + 1).padStart(2, "0")}.enc ... [ok]</span>
-                      </div>
+                  {/* Certificate Info */}
+                  <div className="flex items-start justify-between gap-3 mb-2">
+                    <div className="w-10 h-10 flex items-center justify-center border border-[#00ff41]/30 text-[#00ff41] group-hover:bg-[#00ff41] group-hover:text-black transition-all duration-300 shrink-0">
+                      <Award size={18} />
+                    </div>
+                    {cert.link && (
+                      <a
+                        href={cert.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`Verify ${cert.title}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-gray-500 hover:text-[#00ff41] transition-colors flex items-center gap-1 text-xs font-mono"
+                      >
+                        <ShieldCheck size={14} /> verify
+                      </a>
+                    )}
+                  </div>
 
-                      <h3 className="text-white font-bold text-sm mb-1">
-                        <span className="text-[#00ff41]">[+]</span>{" "}
-                        <ScrambleText text={cert.title} duration={420 + i * 90} />
-                      </h3>
-                      <p className="text-gray-500 text-xs mb-3">
-                        {cert.issuer} • {cert.date}
-                        {cert.id && (
-                          <>
-                            <span className="mx-1 text-gray-600">|</span>
-                            ID: {cert.id}
-                          </>
-                        )}
-                      </p>
+                  <h3 className="text-white font-bold text-sm mb-1">
+                    <span className="text-[#00ff41]">[+]</span> {cert.title}
+                  </h3>
+                  <p className="text-gray-500 text-xs mb-3">
+                    {cert.issuer} • {cert.date}
+                    {cert.id && (
+                      <>
+                        <span className="mx-1 text-gray-600">|</span>
+                        ID: {cert.id}
+                      </>
+                    )}
+                  </p>
 
-                      {cert.skills && (
-                        <div className="flex flex-wrap gap-1.5">
-                          {cert.skills.map((s) => (
-                            <span key={s} className="skill-badge text-[10px]">
-                              {s}
-                            </span>
-                          ))}
-                        </div>
+                  {cert.skills && (
+                    <div className="flex flex-wrap gap-1.5">
+                      {cert.skills.slice(0, 4).map((s) => (
+                        <span key={s} className="skill-badge text-[10px]">
+                          {s}
+                        </span>
+                      ))}
+                      {cert.skills.length > 4 && (
+                        <span className="skill-badge text-[10px] text-gray-500">
+                          +{cert.skills.length - 4} more
+                        </span>
                       )}
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                    </div>
+                  )}
+                </motion.div>
+              </GlitchIn>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -724,22 +704,37 @@ export default function Home() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.15 }}
-                  className="flex flex-wrap gap-4 pt-4 border-t border-[#00ff41]/20"
                 >
-                  {socials.map((s, i) => (
-                    <motion.a
-                      key={s.label}
-                      href={s.href}
-                      target="_blank"
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.08, duration: 0.15, ease: [0.4, 0, 0.2, 1] }}
-                      className="hacker-btn text-sm flex items-center gap-2"
+                  {/* Direct Contact Info */}
+                  <div className="mb-4 pb-4 border-b border-[#00ff41]/20">
+                    <p className="text-gray-400 text-sm mb-2">
+                      <span className="text-[#00ff41]">$</span> echo "Feel free to reach out!"
+                    </p>
+                    <a 
+                      href="mailto:anlenjeban7@gmail.com" 
+                      className="text-[#00ffcc] font-mono text-lg hover:text-[#00ff41] transition-colors"
                     >
-                      <s.icon size={16} />
-                      {s.label}
-                    </motion.a>
-                  ))}
+                      anlenjeban7@gmail.com
+                    </a>
+                  </div>
+
+                  {/* Social Links */}
+                  <div className="flex flex-wrap gap-4">
+                    {socials.map((s, i) => (
+                      <motion.a
+                        key={s.label}
+                        href={s.href}
+                        target={s.href.startsWith("mailto:") ? undefined : "_blank"}
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.08, duration: 0.15, ease: [0.4, 0, 0.2, 1] }}
+                        className="hacker-btn text-sm flex items-center gap-2"
+                      >
+                        <s.icon size={16} />
+                        {s.label}
+                      </motion.a>
+                    ))}
+                  </div>
                 </motion.div>
               )}
             </div>
