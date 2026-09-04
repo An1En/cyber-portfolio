@@ -20,6 +20,7 @@ import {
   Bot,
   Radar,
   X,
+  Download,
 } from "lucide-react";
 import {
   BootLines,
@@ -715,22 +716,37 @@ export default function Home() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.15 }}
-                  className="flex flex-wrap gap-4 pt-4 border-t border-[#00ff41]/20"
+                  className="pt-4 border-t border-[#00ff41]/20"
                 >
-                  {socials.map((s, i) => (
-                    <motion.a
-                      key={s.label}
-                      href={s.href}
-                      target={s.href.startsWith("mailto:") ? undefined : "_blank"}
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.08, duration: 0.15, ease: [0.4, 0, 0.2, 1] }}
-                      className="hacker-btn text-sm flex items-center gap-2"
-                    >
-                      <s.icon size={16} />
-                      {s.label}
-                    </motion.a>
-                  ))}
+                  <div className="flex flex-wrap gap-4 mb-4">
+                    {socials.map((s, i) => (
+                      <motion.a
+                        key={s.label}
+                        href={s.href}
+                        target={s.href.startsWith("mailto:") ? undefined : "_blank"}
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.08, duration: 0.15, ease: [0.4, 0, 0.2, 1] }}
+                        className="hacker-btn text-sm flex items-center gap-2"
+                      >
+                        <s.icon size={16} />
+                        {s.label}
+                      </motion.a>
+                    ))}
+                  </div>
+                  
+                  {/* Download CV Button */}
+                  <motion.a
+                    href="/anlen-jeban-resume.pdf"
+                    download
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5, duration: 0.15, ease: [0.4, 0, 0.2, 1] }}
+                    className="hacker-btn text-sm flex items-center gap-2 w-fit"
+                  >
+                    <Download size={16} />
+                    Download CV
+                  </motion.a>
                 </motion.div>
               )}
             </div>
