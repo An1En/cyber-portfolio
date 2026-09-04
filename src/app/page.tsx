@@ -113,7 +113,6 @@ const certifications = [
       "Systemd",
       "Package Management",
     ],
-    image: "/cert-rhcsa.png",
   },
   {
     title: "Fundamentals of Encryption & Quantum Safe Techniques",
@@ -129,13 +128,14 @@ const certifications = [
       "Public Key Infrastructure (PKI)",
       "Information Security",
     ],
-    image: "/cert-ibm.jpeg",
+    image: "/cert-ibm.png",
   },
   {
     title: "Python Programmer",
     issuer: "NICEDT",
     date: "2025",
     skills: ["Python", "Object-Oriented Programming", "Data Structures", "Scripting", "Automation"],
+    image: "/cert-python.jpeg",
   },
 ];
 
@@ -546,22 +546,28 @@ export default function Home() {
             {certifications.map((cert, i) => (
               <GlitchIn key={cert.title} delay={i * 0.1}>
                 <motion.div
-                  whileHover={{ scale: 1.02, y: -5 }}
-                  className="glass p-4 group relative overflow-hidden"
+                  whileHover={{ y: -8 }}
+                  className="glass p-5 group relative overflow-hidden cursor-pointer"
                 >
+                  {/* Top scan line on hover */}
                   <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#00ff41] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   
+                  {/* Glow effect on hover */}
+                  <div className="absolute -top-12 -right-12 w-40 h-40 bg-[#00ff41]/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
                   {/* Certificate Image */}
                   {cert.image && (
-                    <div className="relative mb-4 overflow-hidden rounded border border-[#00ff41]/20">
+                    <div className="relative mb-4 overflow-hidden rounded border border-[#00ff41]/20 h-44">
                       <img
                         src={cert.image}
                         alt={cert.title}
-                        className="w-full h-40 object-cover object-top transition-transform duration-500 group-hover:scale-110"
+                        className="cert-media w-full h-full object-cover object-top"
                         loading="lazy"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                      <div className="absolute bottom-2 left-2 flex items-center gap-1.5 bg-black/70 border border-[#00ff41]/30 px-2 py-0.5 text-[10px] font-mono text-[#00ff41]">
+                      {/* Overlay gradient */}
+                      <div className="cert-overlay absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                      {/* VERIFIED badge - shows on hover */}
+                      <div className="cert-badge absolute bottom-3 left-3 flex items-center gap-1.5 bg-black/80 border border-[#00ff41]/40 px-3 py-1 text-[11px] font-mono text-[#00ff41]">
                         <span className="w-1.5 h-1.5 rounded-full bg-[#00ff41] animate-pulse" />
                         VERIFIED
                       </div>

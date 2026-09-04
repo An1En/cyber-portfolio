@@ -344,6 +344,39 @@ body {
   transform: scale(1);
 }
 
+/* Certificate image hover-reveal */
+.cert-media {
+  opacity: 0.85;
+  transform: scale(1);
+  transition: opacity 0.4s ease-out, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.group:hover .cert-media {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+.cert-overlay {
+  opacity: 0;
+  transition: opacity 0.4s ease 0.1s;
+}
+
+.group:hover .cert-overlay {
+  opacity: 1;
+}
+
+.cert-badge {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease 0.2s, transform 0.3s ease 0.2s;
+}
+
+.group:hover .cert-badge {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .project-scan {
   opacity: 0;
   pointer-events: none;
