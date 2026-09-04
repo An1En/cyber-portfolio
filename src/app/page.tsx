@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -15,7 +15,6 @@ import {
   ChevronDown,
   BadgeCheck,
   Award,
-  KeyRound,
   ShieldCheck,
   ScanLine,
   Bot,
@@ -27,7 +26,6 @@ import {
   CmdLine,
   GlitchIn,
   RedactReveal,
-  ScrambleText,
   ScrollDivider,
   ScrollReadout,
   StreamLines,
@@ -197,7 +195,6 @@ export default function Home() {
   const router = useRouter();
   const [booted, setBooted] = useState(false);
   const [handshakeDone, setHandshakeDone] = useState(false);
-  const [certsOpen, setCertsOpen] = useState(false);
 
   const aboutRef = useRef<HTMLElement | null>(null);
   const projectsRef = useRef<HTMLElement | null>(null);
@@ -708,7 +705,7 @@ export default function Home() {
                   {/* Direct Contact Info */}
                   <div className="mb-4 pb-4 border-b border-[#00ff41]/20">
                     <p className="text-gray-400 text-sm mb-2">
-                      <span className="text-[#00ff41]">$</span> echo "Feel free to reach out!"
+                      <span className="text-[#00ff41]">$</span> echo &quot;Feel free to reach out!&quot;
                     </p>
                     <a 
                       href="mailto:anlenjeban7@gmail.com" 
