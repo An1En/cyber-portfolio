@@ -546,8 +546,9 @@ export default function Home() {
             {certifications.map((cert, i) => (
               <GlitchIn key={cert.title} delay={i * 0.1}>
                 <motion.div
-                  whileHover={{ y: -8 }}
-                  className="glass p-5 group relative overflow-hidden cursor-pointer"
+                  whileHover={{ y: -8, scale: 1.02 }}
+                  className="glass p-6 flex flex-col group relative overflow-hidden cursor-pointer"
+                  onClick={() => cert.link && window.open(cert.link, "_blank", "noopener,noreferrer")}
                 >
                   {/* Top scan line on hover */}
                   <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#00ff41] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -555,29 +556,32 @@ export default function Home() {
                   {/* Glow effect on hover */}
                   <div className="absolute -top-12 -right-12 w-40 h-40 bg-[#00ff41]/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                  {/* Certificate Image */}
+                  {/* Certificate Image - hidden by default, reveals on hover like projects */}
                   {cert.image && (
-                    <div className="relative mb-4 overflow-hidden rounded border border-[#00ff41]/20 h-44">
+                    <div className="absolute inset-0 overflow-hidden pointer-events-none bg-black">
                       <img
                         src={cert.image}
                         alt={cert.title}
                         className="cert-media w-full h-full object-cover object-top"
                         loading="lazy"
                       />
-                      {/* Overlay gradient */}
-                      <div className="cert-overlay absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                      {/* VERIFIED badge - shows on hover */}
-                      <div className="cert-badge absolute bottom-3 left-3 flex items-center gap-1.5 bg-black/80 border border-[#00ff41]/40 px-3 py-1 text-[11px] font-mono text-[#00ff41]">
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                      {/* Scan line effect */}
+                      <div className="cert-scan absolute left-0 right-0 top-0 h-24">
+                        <div className="cert-scanline" />
+                      </div>
+                      {/* VERIFIED badge */}
+                      <div className="cert-badge absolute top-2 left-2 flex items-center gap-1.5 bg-black/70 border border-[#00ff41]/30 px-2 py-0.5 text-[10px] font-mono text-[#00ff41]">
                         <span className="w-1.5 h-1.5 rounded-full bg-[#00ff41] animate-pulse" />
                         VERIFIED
                       </div>
                     </div>
                   )}
 
-                  {/* Certificate Info */}
-                  <div className="flex items-start justify-between gap-3 mb-2">
-                    <div className="w-10 h-10 flex items-center justify-center border border-[#00ff41]/30 text-[#00ff41] group-hover:bg-[#00ff41] group-hover:text-black transition-all duration-300 shrink-0">
-                      <Award size={18} />
+                  {/* Certificate Icon */}
+                  <div className="flex items-start justify-between mb-4 relative z-10 transition-all duration-300 group-hover:opacity-0 group-hover:-translate-y-1">
+                    <div className="w-11 h-11 flex items-center justify-center border border-[#00ff41]/30 text-[#00ff41] group-hover:bg-[#00ff41] group-hover:text-black transition-all duration-300 shadow-[0_0_12px_rgba(0,255,65,0.1)] group-hover:shadow-[0_0_20px_rgba(0,255,65,0.4)]">
+                      <Award size={20} />
                     </div>
                     {cert.link && (
                       <a
@@ -586,17 +590,20 @@ export default function Home() {
                         rel="noopener noreferrer"
                         aria-label={`Verify ${cert.title}`}
                         onClick={(e) => e.stopPropagation()}
-                        className="text-gray-500 hover:text-[#00ff41] transition-colors flex items-center gap-1 text-xs font-mono"
+                        className="text-gray-500 hover:text-[#00ff41] transition-colors flex items-center gap-1 text-xs font-mono opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-x-1 group-hover:translate-x-0"
                       >
                         <ShieldCheck size={14} /> verify
                       </a>
                     )}
                   </div>
 
-                  <h3 className="text-white font-bold text-sm mb-1">
-                    <span className="text-[#00ff41]">[+]</span> {cert.title}
+                  {/* Certificate Title */}
+                  <h3 className="text-lg font-bold text-[#00ff41] mb-2 relative z-10 transition-all duration-300 group-hover:opacity-0">
+                    <span className="text-gray-500">[</span> {cert.title} <span className="text-gray-500">]</span>
                   </h3>
-                  <p className="text-gray-500 text-xs mb-3">
+                  
+                  {/* Issuer & Date */}
+                  <p className="text-gray-400 text-sm mb-4 leading-relaxed flex-1 relative z-10 transition-all duration-300 delay-75 group-hover:opacity-0">
                     {cert.issuer} • {cert.date}
                     {cert.id && (
                       <>
@@ -606,15 +613,16 @@ export default function Home() {
                     )}
                   </p>
 
+                  {/* Skills */}
                   {cert.skills && (
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="flex flex-wrap gap-2 relative z-10 transition-all duration-300 delay-150 group-hover:opacity-0">
                       {cert.skills.slice(0, 4).map((s) => (
-                        <span key={s} className="skill-badge text-[10px]">
+                        <span key={s} className="skill-badge text-xs">
                           {s}
                         </span>
                       ))}
                       {cert.skills.length > 4 && (
-                        <span className="skill-badge text-[10px] text-gray-500">
+                        <span className="skill-badge text-xs text-gray-500">
                           +{cert.skills.length - 4} more
                         </span>
                       )}
@@ -707,37 +715,22 @@ export default function Home() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.15 }}
+                  className="flex flex-wrap gap-4 pt-4 border-t border-[#00ff41]/20"
                 >
-                  {/* Direct Contact Info */}
-                  <div className="mb-4 pb-4 border-b border-[#00ff41]/20">
-                    <p className="text-gray-400 text-sm mb-2">
-                      <span className="text-[#00ff41]">$</span> echo &quot;Feel free to reach out!&quot;
-                    </p>
-                    <a 
-                      href="mailto:anlenjeban7@gmail.com" 
-                      className="text-[#00ffcc] font-mono text-lg hover:text-[#00ff41] transition-colors"
+                  {socials.map((s, i) => (
+                    <motion.a
+                      key={s.label}
+                      href={s.href}
+                      target={s.href.startsWith("mailto:") ? undefined : "_blank"}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.08, duration: 0.15, ease: [0.4, 0, 0.2, 1] }}
+                      className="hacker-btn text-sm flex items-center gap-2"
                     >
-                      anlenjeban7@gmail.com
-                    </a>
-                  </div>
-
-                  {/* Social Links */}
-                  <div className="flex flex-wrap gap-4">
-                    {socials.map((s, i) => (
-                      <motion.a
-                        key={s.label}
-                        href={s.href}
-                        target={s.href.startsWith("mailto:") ? undefined : "_blank"}
-                        initial={{ opacity: 0, y: 8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.08, duration: 0.15, ease: [0.4, 0, 0.2, 1] }}
-                        className="hacker-btn text-sm flex items-center gap-2"
-                      >
-                        <s.icon size={16} />
-                        {s.label}
-                      </motion.a>
-                    ))}
-                  </div>
+                      <s.icon size={16} />
+                      {s.label}
+                    </motion.a>
+                  ))}
                 </motion.div>
               )}
             </div>
