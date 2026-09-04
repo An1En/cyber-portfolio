@@ -558,11 +558,11 @@ export default function Home() {
 
                   {/* Certificate Image - hidden by default, reveals on hover like projects */}
                   {cert.image && (
-                    <div className="absolute inset-0 overflow-hidden pointer-events-none bg-black">
+                    <div className="absolute inset-0 overflow-hidden pointer-events-none bg-black flex items-center justify-center">
                       <img
                         src={cert.image}
                         alt={cert.title}
-                        className="cert-media w-full h-full object-cover object-top"
+                        className="cert-media w-full h-full object-contain"
                         loading="lazy"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />

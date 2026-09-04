@@ -350,6 +350,8 @@ body {
   transform: scale(1.06);
   transition: opacity 0.5s ease-out, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: opacity, transform;
+  object-fit: contain;
+  object-position: center;
 }
 
 .group:hover .cert-media {
