@@ -9,36 +9,13 @@ import {
   Code2,
 } from "lucide-react";
 import Link from "next/link";
+import { writeups } from "@/lib/writeups";
 
-const writeups = [
-  {
-    title: "CloudSEK CTF 2026 — OSINT & Web Security",
-    desc: "Comprehensive writeup covering OSINT reconnaissance through username enumeration and GitHub API exploitation, plus web security attacks including Host header injection and password reset poisoning for full admin account takeover.",
-    link: "https://medium.com/@anlenjeban7/cloud-sek-ctf-2026-56a8e24508eb",
-    tags: ["OSINT", "Web Security", "CTF", "Host Header Injection", "Password Reset Poisoning"],
-    icon: Shield,
-    date: "Aug 2026",
-    platform: "CloudSEK CTF",
-  },
-  {
-    title: "AD RTS — TELECOM INC: Full Attack Chain",
-    desc: "Complete attack chain against an Active Directory environment — from anonymous LDAP enumeration and AS-REP Roasting through Exchange impersonation, GodPotato privilege escalation, ESC1 certificate abuse, to VMware ESXi hypervisor compromise.",
-    link: "https://medium.com/@anlenjeban7/ad-rts-telecom-inc-a-full-attack-chain-walkthrough-81d3a15fadfb",
-    tags: ["Active Directory", "Red Team", "Lateral Movement", "ESC1", "Privilege Escalation"],
-    icon: Terminal,
-    date: "Jul 2026",
-    platform: "Cyberwarfare Labs",
-  },
-  {
-    title: "HackTheBox — Oopsie Walkthrough",
-    desc: "Detailed analysis of IDOR, Unrestricted File Upload, and SUID PATH Hijacking vulnerabilities with full exploitation chain and remediation strategies.",
-    link: "https://medium.com/@anlenjeban7/hackthebox-oopsie-walkthrough-489bc2208d96",
-    tags: ["IDOR", "Reverse Shell", "PATH Hijacking", "OWASP Top 10"],
-    icon: Code2,
-    date: "Jun 2026",
-    platform: "HackTheBox",
-  },
-];
+const iconMap: Record<string, typeof Shield> = {
+  Shield,
+  Terminal,
+  Code2,
+};
 
 export default function WriteupPage() {
   return (
@@ -55,7 +32,7 @@ export default function WriteupPage() {
             <div>
               <h1 className="text-2xl font-bold text-white">published_writeups</h1>
               <p className="text-sm text-gray-500 font-mono">
-                Security research and CTF writeups published on Medium
+                Security research and CTF writeups — read directly on portfolio
               </p>
             </div>
           </div>
@@ -67,72 +44,74 @@ export default function WriteupPage() {
 
         {/* Writeup Cards */}
         <div className="space-y-6">
-          {writeups.map((w, i) => (
-            <motion.div
-              key={w.title}
-              initial={{ opacity: 0, y: 20, clipPath: "inset(0 0 100% 0)" }}
-              animate={{ opacity: 1, y: 0, clipPath: "inset(0 0 0% 0)" }}
-              transition={{ duration: 0.4, delay: i * 0.15, ease: [0.6, 0, 0.3, 1] }}
-            >
-              <a
-                href={w.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block glass p-6 group relative overflow-hidden cursor-pointer"
+          {writeups.map((w, i) => {
+            const Icon = Object.values(iconMap)[i] || Shield;
+            return (
+              <motion.div
+                key={w.slug}
+                initial={{ opacity: 0, y: 20, clipPath: "inset(0 0 100% 0)" }}
+                animate={{ opacity: 1, y: 0, clipPath: "inset(0 0 0% 0)" }}
+                transition={{ duration: 0.4, delay: i * 0.15, ease: [0.6, 0, 0.3, 1] }}
               >
-                {/* Top scan line on hover */}
-                <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#00ff41] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                
-                {/* Glow effect */}
-                <div className="absolute -top-12 -right-12 w-40 h-40 bg-[#00ff41]/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <Link
+                  href={`/writeup/${w.slug}`}
+                  className="block glass p-6 group relative overflow-hidden cursor-pointer"
+                >
+                  {/* Top scan line on hover */}
+                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#00ff41] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  
+                  {/* Glow effect */}
+                  <div className="absolute -top-12 -right-12 w-40 h-40 bg-[#00ff41]/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                <div className="flex items-start justify-between gap-4 relative z-10">
-                  <div className="flex items-start gap-4 flex-1">
-                    {/* Icon */}
-                    <div className="w-12 h-12 flex items-center justify-center border border-[#00ff41]/30 text-[#00ff41] group-hover:bg-[#00ff41] group-hover:text-black transition-all duration-300 shadow-[0_0_12px_rgba(0,255,65,0.1)] group-hover:shadow-[0_0_20px_rgba(0,255,65,0.4)] shrink-0">
-                      <w.icon size={22} />
-                    </div>
-
-                    <div className="flex-1">
-                      {/* Platform & Date */}
-                      <div className="flex items-center gap-3 mb-2">
-                        <span className="text-[10px] font-mono text-[#00ffcc] bg-[#00ffcc]/10 px-2 py-0.5 border border-[#00ffcc]/20">
-                          {w.platform}
-                        </span>
-                        <span className="text-[10px] font-mono text-gray-600">
-                          {w.date}
-                        </span>
+                  <div className="flex items-start justify-between gap-4 relative z-10">
+                    <div className="flex items-start gap-4 flex-1">
+                      {/* Icon */}
+                      <div className="w-12 h-12 flex items-center justify-center border border-[#00ff41]/30 text-[#00ff41] group-hover:bg-[#00ff41] group-hover:text-black transition-all duration-300 shadow-[0_0_12px_rgba(0,255,65,0.1)] group-hover:shadow-[0_0_20px_rgba(0,255,65,0.4)] shrink-0">
+                        <Icon size={22} />
                       </div>
 
-                      {/* Title */}
-                      <h3 className="text-lg font-bold text-[#00ff41] mb-2 group-hover:text-white transition-colors duration-300">
-                        <span className="text-gray-500">[</span> {w.title} <span className="text-gray-500">]</span>
-                      </h3>
-
-                      {/* Description */}
-                      <p className="text-gray-400 text-sm mb-4 leading-relaxed">
-                        {w.desc}
-                      </p>
-
-                      {/* Tags */}
-                      <div className="flex flex-wrap gap-2">
-                        {w.tags.map((t) => (
-                          <span key={t} className="skill-badge text-xs">
-                            {t}
+                      <div className="flex-1">
+                        {/* Platform & Date */}
+                        <div className="flex items-center gap-3 mb-2">
+                          <span className="text-[10px] font-mono text-[#00ffcc] bg-[#00ffcc]/10 px-2 py-0.5 border border-[#00ffcc]/20">
+                            {w.platform}
                           </span>
-                        ))}
+                          <span className="text-[10px] font-mono text-gray-600">
+                            {w.date}
+                          </span>
+                        </div>
+
+                        {/* Title */}
+                        <h3 className="text-lg font-bold text-[#00ff41] mb-2 group-hover:text-white transition-colors duration-300">
+                          <span className="text-gray-500">[</span> {w.title} <span className="text-gray-500">]</span>
+                        </h3>
+
+                        {/* Description */}
+                        <p className="text-gray-400 text-sm mb-4 leading-relaxed">
+                          {w.desc}
+                        </p>
+
+                        {/* Tags */}
+                        <div className="flex flex-wrap gap-2">
+                          {w.tags.map((t) => (
+                            <span key={t} className="skill-badge text-xs">
+                              {t}
+                            </span>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* External Link Icon */}
-                  <div className="text-gray-600 group-hover:text-[#00ff41] transition-colors duration-300 shrink-0 mt-1">
-                    <ExternalLink size={18} />
+                    {/* Read Arrow */}
+                    <div className="text-gray-600 group-hover:text-[#00ff41] transition-colors duration-300 shrink-0 mt-1 font-mono text-xs flex items-center gap-1">
+                      read
+                      <ExternalLink size={14} />
+                    </div>
                   </div>
-                </div>
-              </a>
-            </motion.div>
-          ))}
+                </Link>
+              </motion.div>
+            );
+          })}
         </div>
 
         {/* Stats */}
