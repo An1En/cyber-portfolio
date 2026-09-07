@@ -54,18 +54,17 @@ export default function WriteupPage() {
                   {/* Glow effect */}
                   <div className="absolute -top-12 -right-12 w-40 h-40 bg-[#00ff41]/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                  <div className="flex items-start justify-between gap-4 relative z-10">
-                    <div className="flex items-start gap-4 flex-1">
+                  <div className="flex items-stretch gap-5 relative z-10">
                       {/* Thumbnail */}
-                      <div className="w-20 h-20 shrink-0 overflow-hidden border border-[#00ff41]/20 group-hover:border-[#00ff41]/50 transition-colors duration-300">
+                      <div className="w-32 h-32 shrink-0 overflow-hidden border border-[#00ff41]/20 group-hover:border-[#00ff41]/50 transition-colors duration-300 bg-black/30">
                         <img
                           src={w.thumbnail}
                           alt={w.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
                         />
                       </div>
 
-                      <div className="flex-1">
+                      <div className="flex-1 flex flex-col justify-between">
                         {/* Platform & Date */}
                         <div className="flex items-center gap-3 mb-2">
                           <span className="text-[10px] font-mono text-[#00ffcc] bg-[#00ffcc]/10 px-2 py-0.5 border border-[#00ffcc]/20">
@@ -95,10 +94,9 @@ export default function WriteupPage() {
                           ))}
                         </div>
                       </div>
-                    </div>
 
                     {/* Read Arrow */}
-                    <div className="text-gray-600 group-hover:text-[#00ff41] transition-colors duration-300 shrink-0 mt-1 font-mono text-xs flex items-center gap-1">
+                    <div className="text-gray-600 group-hover:text-[#00ff41] transition-colors duration-300 shrink-0 font-mono text-xs flex items-center gap-1 self-center">
                       read
                       <ExternalLink size={14} />
                     </div>
