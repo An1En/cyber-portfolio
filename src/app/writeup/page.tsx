@@ -5,17 +5,9 @@ import {
   BookOpen,
   ExternalLink,
   Terminal,
-  Shield,
-  Code2,
 } from "lucide-react";
 import Link from "next/link";
 import { writeups } from "@/lib/writeups";
-
-const iconMap: Record<string, typeof Shield> = {
-  Shield,
-  Terminal,
-  Code2,
-};
 
 export default function WriteupPage() {
   return (
@@ -45,7 +37,6 @@ export default function WriteupPage() {
         {/* Writeup Cards */}
         <div className="space-y-6">
           {writeups.map((w, i) => {
-            const Icon = Object.values(iconMap)[i] || Shield;
             return (
               <motion.div
                 key={w.slug}
@@ -65,9 +56,13 @@ export default function WriteupPage() {
 
                   <div className="flex items-start justify-between gap-4 relative z-10">
                     <div className="flex items-start gap-4 flex-1">
-                      {/* Icon */}
-                      <div className="w-12 h-12 flex items-center justify-center border border-[#00ff41]/30 text-[#00ff41] group-hover:bg-[#00ff41] group-hover:text-black transition-all duration-300 shadow-[0_0_12px_rgba(0,255,65,0.1)] group-hover:shadow-[0_0_20px_rgba(0,255,65,0.4)] shrink-0">
-                        <Icon size={22} />
+                      {/* Thumbnail */}
+                      <div className="w-20 h-20 shrink-0 overflow-hidden border border-[#00ff41]/20 group-hover:border-[#00ff41]/50 transition-colors duration-300">
+                        <img
+                          src={w.thumbnail}
+                          alt={w.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
                       </div>
 
                       <div className="flex-1">

@@ -6,6 +6,7 @@ export interface Writeup {
   date: string;
   tags: string[];
   mediumUrl: string;
+  thumbnail: string;
   content: string;
 }
 
@@ -18,6 +19,7 @@ export const writeups: Writeup[] = [
     date: "Aug 2026",
     tags: ["OSINT", "Web Security", "CTF", "Host Header Injection", "Password Reset Poisoning"],
     mediumUrl: "https://medium.com/@anlenjeban7/cloud-sek-ctf-2026-56a8e24508eb",
+    thumbnail: "/writeups/writeup-1-1.png",
     content: `# Cloud SEK CTF 2026 — Writeup
 
 **Author:** Anlen Jeban  
@@ -219,6 +221,7 @@ Both challenges demonstrated how seemingly minor oversights — a username in a 
     date: "Jul 2026",
     tags: ["Active Directory", "Red Team", "Lateral Movement", "ESC1", "Privilege Escalation"],
     mediumUrl: "https://medium.com/@anlenjeban7/ad-rts-telecom-inc-a-full-attack-chain-walkthrough-81d3a15fadfb",
+    thumbnail: "/writeups/writeup-8-2.png",
     content: `# AD RTS — TELECOM INC: A Full Attack Chain Walkthrough
 
 **Author:** Anlen Jeban  
@@ -396,6 +399,7 @@ Extracted sensitive data from virtual machines and file shares.
     date: "Jun 2026",
     tags: ["IDOR", "Reverse Shell", "PATH Hijacking", "OWASP Top 10"],
     mediumUrl: "https://medium.com/@anlenjeban7/hackthebox-oopsie-walkthrough-489bc2208d96",
+    thumbnail: "/writeups/oopsie-1.png",
     content: `# HackTheBox — Oopsie Walkthrough
 
 **Author:** Anlen Jeban  
