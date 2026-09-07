@@ -199,6 +199,18 @@ CloudSEK{h0st_h34d3r_p01s0n_t0k3n_3xf1l_m4st3r}
 | 2 | Web | Host header injection → Password reset poisoning → Account takeover | Medium |
 
 Both challenges demonstrated how seemingly minor oversights — a username in a script path, developer comments left in production code — can cascade into full compromise when chained together.
+
+---
+
+## Result
+
+![8th Place — CloudSEK CTF 2026](/writeups/cloudsek-8th-place.png)
+
+| Detail | Value |
+|--------|-------|
+| Rank | **8th Place** |
+| Points | 300 |
+| Country | India |
 `,
   },
   {
