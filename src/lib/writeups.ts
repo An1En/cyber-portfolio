@@ -221,7 +221,7 @@ Both challenges demonstrated how seemingly minor oversights — a username in a 
     date: "Jul 2026",
     tags: ["Active Directory", "Red Team", "Lateral Movement", "ESC1", "Privilege Escalation"],
     mediumUrl: "https://medium.com/@anlenjeban7/ad-rts-telecom-inc-a-full-attack-chain-walkthrough-81d3a15fadfb",
-    thumbnail: "/writeups/writeup-8-2.png",
+    thumbnail: "/writeups/ad-rts-cert.png",
     content: `# AD RTS — TELECOM INC: A Full Attack Chain Walkthrough
 
 **Author:** Anlen Jeban  
