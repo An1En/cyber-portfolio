@@ -179,8 +179,6 @@ After submitting the login credentials, the application verified the email and p
 - The server issued a new session cookie with administrative privileges
 - The browser was redirected to \`/dashboard\` via a 302 response
 
-![Admin Dashboard](/writeups/writeup-10-13.png)
-
 The admin dashboard loaded successfully, and the CTF flag was displayed in a highlighted section.
 
 ### The Flag
