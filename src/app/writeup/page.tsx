@@ -20,7 +20,7 @@ export default function WriteupPage() {
           className="glass p-6 mb-8"
         >
           <div className="flex items-center gap-3 mb-2">
-            <BookOpen className="text-[#00ff41]" size={28} />
+            <BookOpen className="text-[#ff0033]" size={28} />
             <div>
               <h1 className="text-2xl font-bold text-white">published_writeups</h1>
               <p className="text-sm text-gray-500 font-mono">
@@ -29,7 +29,7 @@ export default function WriteupPage() {
             </div>
           </div>
           <div className="flex items-center gap-2 text-[10px] text-gray-600 font-mono mt-4">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#00ff41] animate-pulse" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#ff0033] animate-pulse" />
             STATUS: {writeups.length} ARTICLES PUBLISHED
           </div>
         </motion.div>
@@ -49,14 +49,14 @@ export default function WriteupPage() {
                   className="block glass p-6 group relative overflow-hidden cursor-pointer"
                 >
                   {/* Top scan line on hover */}
-                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#00ff41] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#ff0033] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   
                   {/* Glow effect */}
-                  <div className="absolute -top-12 -right-12 w-40 h-40 bg-[#00ff41]/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute -top-12 -right-12 w-40 h-40 bg-[#ff0033]/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                   <div className="flex items-stretch gap-5 relative z-10">
                       {/* Thumbnail */}
-                      <div className="w-32 h-32 shrink-0 overflow-hidden border border-[#00ff41]/20 group-hover:border-[#00ff41]/50 transition-colors duration-300 bg-black/30">
+                      <div className="w-32 h-32 shrink-0 overflow-hidden border border-[#ff0033]/20 group-hover:border-[#ff0033]/50 transition-colors duration-300 bg-black/30">
                         <img
                           src={w.thumbnail}
                           alt={w.title}
@@ -67,7 +67,7 @@ export default function WriteupPage() {
                       <div className="flex-1 flex flex-col justify-between">
                         {/* Platform & Date */}
                         <div className="flex items-center gap-3 mb-2">
-                          <span className="text-[10px] font-mono text-[#00ffcc] bg-[#00ffcc]/10 px-2 py-0.5 border border-[#00ffcc]/20">
+                          <span className="text-[10px] font-mono text-[#ff8899] bg-[#ff8899]/10 px-2 py-0.5 border border-[#ff8899]/20">
                             {w.platform}
                           </span>
                           <span className="text-[10px] font-mono text-gray-600">
@@ -76,7 +76,7 @@ export default function WriteupPage() {
                         </div>
 
                         {/* Title */}
-                        <h3 className="text-lg font-bold text-[#00ff41] mb-2 group-hover:text-white transition-colors duration-300">
+                        <h3 className="text-lg font-bold text-[#ff0033] mb-2 group-hover:text-white transition-colors duration-300">
                           <span className="text-gray-500">[</span> {w.title} <span className="text-gray-500">]</span>
                         </h3>
 
@@ -96,7 +96,7 @@ export default function WriteupPage() {
                       </div>
 
                     {/* Read Arrow */}
-                    <div className="text-gray-600 group-hover:text-[#00ff41] transition-colors duration-300 shrink-0 font-mono text-xs flex items-center gap-1 self-center">
+                    <div className="text-gray-600 group-hover:text-[#ff0033] transition-colors duration-300 shrink-0 font-mono text-xs flex items-center gap-1 self-center">
                       read
                       <ExternalLink size={14} />
                     </div>
@@ -115,15 +115,15 @@ export default function WriteupPage() {
           className="mt-8 grid grid-cols-3 gap-4"
         >
           <div className="glass p-4 text-center">
-            <div className="text-2xl font-bold text-[#00ff41]">{writeups.length}</div>
+            <div className="text-2xl font-bold text-[#ff0033]">{writeups.length}</div>
             <div className="text-xs text-gray-500 font-mono mt-1">Articles</div>
           </div>
           <div className="glass p-4 text-center">
-            <div className="text-2xl font-bold text-[#00ff41]">3</div>
+            <div className="text-2xl font-bold text-[#ff0033]">3</div>
             <div className="text-xs text-gray-500 font-mono mt-1">Platforms</div>
           </div>
           <div className="glass p-4 text-center">
-            <div className="text-2xl font-bold text-[#00ffcc]">12+</div>
+            <div className="text-2xl font-bold text-[#ff8899]">12+</div>
             <div className="text-xs text-gray-500 font-mono mt-1">Topics</div>
           </div>
         </motion.div>

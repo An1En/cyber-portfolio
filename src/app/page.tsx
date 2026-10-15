@@ -229,11 +229,11 @@ export default function Home() {
       <section className="min-h-screen flex items-center justify-center px-4 pt-16">
         <div className="max-w-4xl w-full">
           <div className="glass p-6 md:p-8 mb-8">
-            <div className="flex items-center gap-2 text-[#00ff41]/60 text-sm mb-5">
+            <div className="flex items-center gap-2 text-[#ff0033]/60 text-sm mb-5">
               <Terminal size={14} />
               <span>~/init.sh --profile an1en</span>
-              <span className="ml-auto flex items-center gap-1.5 text-[10px] text-[#00ff41]/80">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#00ff41] animate-pulse" />
+              <span className="ml-auto flex items-center gap-1.5 text-[10px] text-[#ff0033]/80">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#ff0033] animate-pulse" />
                 BOOT
               </span>
             </div>
@@ -244,7 +244,7 @@ export default function Home() {
               clearDelay={200}
               speed={8}
               gap={120}
-              className="font-mono text-xs md:text-sm text-[#00ff41]/90"
+              className="font-mono text-xs md:text-sm text-[#ff0033]/90"
               onDone={() => setBooted(true)}
             />
 
@@ -255,17 +255,17 @@ export default function Home() {
                 transition={{ duration: 0.15 }}
               >
                 <h1 className="text-3xl md:text-5xl font-bold mb-2 glitch" data-text="Anlen Jeban">
-                  <span className="text-[#00ff41]">$ </span>
+                  <span className="text-[#ff0033]">$ </span>
                   <span className="text-white">Anlen Jeban</span>
                 </h1>
 
-                <div className="text-lg md:text-xl text-[#00ffcc] mb-4 h-8">
+                <div className="text-lg md:text-xl text-[#ff8899] mb-4 h-8">
                   <Typewriter text={ROLE_TEXT} speed={45} />
                   <span className="typing-cursor" />
                 </div>
 
                 <p className="text-gray-400 font-mono text-sm md:text-base max-w-2xl mb-6 leading-relaxed">
-                  <span className="text-[#00ff41]">{'//'}</span> Computer Science student specializing in web penetration testing,
+                  <span className="text-[#ff0033]">{'//'}</span> Computer Science student specializing in web penetration testing,
                   network analysis, and AI-powered security tooling. CTF player, open-source contributor, and
                   published cybersecurity writer.
                 </p>
@@ -303,7 +303,7 @@ export default function Home() {
                 onClick={() => openStat(stat)}
                 className={`glass p-4 text-center ${stat.link || stat.section ? "cursor-pointer" : ""}`}
               >
-                <div className="text-2xl font-bold text-[#00ff41]">{stat.value}</div>
+                <div className="text-2xl font-bold text-[#ff0033]">{stat.value}</div>
                 <div className="text-xs text-gray-500 mt-1 font-mono">{stat.label}</div>
               </motion.div>
             ))}
@@ -318,7 +318,7 @@ export default function Home() {
           className="absolute bottom-8 left-1/2 -translate-x-1/2"
         >
           <div className="flex items-center gap-2 text-gray-600 font-mono text-xs">
-            <ChevronDown size={14} className="text-[#00ff41]/30" />
+            <ChevronDown size={14} className="text-[#ff0033]/30" />
             <span>scroll to scan</span>
           </div>
         </motion.div>
@@ -330,7 +330,7 @@ export default function Home() {
           <ScrollDivider target={aboutRef} />
           <GlitchIn>
             <div className="flex items-center gap-3 mb-8">
-              <Terminal size={20} className="text-[#00ff41]" />
+              <Terminal size={20} className="text-[#ff0033]" />
               <h2 className="text-2xl font-bold text-white">about_me</h2>
               <span className="ml-auto text-[10px] text-gray-600 font-mono hidden sm:inline">
                 FILE: about_an1en.txt
@@ -343,35 +343,35 @@ export default function Home() {
               <div className="flex items-center gap-2 mb-6 text-xs text-gray-500">
                 <span className="w-3 h-3 rounded-full bg-[#ff0033]" />
                 <span className="w-3 h-3 rounded-full bg-[#ffcc00]" />
-                <span className="w-3 h-3 rounded-full bg-[#00ff41]" />
+                <span className="w-3 h-3 rounded-full bg-[#ff0033]" />
                 <span className="ml-2">~/about_me.sh</span>
               </div>
 
               <div className="space-y-4 font-mono text-sm">
                 <CmdLine command="cat about_an1en.txt" />
                 <StreamLines
-                  className="border-l-2 border-[#00ff41]/30 pl-4 space-y-3 text-gray-400"
+                  className="border-l-2 border-[#ff0033]/30 pl-4 space-y-3 text-gray-400"
                   lineClass=""
                   lines={[
                     <p key="1">
-                      <span className="text-[#00ff41]">[+]</span> B.E. Computer Science & Engineering —{" "}
+                      <span className="text-[#ff0033]">[+]</span> B.E. Computer Science & Engineering —{" "}
                       <span className="text-white">Sathyabama Institute (2022–2026)</span>
                     </p>,
                     <p key="2">
-                      <span className="text-[#00ff41]">[+]</span> Passionate about offensive security, network
+                      <span className="text-[#ff0033]">[+]</span> Passionate about offensive security, network
                       reconnaissance, and building tools that make pentesting faster.
                     </p>,
                     <p key="3">
-                      <span className="text-[#00ff41]">[+]</span> Built <span className="text-[#00ffcc]">Tmap</span> — a
+                      <span className="text-[#ff0033]">[+]</span> Built <span className="text-[#ff8899]">Tmap</span> — a
                       network recon framework that cuts scanning time by 30%.
                     </p>,
                     <p key="4">
-                      <span className="text-[#00ff41]">[+]</span> Published{" "}
-                      <span className="text-[#00ffcc]">HackTheBox walkthroughs</span> on Medium analyzing
+                      <span className="text-[#ff0033]">[+]</span> Published{" "}
+                      <span className="text-[#ff8899]">HackTheBox walkthroughs</span> on Medium analyzing
                       real-world exploitation chains.
                     </p>,
                     <p key="5">
-                      <span className="text-[#00ff41]">[+]</span> Experienced in{" "}
+                      <span className="text-[#ff0033]">[+]</span> Experienced in{" "}
                       <span className="text-white">OWASP Top 10</span>, Linux privilege escalation, Active
                       Directory, and AI/LLM integration for security automation.
                     </p>,
@@ -389,7 +389,7 @@ export default function Home() {
           <ScrollDivider target={projectsRef} />
           <GlitchIn>
             <div className="flex items-center gap-3 mb-8">
-              <Code2 size={20} className="text-[#00ff41]" />
+              <Code2 size={20} className="text-[#ff0033]" />
               <h2 className="text-2xl font-bold text-white">projects</h2>
               <span className="ml-auto text-[10px] text-gray-600 font-mono hidden sm:inline">
                 PROC: 3 ACTIVE
@@ -414,12 +414,12 @@ export default function Home() {
                   whileInView={{ scaleX: 1 }}
                   viewport={{ margin: "-10% 0px" }}
                   transition={{ duration: 0.6, delay: i * 0.12, ease: [0.4, 0, 0.2, 1] }}
-                  className="absolute top-0 left-0 right-0 h-[2px] origin-left bg-gradient-to-r from-transparent via-[#00ff41] to-transparent"
+                  className="absolute top-0 left-0 right-0 h-[2px] origin-left bg-gradient-to-r from-transparent via-[#ff0033] to-transparent"
                 />
-                <div className="absolute -top-12 -right-12 w-40 h-40 bg-[#00ff41]/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute -top-12 -right-12 w-40 h-40 bg-[#ff0033]/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                 <div className="flex items-start justify-between mb-4 relative z-10 transition-all duration-300 group-hover:opacity-0 group-hover:-translate-y-1">
-                  <div className="w-11 h-11 flex items-center justify-center border border-[#00ff41]/30 text-[#00ff41] group-hover:bg-[#00ff41] group-hover:text-black transition-all duration-300 shadow-[0_0_12px_rgba(0,255,65,0.1)] group-hover:shadow-[0_0_20px_rgba(0,255,65,0.4)]">
+                  <div className="w-11 h-11 flex items-center justify-center border border-[#ff0033]/30 text-[#ff0033] group-hover:bg-[#ff0033] group-hover:text-black transition-all duration-300 shadow-[0_0_12px_rgba(255,0,51,0.1)] group-hover:shadow-[0_0_20px_rgba(255,0,51,0.4)]">
                     <project.icon size={20} />
                   </div>
                   <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-x-1 group-hover:translate-x-0">
@@ -430,7 +430,7 @@ export default function Home() {
                         rel="noopener noreferrer"
                         aria-label={`${project.title} — GitHub`}
                         onClick={(e) => e.stopPropagation()}
-                        className="text-gray-500 hover:text-[#00ff41] transition-colors hover:scale-110"
+                        className="text-gray-500 hover:text-[#ff0033] transition-colors hover:scale-110"
                       >
                         <Code2 size={16} />
                       </a>
@@ -442,7 +442,7 @@ export default function Home() {
                         rel="noopener noreferrer"
                         aria-label={`${project.title} — Live`}
                         onClick={(e) => e.stopPropagation()}
-                        className="text-gray-500 hover:text-[#00ff41] transition-colors hover:scale-110"
+                        className="text-gray-500 hover:text-[#ff0033] transition-colors hover:scale-110"
                       >
                         <ExternalLink size={16} />
                       </a>
@@ -462,14 +462,14 @@ export default function Home() {
                     <div className="project-scan absolute left-0 right-0 top-0 h-24">
                       <div className="project-scanline" />
                     </div>
-                    <div className="project-live absolute top-2 left-2 flex items-center gap-1.5 bg-black/70 border border-[#00ff41]/30 px-2 py-0.5 text-[10px] font-mono text-[#00ff41]">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#00ff41] animate-pulse" />
+                    <div className="project-live absolute top-2 left-2 flex items-center gap-1.5 bg-black/70 border border-[#ff0033]/30 px-2 py-0.5 text-[10px] font-mono text-[#ff0033]">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#ff0033] animate-pulse" />
                       LIVE
                     </div>
                   </div>
                 )}
 
-                <h3 className="text-lg font-bold text-[#00ff41] mb-2 relative z-10 transition-all duration-300 delay-75 group-hover:opacity-0">
+                <h3 className="text-lg font-bold text-[#ff0033] mb-2 relative z-10 transition-all duration-300 delay-75 group-hover:opacity-0">
                   <span className="text-gray-500">[</span> {project.title}{" "}
                   <span className="text-gray-500">]</span>
                 </h3>
@@ -493,7 +493,7 @@ export default function Home() {
           <ScrollDivider target={skillsRef} />
           <GlitchIn>
             <div className="flex items-center gap-3 mb-8">
-              <Shield size={20} className="text-[#00ff41]" />
+              <Shield size={20} className="text-[#ff0033]" />
               <h2 className="text-2xl font-bold text-white">skills</h2>
               <span className="ml-auto text-[10px] text-gray-600 font-mono hidden sm:inline">
                 SCAN: READY
@@ -506,7 +506,7 @@ export default function Home() {
               <div key={skill.category} className="terminal-box p-5 relative overflow-hidden">
                 <CmdLine
                   command={`cat /skills/${skill.category.toLowerCase()}`}
-                  className="text-[#00ffcc] text-sm font-bold mb-3"
+                  className="text-[#ff8899] text-sm font-bold mb-3"
                 />
                 <div className="flex flex-wrap gap-2">
                   {skill.items.map((item, j) => (
@@ -518,7 +518,7 @@ export default function Home() {
                       transition={{ duration: 0.15, delay: j * 0.06 + si * 0.08 }}
                       className="skill-badge"
                     >
-                      <span className="text-[#00ff41] mr-1">+</span>
+                      <span className="text-[#ff0033] mr-1">+</span>
                       {item}
                     </motion.span>
                   ))}
@@ -535,7 +535,7 @@ export default function Home() {
           <ScrollDivider target={certsRef} />
           <GlitchIn>
             <div className="flex items-center gap-3 mb-8">
-              <BadgeCheck size={20} className="text-[#00ff41]" />
+              <BadgeCheck size={20} className="text-[#ff0033]" />
               <h2 className="text-2xl font-bold text-white">certifications</h2>
               <span className="ml-auto text-[10px] text-gray-600 font-mono hidden sm:inline">
                 VERIFIED: {certifications.length} CREDENTIALS
@@ -552,10 +552,10 @@ export default function Home() {
                   onClick={() => cert.link && window.open(cert.link, "_blank", "noopener,noreferrer")}
                 >
                   {/* Top scan line on hover */}
-                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#00ff41] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#ff0033] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   
                   {/* Glow effect on hover */}
-                  <div className="absolute -top-12 -right-12 w-40 h-40 bg-[#00ff41]/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute -top-12 -right-12 w-40 h-40 bg-[#ff0033]/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                   {/* Certificate Image - hidden by default, reveals on hover like projects */}
                   {cert.image && (
@@ -572,8 +572,8 @@ export default function Home() {
                         <div className="cert-scanline" />
                       </div>
                       {/* VERIFIED badge */}
-                      <div className="cert-badge absolute top-2 left-2 flex items-center gap-1.5 bg-black/70 border border-[#00ff41]/30 px-2 py-0.5 text-[10px] font-mono text-[#00ff41]">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#00ff41] animate-pulse" />
+                      <div className="cert-badge absolute top-2 left-2 flex items-center gap-1.5 bg-black/70 border border-[#ff0033]/30 px-2 py-0.5 text-[10px] font-mono text-[#ff0033]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#ff0033] animate-pulse" />
                         VERIFIED
                       </div>
                     </div>
@@ -581,7 +581,7 @@ export default function Home() {
 
                   {/* Certificate Icon */}
                   <div className="flex items-start justify-between mb-4 relative z-10 transition-all duration-300 group-hover:opacity-0 group-hover:-translate-y-1">
-                    <div className="w-11 h-11 flex items-center justify-center border border-[#00ff41]/30 text-[#00ff41] group-hover:bg-[#00ff41] group-hover:text-black transition-all duration-300 shadow-[0_0_12px_rgba(0,255,65,0.1)] group-hover:shadow-[0_0_20px_rgba(0,255,65,0.4)]">
+                    <div className="w-11 h-11 flex items-center justify-center border border-[#ff0033]/30 text-[#ff0033] group-hover:bg-[#ff0033] group-hover:text-black transition-all duration-300 shadow-[0_0_12px_rgba(255,0,51,0.1)] group-hover:shadow-[0_0_20px_rgba(255,0,51,0.4)]">
                       <Award size={20} />
                     </div>
                     {cert.link && (
@@ -591,7 +591,7 @@ export default function Home() {
                         rel="noopener noreferrer"
                         aria-label={`Verify ${cert.title}`}
                         onClick={(e) => e.stopPropagation()}
-                        className="text-gray-500 hover:text-[#00ff41] transition-colors flex items-center gap-1 text-xs font-mono opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-x-1 group-hover:translate-x-0"
+                        className="text-gray-500 hover:text-[#ff0033] transition-colors flex items-center gap-1 text-xs font-mono opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-x-1 group-hover:translate-x-0"
                       >
                         <ShieldCheck size={14} /> verify
                       </a>
@@ -599,7 +599,7 @@ export default function Home() {
                   </div>
 
                   {/* Certificate Title */}
-                  <h3 className="text-lg font-bold text-[#00ff41] mb-2 relative z-10 transition-all duration-300 group-hover:opacity-0">
+                  <h3 className="text-lg font-bold text-[#ff0033] mb-2 relative z-10 transition-all duration-300 group-hover:opacity-0">
                     <span className="text-gray-500">[</span> {cert.title} <span className="text-gray-500">]</span>
                   </h3>
                   
@@ -642,7 +642,7 @@ export default function Home() {
           <ScrollDivider target={writeupsRef} />
           <GlitchIn>
             <div className="flex items-center gap-3 mb-8">
-              <BookOpen size={20} className="text-[#00ff41]" />
+              <BookOpen size={20} className="text-[#ff0033]" />
               <h2 className="text-2xl font-bold text-white">published_writeups</h2>
               <span className="ml-auto text-[10px] text-gray-600 font-mono hidden sm:inline">
                 STATUS: [ DECLASSIFIED ]
@@ -654,10 +654,10 @@ export default function Home() {
             <GlitchIn key={i} delay={0.05}>
               <div className="glass p-6 relative overflow-hidden">
                 <div className="flex items-start justify-between mb-3">
-                  <h3 className="text-lg font-bold text-[#00ff41]">
+                  <h3 className="text-lg font-bold text-[#ff0033]">
                     <RedactReveal delay={i * 0.2 + 0.05}>{w.title}</RedactReveal>
                   </h3>
-                  <a href={w.link} target="_blank" className="text-gray-500 hover:text-[#00ff41] shrink-0 ml-3">
+                  <a href={w.link} target="_blank" className="text-gray-500 hover:text-[#ff0033] shrink-0 ml-3">
                     <ExternalLink size={16} />
                   </a>
                 </div>
@@ -683,7 +683,7 @@ export default function Home() {
           <ScrollDivider target={contactRef} />
           <GlitchIn>
             <div className="flex items-center gap-3 mb-8">
-              <Mail size={20} className="text-[#00ff41]" />
+              <Mail size={20} className="text-[#ff0033]" />
               <h2 className="text-2xl font-bold text-white">contact</h2>
               <span className="ml-auto text-[10px] text-gray-600 font-mono hidden sm:inline">
                 PORT: 443
@@ -696,7 +696,7 @@ export default function Home() {
               <div className="flex items-center gap-2 mb-6 text-xs text-gray-500">
                 <span className="w-3 h-3 rounded-full bg-[#ff0033]" />
                 <span className="w-3 h-3 rounded-full bg-[#ffcc00]" />
-                <span className="w-3 h-3 rounded-full bg-[#00ff41]" />
+                <span className="w-3 h-3 rounded-full bg-[#ff0033]" />
                 <span className="ml-2">~/contact.sh --tcp</span>
               </div>
 
@@ -707,7 +707,7 @@ export default function Home() {
                 clear
                 clearDelay={200}
                 startOnView
-                className="font-mono text-sm text-[#00ff41]/90"
+                className="font-mono text-sm text-[#ff0033]/90"
                 onDone={() => setHandshakeDone(true)}
               />
 
@@ -716,7 +716,7 @@ export default function Home() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.15 }}
-                  className="pt-4 border-t border-[#00ff41]/20"
+                  className="pt-4 border-t border-[#ff0033]/20"
                 >
                   <div className="flex flex-wrap gap-4 mb-4">
                     {socials.map((s, i) => (
@@ -755,10 +755,10 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-[#00ff41]/10 py-8 px-4">
+      <footer className="border-t border-[#ff0033]/10 py-8 px-4">
         <div className="max-w-4xl mx-auto text-center text-gray-600 text-xs font-mono">
           <p>
-            <span className="text-[#00ff41]">[an1en@portfolio]$</span> echo &quot;Built with Next.js, Tailwind CSS, and lots of coffee&quot;
+            <span className="text-[#ff0033]">[an1en@portfolio]$</span> echo &quot;Built with Next.js, Tailwind CSS, and lots of coffee&quot;
           </p>
           <p className="mt-1">© 2026 Anlen Jeban • Licensed under MIT</p>
         </div>

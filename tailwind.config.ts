@@ -13,10 +13,10 @@ const config: Config = {
           black: "#000000",
           dark: "#0a0a0a",
           deeper: "#050505",
-          green: "#00ff41",
-          "green-dim": "#00cc33",
-          "green-dark": "#003b00",
-          cyan: "#00ffcc",
+          green: "#ff0033",
+          "green-dim": "#cc0029",
+          "green-dark": "#3b0005",
+          cyan: "#ff8899",
           red: "#ff0033",
           purple: "#9b59b6",
           gray: "#1a1a2e",
@@ -52,8 +52,8 @@ const config: Config = {
           "50%": { opacity: "0" },
         },
         glow: {
-          from: { textShadow: "0 0 5px #00ff41, 0 0 10px #00ff41" },
-          to: { textShadow: "0 0 10px #00ff41, 0 0 20px #00ff41, 0 0 40px #00ff41" },
+          from: { textShadow: "0 0 5px #ff0033, 0 0 10px #ff0033" },
+          to: { textShadow: "0 0 10px #ff0033, 0 0 20px #ff0033, 0 0 40px #ff0033" },
         },
         "matrix-rain": {
           "0%": { transform: "translateY(-100%)" },
@@ -61,7 +61,7 @@ const config: Config = {
         },
       },
       backgroundImage: {
-        "cyber-grid": "linear-gradient(rgba(0, 255, 65, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 65, 0.03) 1px, transparent 1px)",
+        "cyber-grid": "linear-gradient(rgba(255, 0, 51, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 0, 51, 0.03) 1px, transparent 1px)",
       },
       backgroundSize: {
         "grid": "50px 50px",

@@ -28,13 +28,13 @@ export default function Navbar() {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         scrolled
-          ? "bg-black/80 backdrop-blur-md border-b border-[#00ff41]/20"
+          ? "bg-black/80 backdrop-blur-md border-b border-[#ff0033]/20"
           : "bg-transparent"
       )}
     >
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 group">
-          <span className="text-[#00ff41] text-lg font-bold group-hover:animate-glow">
+          <span className="text-[#ff0033] text-lg font-bold group-hover:animate-glow">
             an1en@portfolio:~$
           </span>
         </Link>
@@ -48,18 +48,18 @@ export default function Navbar() {
               className={cn(
                 "px-4 py-2 text-sm font-mono transition-all duration-300 relative group",
                 pathname === item.href
-                  ? "text-[#00ff41]"
-                  : "text-gray-500 hover:text-[#00ff41]"
+                  ? "text-[#ff0033]"
+                  : "text-gray-500 hover:text-[#ff0033]"
               )}
             >
               {item.label}
               {pathname === item.href && (
                 <motion.div
                   layoutId="nav-underline"
-                  className="absolute bottom-0 left-2 right-2 h-[1px] bg-[#00ff41]"
+                  className="absolute bottom-0 left-2 right-2 h-[1px] bg-[#ff0033]"
                 />
               )}
-              <span className="absolute inset-0 bg-[#00ff41]/0 group-hover:bg-[#00ff41]/5 transition-colors rounded" />
+              <span className="absolute inset-0 bg-[#ff0033]/0 group-hover:bg-[#ff0033]/5 transition-colors rounded" />
             </Link>
           ))}
         </div>
@@ -67,7 +67,7 @@ export default function Navbar() {
         {/* Hamburger */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden text-[#00ff41] p-2"
+          className="md:hidden text-[#ff0033] p-2"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             {menuOpen ? (
@@ -86,7 +86,7 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden border-t border-[#00ff41]/20 bg-black/95 backdrop-blur-md"
+            className="md:hidden border-t border-[#ff0033]/20 bg-black/95 backdrop-blur-md"
           >
             <div className="px-4 py-4 space-y-2">
               {navItems.map((item) => (
@@ -97,8 +97,8 @@ export default function Navbar() {
                   className={cn(
                     "block px-4 py-3 font-mono text-sm transition-colors",
                     pathname === item.href
-                      ? "text-[#00ff41] bg-[#00ff41]/5 border-l-2 border-[#00ff41]"
-                      : "text-gray-500 hover:text-[#00ff41] hover:bg-[#00ff41]/5"
+                      ? "text-[#ff0033] bg-[#ff0033]/5 border-l-2 border-[#ff0033]"
+                      : "text-gray-500 hover:text-[#ff0033] hover:bg-[#ff0033]/5"
                   )}
                 >
                   {item.label}

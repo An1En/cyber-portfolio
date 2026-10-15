@@ -324,11 +324,11 @@ ${chatLog}
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Shield className="text-[#00ff41]" size={24} />
+              <Shield className="text-[#ff0033]" size={24} />
               <div>
                 <h1 className="text-lg font-bold text-white">SHADOW AI — CYBERSECURITY PENTESTING ASSISTANT</h1>
                 <p className="text-xs text-gray-500 font-mono">
-                  <span className={`${sessionActive ? "text-[#00ff41]" : "text-gray-500"}`}>●</span>{" "}
+                  <span className={`${sessionActive ? "text-[#ff0033]" : "text-gray-500"}`}>●</span>{" "}
                   {sessionActive ? "Session Active" : loading ? "Processing..." : "Ready"}
                   {sessionActive && ` • ${messages.filter((m) => m.role !== "system").length} messages`}
                 </p>
@@ -338,7 +338,7 @@ ${chatLog}
               {!isSessionEmpty && (
                 <button
                   onClick={generateWriteup}
-                  className="hacker-btn text-xs flex items-center gap-1 px-3 py-2 border-[#00ffcc] text-[#00ffcc] hover:bg-[#00ffcc] hover:text-black"
+                  className="hacker-btn text-xs flex items-center gap-1 px-3 py-2 border-[#ff8899] text-[#ff8899] hover:bg-[#ff8899] hover:text-black"
                   title="Generate writeup from all session data"
                 >
                   <FileText size={14} />
@@ -359,13 +359,13 @@ ${chatLog}
 
         {/* Messages */}
         <div className="terminal-box mb-4">
-          <div className="flex items-center gap-2 px-4 py-2 text-xs text-gray-500 border-b border-[#00ff41]/20">
+          <div className="flex items-center gap-2 px-4 py-2 text-xs text-gray-500 border-b border-[#ff0033]/20">
             <span className="w-3 h-3 rounded-full bg-[#ff0033]" />
             <span className="w-3 h-3 rounded-full bg-[#ffcc00]" />
-            <span className="w-3 h-3 rounded-full bg-[#00ff41]" />
+            <span className="w-3 h-3 rounded-full bg-[#ff0033]" />
             <span className="ml-2">~/shadow_ai.sh — interactive session</span>
             {sessionActive && (
-              <span className="ml-auto text-[#00ff41] text-[10px]">
+              <span className="ml-auto text-[#ff0033] text-[10px]">
                 <span className="animate-pulse">●</span> recording
               </span>
             )}
@@ -388,13 +388,13 @@ ${chatLog}
                 <div className="flex items-center gap-2 mb-2">
                   {msg.role === "user" ? (
                     <>
-                      <Send size={12} className="text-[#00ffcc]" />
-                      <span className="text-[#00ffcc] font-bold">an1en@query:~$</span>
+                      <Send size={12} className="text-[#ff8899]" />
+                      <span className="text-[#ff8899] font-bold">an1en@query:~$</span>
                     </>
                   ) : msg.role === "assistant" ? (
                     <>
-                      <Terminal size={12} className="text-[#00ff41]" />
-                      <span className="text-[#00ff41] font-bold">shadow@response:~$</span>
+                      <Terminal size={12} className="text-[#ff0033]" />
+                      <span className="text-[#ff0033] font-bold">shadow@response:~$</span>
                     </>
                   ) : (
                     <>
@@ -420,7 +420,7 @@ ${chatLog}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="flex items-center gap-2 text-[#00ff41] font-mono text-sm"
+                className="flex items-center gap-2 text-[#ff0033] font-mono text-sm"
               >
                 <Loader2 size={14} className="animate-spin" />
                 <span>shadow@think:~$ Generating response...</span>
@@ -439,7 +439,7 @@ ${chatLog}
             className="mb-4"
           >
             <div className="flex items-center gap-2 mb-3 text-sm text-gray-500 font-mono">
-              <Sparkles size={14} className="text-[#00ff41]" />
+              <Sparkles size={14} className="text-[#ff0033]" />
               <span>Quick Actions</span>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -447,7 +447,7 @@ ${chatLog}
                 <button
                   key={action.label}
                   onClick={() => sendMessage(action.query)}
-                  className="skill-badge text-xs cursor-pointer hover:bg-[#00ff41]/10 transition-all"
+                  className="skill-badge text-xs cursor-pointer hover:bg-[#ff0033]/10 transition-all"
                 >
                   {action.label}
                 </button>
@@ -463,9 +463,9 @@ ${chatLog}
             animate={{ opacity: 1, y: 0 }}
             className="mb-4 glass p-3 flex items-center gap-3"
           >
-            <Flag size={16} className="text-[#00ff41]" />
+            <Flag size={16} className="text-[#ff0033]" />
             <span className="text-xs text-gray-400 font-mono flex-1">
-              Session recording all data. When done, click <span className="text-[#00ffcc]">End Session → Writeup</span> to generate a professional report with everything discussed.
+              Session recording all data. When done, click <span className="text-[#ff8899]">End Session → Writeup</span> to generate a professional report with everything discussed.
             </span>
           </motion.div>
         )}

@@ -43,7 +43,7 @@ export default function WriteupDetailPage() {
         >
           <Link
             href="/writeup"
-            className="text-gray-500 hover:text-[#00ff41] transition-colors font-mono text-sm flex items-center gap-2"
+            className="text-gray-500 hover:text-[#ff0033] transition-colors font-mono text-sm flex items-center gap-2"
           >
             <ArrowLeft size={16} />
             ~/writeups
@@ -57,7 +57,7 @@ export default function WriteupDetailPage() {
           className="glass p-6 mb-8"
         >
           <div className="flex items-center gap-3 mb-4">
-            <BookOpen className="text-[#00ff41]" size={28} />
+            <BookOpen className="text-[#ff0033]" size={28} />
             <div>
               <h1 className="text-2xl font-bold text-white">{writeup.title}</h1>
               <div className="flex items-center gap-4 mt-2 text-sm text-gray-500 font-mono">
@@ -83,12 +83,12 @@ export default function WriteupDetailPage() {
           </div>
 
           {/* Medium Link */}
-          <div className="mt-4 pt-4 border-t border-[#00ff41]/20">
+          <div className="mt-4 pt-4 border-t border-[#ff0033]/20">
             <a
               href={writeup.mediumUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-500 hover:text-[#00ff41] transition-colors font-mono text-sm flex items-center gap-2"
+              className="text-gray-500 hover:text-[#ff0033] transition-colors font-mono text-sm flex items-center gap-2"
             >
               <ExternalLink size={14} />
               View on Medium
@@ -103,10 +103,10 @@ export default function WriteupDetailPage() {
           transition={{ delay: 0.2 }}
           className="terminal-box p-6 md:p-8"
         >
-          <div className="flex items-center gap-2 px-4 py-2 text-xs text-gray-500 border-b border-[#00ff41]/20 -mx-6 md:-mx-8 -mt-6 md:-mt-8 mb-6">
+          <div className="flex items-center gap-2 px-4 py-2 text-xs text-gray-500 border-b border-[#ff0033]/20 -mx-6 md:-mx-8 -mt-6 md:-mt-8 mb-6">
             <span className="w-3 h-3 rounded-full bg-[#ff0033]" />
             <span className="w-3 h-3 rounded-full bg-[#ffcc00]" />
-            <span className="w-3 h-3 rounded-full bg-[#00ff41]" />
+            <span className="w-3 h-3 rounded-full bg-[#ff0033]" />
             <span className="ml-2">~/writeups/{writeup.slug}.md</span>
           </div>
 
