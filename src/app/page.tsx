@@ -34,6 +34,7 @@ import {
 import AsciiLAnimation from "@/components/AsciiLAnimation";
 import PenguinEditorial from "@/components/PenguinEditorial";
 import KiraEngagementNote from "@/components/KiraEngagementNote";
+import SecretChallenge from "@/components/SecretChallenge";
 import { soundManager } from "@/lib/audio";
 
 const projects = [
@@ -405,6 +406,8 @@ export default function Home() {
                         <Skull size={13} />
                       </span>
                     </button>
+
+                    <SecretChallenge />
                   </div>
 
                   {/* Social Links Row */}
