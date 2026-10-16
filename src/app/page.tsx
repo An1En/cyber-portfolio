@@ -70,6 +70,11 @@ const projects = [
 
 const deathNoteRules = [
   {
+    roman: "0",
+    title: "RULE 0: AUTHORIZED ENGAGEMENT",
+    rule: "Rule 0: only retired or authorized targets are inscribed. The offensive researcher possessing this dossier operates strictly under authorized rules of engagement, certified proving grounds, and responsible disclosure standards.",
+  },
+  {
     roman: "I",
     title: "PERIMETER PENETRATION",
     rule: "The host whose hostname, IP address, or domain is inscribed within this dossier shall have its security architecture enumerated, mapped, and audited without leaving anomalous forensic attribution.",
@@ -87,7 +92,7 @@ const deathNoteRules = [
   {
     roman: "IV",
     title: "ETHICAL COVENANT",
-    rule: "The offensive researcher possessing this dossier operates strictly under authorized rules of engagement, certified proving grounds, and responsible disclosure standards.",
+    rule: "Every vulnerability inscribed into this codex is verified against isolated lab environments with zero disruption to external networks.",
   },
 ];
 
@@ -112,6 +117,14 @@ const skills = [
 ];
 
 const certifications = [
+  {
+    title: "Certified Penetration Testing Specialist (CPTS)",
+    issuer: "Hack The Box Academy",
+    date: "ACTIVE PREP // 2026",
+    skills: ["Full Network Pentesting", "Active Directory Attacks", "Web Assessment", "Pivoting & Tunneling", "Commercial Report Writing"],
+    inProgress: true,
+    link: "https://profile.hackthebox.com/profile/019cfb0e-4078-7246-87bb-feace4b36378",
+  },
   {
     title: "Active Directory Red Team Specialist (AD-RTS)",
     issuer: "Cyberwarfare Labs",
@@ -158,6 +171,7 @@ const certifications = [
 const BOOT_LINES: BootLine[] = [
   { text: "$ ./deathnote_init.sh --investigator an1en", cmd: true },
   { text: "[ SHINIGAMI ] acquiring target eyesight coordinates ...." },
+  { text: "[ OBJECTIVE ] HTB CPTS preparation engaged (Penetration Tester Path) ...." },
   { text: "[ FORENSIC ] loading kerberos & token modules ............" },
   { text: "[ STATUS ] target inscribed in dossier. execution imminent." },
 ];
@@ -173,14 +187,14 @@ const ROLE_TEXT = "OFFENSIVE_SECURITY_RESEARCHER && RED_TEAM_SPECIALIST";
 
 const statCards = [
   { label: "Proving Grounds", value: "HTB ID", link: "https://profile.hackthebox.com/profile/019cfb0e-4078-7246-87bb-feace4b36378" },
-  { label: "CTFs Conquered", value: "55+", link: "https://learn.cylabacademy.org/users/An1En" },
   { label: "Active Directory RTS", value: "SPECIALIST", section: "certifications" },
-  { label: "Case Dossiers", value: "3 PUBLISHED", section: "editorial" },
+  { label: "Target Quest", value: "HTB CPTS", section: "certifications" },
+  { label: "Open Cases", value: "3 PUBLISHED", section: "cases" },
 ];
 
 const socials = [
   { label: "Email", href: "mailto:anlenjeban7@gmail.com", icon: Mail },
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/an1en", icon: Globe },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/an1en/", icon: Globe },
   { label: "GitHub", href: "https://github.com/An1En", icon: Code2 },
   { label: "Medium", href: "https://medium.com/@anlenjeban7", icon: BookOpen },
   { label: "X", href: "https://x.com/4n1En", icon: X },
@@ -270,8 +284,8 @@ export default function Home() {
                 CYBER DOSSIER
               </h1>
               
-              <p className="font-mono text-xs md:text-sm text-gray-400 tracking-wider uppercase mt-2 max-w-xl">
-                <span className="text-[#ff1a2e]">{'//'}</span> THE ADVERSARIAL CODEX • ADVANCED ATTACK SIMULATION • ROOT EXTRACTION
+              <p className="font-mono text-xs md:text-sm text-gray-300 tracking-wider mt-2 max-w-xl">
+                Active Directory attack chains, CTF casefiles, and offensive tooling by Anlen Jeban (AN1EN).
               </p>
             </div>
 
@@ -282,7 +296,7 @@ export default function Home() {
           </div>
 
           {/* Main Doppelrand Double-Bezel Card */}
-          <div className="double-bezel mb-8">
+          <div className="double-bezel mb-8" id="dossier-card">
             <div className="double-bezel-inner p-6 md:p-8">
               <div
                 onClick={() => setBooted(true)}
@@ -342,20 +356,44 @@ export default function Home() {
 
                   <p className="text-gray-300 font-sans text-sm md:text-base max-w-3xl mb-8 leading-relaxed">
                     <span className="text-[#ff1a2e] font-mono font-bold font-deathnote text-lg mr-1">&ldquo;</span>
-                    The system whose vulnerability is inscribed within this note shall fall. Specializing in Active Directory exploitation, stealth privilege escalation, and AI-engineered offensive intelligence. Active Directory Red Team Specialist, CTF competitor, and published security researcher.
+                    Write the name. Root the host. Active Directory attack chains, CTF casefiles, and offensive tooling by Anlen Jeban (AN1EN). Specializing in Active Directory exploitation, stealth privilege escalation, and AI-engineered offensive intelligence.
                     <span className="text-[#ff1a2e] font-mono font-bold font-deathnote text-lg ml-1">&rdquo;</span>
                   </p>
 
                   {/* Button-in-Button CTA Architecture (High-End Visual Design) */}
                   <div className="flex flex-wrap items-center gap-4">
-                    <Link
-                      href="/#editorial"
-                      onClick={() => soundManager.playTick()}
-                      className="group relative rounded-full pl-6 pr-2 py-2 bg-[#ff1a2e] text-white font-mono text-xs font-semibold flex items-center gap-3 transition-all duration-300 hover:shadow-[0_0_25px_rgba(255,26,46,0.6)] hover:scale-[1.02]"
+                    <button
+                      onClick={() => {
+                        soundManager.playTick();
+                        document.getElementById("cases")?.scrollIntoView({ behavior: "smooth" });
+                      }}
+                      className="group relative rounded-full pl-6 pr-2 py-2.5 bg-black border border-white/40 hover:border-white text-white font-mono text-xs font-semibold flex items-center gap-3 transition-all duration-300 hover:shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:scale-[1.02]"
                     >
-                      <span>EXPLORE WRITEUPS</span>
+                      <span>Open the Dossier</span>
+                      <span className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center transition-transform group-hover:scale-105">
+                        <Terminal size={13} className="text-white" />
+                      </span>
+                    </button>
+
+                    <Link
+                      href="/#cases"
+                      onClick={() => soundManager.playTick()}
+                      className="group relative rounded-full pl-6 pr-2 py-2.5 bg-[#ff1a2e] text-white font-mono text-xs font-semibold flex items-center gap-3 transition-all duration-300 hover:shadow-[0_0_25px_rgba(255,26,46,0.6)] hover:scale-[1.02]"
+                    >
+                      <span>Read Case Files</span>
                       <span className="w-8 h-8 rounded-full bg-black/25 flex items-center justify-center transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
                         <BookOpen size={13} />
+                      </span>
+                    </Link>
+
+                    <Link
+                      href="/#contact"
+                      onClick={() => soundManager.playTick()}
+                      className="group relative rounded-full pl-6 pr-2 py-2.5 bg-white/5 border border-white/20 hover:border-[#ff1a2e]/50 text-gray-200 font-mono text-xs flex items-center gap-3 transition-all duration-300 hover:bg-white/10"
+                    >
+                      <span>Contact L</span>
+                      <span className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-300 group-hover:text-white transition-colors">
+                        <Mail size={13} className="text-[#ff1a2e]" />
                       </span>
                     </Link>
 
@@ -363,49 +401,24 @@ export default function Home() {
                       href="/anlen-jeban-resume.pdf"
                       download
                       onClick={() => soundManager.playTick()}
-                      className="group relative rounded-full pl-6 pr-2 py-2 bg-white/5 border border-white/10 hover:border-[#ff1a2e]/40 text-gray-200 font-mono text-xs flex items-center gap-3 transition-all duration-300 hover:bg-white/10"
+                      className="group relative rounded-full pl-5 pr-2 py-2 bg-white/5 border border-white/10 hover:border-white/30 text-gray-400 hover:text-white font-mono text-xs flex items-center gap-2.5 transition-all duration-300"
                     >
-                      <span>DECRYPT RESUME (CV)</span>
-                      <span className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-white transition-colors">
-                        <Download size={13} />
+                      <span>DECRYPT CV</span>
+                      <span className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-white transition-colors">
+                        <Download size={12} />
                       </span>
                     </a>
 
                     <Link
-                      href="/#projects"
+                      href="/about"
                       onClick={() => soundManager.playTick()}
-                      className="group relative rounded-full pl-6 pr-2 py-2 bg-white/5 border border-white/10 hover:border-[#ff1a2e]/40 text-gray-200 font-mono text-xs flex items-center gap-3 transition-all duration-300 hover:bg-white/10"
+                      className="group relative rounded-full pl-5 pr-2 py-2 bg-white/5 border border-white/10 hover:border-white/30 text-gray-400 hover:text-white font-mono text-xs flex items-center gap-2.5 transition-all duration-300"
                     >
-                      <span>OFFENSIVE PROJECTS</span>
-                      <span className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-white transition-colors">
-                        <Code2 size={13} />
+                      <span>ABOUT L</span>
+                      <span className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-white transition-colors">
+                        <ArrowUpRight size={12} />
                       </span>
                     </Link>
-
-                    <Link
-                      href="/chatbot"
-                      onClick={() => soundManager.playTargetAcquired()}
-                      className="group relative rounded-full pl-6 pr-2 py-2 bg-white/5 border border-white/10 hover:border-[#ff1a2e]/40 text-gray-200 font-mono text-xs flex items-center gap-3 transition-all duration-300 hover:bg-white/10"
-                    >
-                      <span>SHADOW INTEL</span>
-                      <span className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-white transition-colors">
-                        <ArrowUpRight size={13} />
-                      </span>
-                    </Link>
-
-                    <button
-                      onClick={() => {
-                        soundManager.playTick();
-                        document.getElementById("inscribe")?.scrollIntoView({ behavior: "smooth" });
-                      }}
-                      className="group relative rounded-full pl-5 pr-2 py-2 bg-[#ff1a2e]/10 border border-[#ff1a2e]/30 hover:bg-[#ff1a2e]/20 text-[#ff1a2e] font-mono text-xs flex items-center gap-2.5 transition-all duration-300"
-                      title="Scroll to interactive Kira Death Note simulation"
-                    >
-                      <span>KIRA CODEX [SIM]</span>
-                      <span className="w-8 h-8 rounded-full bg-[#ff1a2e]/20 flex items-center justify-center text-[#ff1a2e]">
-                        <Skull size={13} />
-                      </span>
-                    </button>
 
                     <SecretChallenge />
                   </div>
@@ -461,15 +474,15 @@ export default function Home() {
         <div className="mt-12 text-center">
           <div className="inline-flex items-center gap-2 text-gray-500 font-mono text-xs">
             <ChevronDown size={14} className="text-[#ff1a2e] animate-bounce" />
-            <span>SCROLL TO CONSULT WRITEUPS &amp; AUDIT NOTES</span>
+            <span>SCROLL TO CONSULT CASE FILES &amp; AUDIT NOTES</span>
           </div>
         </div>
       </section>
 
-      {/* SECTION 2: PENGUIN EDITORIAL (PENGUIN PORTFOLIO MANIFESTO & WRITEUPS) */}
+      {/* SECTION 2: OPEN CASES */}
       <PenguinEditorial />
 
-      {/* SECTION 3: OFFENSIVE ARSENAL (PROJECTS) */}
+      {/* SECTION 3: EVIDENCE & TOOLING (PROJECTS) */}
       <section ref={projectsRef} className="py-24 px-4 bg-[#07070b] border-t border-white/5" id="projects">
         <div className="max-w-5xl mx-auto">
           <ScrollDivider target={projectsRef} />
@@ -478,14 +491,14 @@ export default function Home() {
             <div className="flex items-center justify-between mb-10">
               <div>
                 <span className="text-[10px] uppercase font-mono tracking-[0.25em] text-[#ff1a2e] font-bold">
-                  ENGINEERED WEAPONRY // RECON TOOLING
+                  OFFENSIVE WEAPONRY // RECON TOOLING
                 </span>
                 <h2 className="text-3xl md:text-5xl font-deathnote tracking-wider text-white mt-1">
-                  OFFENSIVE PROJECTS
+                  EVIDENCE &amp; TOOLING
                 </h2>
               </div>
               <span className="text-xs font-mono text-gray-500 hidden sm:inline">
-                RECON & NEURAL TOOLS
+                RECON &amp; NEURAL TOOLS
               </span>
             </div>
           </GlitchIn>
@@ -637,7 +650,7 @@ export default function Home() {
                   CREDENTIAL VERIFICATION // ATTESTATION
                 </span>
                 <h2 className="text-3xl md:text-5xl font-deathnote tracking-wider text-white mt-1">
-                  OFFICIAL CERTIFICATIONS
+                  CREDENTIALS
                 </h2>
               </div>
               <span className="text-xs font-mono text-gray-500 hidden sm:inline">
@@ -682,11 +695,15 @@ export default function Home() {
                       <div className="w-10 h-10 rounded-xl flex items-center justify-center border border-[#ff1a2e]/30 text-[#ff1a2e] bg-[#ff1a2e]/10 group-hover:bg-[#ff1a2e] group-hover:text-white transition-all shadow-[0_0_15px_rgba(255,26,46,0.15)]">
                         <Award size={18} />
                       </div>
-                      {cert.link && (
+                      {cert.inProgress ? (
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono text-amber-300 bg-amber-500/15 border border-amber-500/40 font-bold uppercase tracking-wider animate-pulse">
+                          PREP IN PROGRESS
+                        </span>
+                      ) : cert.link ? (
                         <span className="text-gray-400 hover:text-white flex items-center gap-1 text-xs font-mono">
                           <ShieldCheck size={14} className="text-[#ff1a2e]" /> verify
                         </span>
-                      )}
+                      ) : null}
                     </div>
 
                     {/* Title */}
@@ -789,7 +806,7 @@ export default function Home() {
       {/* SECTION 8: KIRA DEATH NOTE TARGET INSCRIBER (INTERACTIVE ENGINE & EASTER EGG) */}
       <KiraEngagementNote />
 
-      {/* SECTION 9: CONTACT ENCRYPTED HANDSHAKE */}
+      {/* SECTION 9: CONTACT L */}
       <section ref={contactRef} className="py-24 px-4 bg-[#050507]" id="contact">
         <div className="max-w-4xl mx-auto">
           <ScrollDivider target={contactRef} />
@@ -798,7 +815,7 @@ export default function Home() {
             <div className="flex items-center gap-3 mb-8">
               <Mail size={22} className="text-[#ff1a2e]" />
               <h2 className="text-3xl md:text-5xl font-deathnote tracking-wider text-white">
-                ENCRYPTED HANDSHAKE
+                CONTACT L
               </h2>
               <span className="ml-auto text-[10px] text-gray-500 font-mono hidden sm:inline">
                 PORT: 443 // TLS 1.3
@@ -861,18 +878,20 @@ export default function Home() {
 
       {/* COLOPHON / FOOTER */}
       <footer className="border-t border-[#ff1a2e]/20 py-12 px-4 bg-[#030305]">
-        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-xs font-mono text-gray-500">
+        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-xs font-mono text-gray-400">
           <div className="flex items-center gap-3">
             <span className="font-deathnote text-2xl text-[#ff1a2e]">L</span>
-            <span>ANLEN JEBAN (AN1EN) // THE CYBER DEATH NOTE</span>
+            <span>The notebook is never wrong. © 2026 AN1EN.</span>
           </div>
 
-          <div className="flex items-center gap-4 text-[11px]">
-            <span>HTB ID: 019cfb0e-4078</span>
+          <div className="flex items-center gap-4 text-[11px] text-gray-500">
+            <Link href="/about" className="hover:text-white transition-colors">ABOUT</Link>
             <span>•</span>
-            <span>AD-RTS SPECIALIST</span>
+            <Link href="/#cases" className="hover:text-white transition-colors">CASE FILES</Link>
             <span>•</span>
-            <span>© 2026 MIT</span>
+            <Link href="/#projects" className="hover:text-white transition-colors">EVIDENCE &amp; TOOLING</Link>
+            <span>•</span>
+            <Link href="/writeup" className="hover:text-white transition-colors">CASE ARCHIVE</Link>
           </div>
         </div>
       </footer>

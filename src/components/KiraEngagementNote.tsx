@@ -19,78 +19,14 @@ import {
   BookOpen,
 } from "lucide-react";
 import { soundManager } from "@/lib/audio";
+import {
+  InscribedRecord,
+  DEFAULT_CAUSES,
+  INITIAL_INSCRIBED_ARCHIVE,
+} from "@/lib/deathnote";
 
-export interface InscribedRecord {
-  id: string;
-  name: string;
-  time: string;
-  timestamp: number;
-  cause: string;
-}
-
-const DEFAULT_CAUSES = [
-  "ESC1 Active Directory Certificate Abuse → Forest Root Takeover",
-  "Zero-Click Kerberos TGT Impersonation → Domain Admin",
-  "Dynamic Linker Hijack & SUID /bin/cat Abuse → System Root",
-  "Heart Attack // Catastrophic Kerberoasting Total Collapse",
-  "ProxyShell SSRF & PowerShell Remoting Administrative Hijack",
-  "AS-REP Roasting & Kerberos Offline Hashcat 18200 Crack",
-  "DCSync Directory Replication & Golden Ticket Generation",
-  "Cross-Forest Trust Compromise & ESXi Infrastructure Wipe",
-];
-
-export const INITIAL_INSCRIBED_ARCHIVE: InscribedRecord[] = [
-  { id: "REC-01", name: "Light Yagami (Kira)", time: "2026-10-16 12:44:10 UTC", timestamp: 1792149850000, cause: "Heart Attack // Shinigami Eyes Divine Retribution" },
-  { id: "REC-02", name: "L Lawliet", time: "2026-10-16 11:20:00 UTC", timestamp: 1792144800000, cause: "Memory Dump & Keystroke Attribution Discovery" },
-  { id: "REC-03", name: "Lind L. Tailor", time: "2026-10-16 09:15:32 UTC", timestamp: 1792137332000, cause: "Broadcast Transmission Interception & Instant Heart Attack" },
-  { id: "REC-04", name: "Raye Penber", time: "2026-10-15 18:40:11 UTC", timestamp: 1792084811000, cause: "Ticket Forgery & Subway Terminal Compromise" },
-  { id: "REC-05", name: "Naomi Misora", time: "2026-10-15 14:12:05 UTC", timestamp: 1792068725000, cause: "Zero-Trace Suicide Simulation Execution" },
-  { id: "REC-06", name: "Kyosuke Higuchi", time: "2026-10-15 08:33:40 UTC", timestamp: 1792048420000, cause: "Yotsuba Executive Insider Privilege Escalation" },
-  { id: "REC-07", name: "Teru Mikami", time: "2026-10-14 22:50:18 UTC", timestamp: 1792013418000, cause: "Active Directory Fake Notebook Replaced by Gevanni" },
-  { id: "REC-08", name: "Misa Amane", time: "2026-10-14 16:15:22 UTC", timestamp: 1791989722000, cause: "Second Kira Shinigami Eye Proxy Delegation" },
-  { id: "REC-09", name: "Watari (Quillsh Wammy)", time: "2026-10-14 11:05:49 UTC", timestamp: 1791971149000, cause: "Mainframe Wipe & Server Zeroization" },
-  { id: "REC-10", name: "Anthony Rester", time: "2026-10-13 20:30:11 UTC", timestamp: 1791918611000, cause: "SPK Federal Task Force Kerberos Hijack" },
-  { id: "REC-11", name: "Halle Lidner", time: "2026-10-13 15:45:00 UTC", timestamp: 1791901500000, cause: "Secret Service Channel Man-in-the-Middle" },
-  { id: "REC-12", name: "Stephen Gevanni", time: "2026-10-13 10:18:24 UTC", timestamp: 1791881904000, cause: "Physical Copy of Inscribed Notebook Substitution" },
-  { id: "REC-13", name: "Mail Jeevas (Matt)", time: "2026-10-12 23:04:19 UTC", timestamp: 1791841459000, cause: "Flashbang Distraction & Police Radio Interception" },
-  { id: "REC-14", name: "Mello (Mihael Keehl)", time: "2026-10-12 17:22:50 UTC", timestamp: 1791820970000, cause: "SPK Kidnapping & Missile Silo Extortion" },
-  { id: "REC-15", name: "Near (Nate River)", time: "2026-10-12 12:00:00 UTC", timestamp: 1791801600000, cause: "Final Warehouse Deduction & Finger Puppet Analysis" },
-  { id: "REC-16", name: "Soichiro Yagami", time: "2026-10-11 19:14:33 UTC", timestamp: 1791741273000, cause: "Shinigami Eyes Sacrifice & Mafia Compound Raid" },
-  { id: "REC-17", name: "Aiber (Tierry Morrello)", time: "2026-10-11 14:02:10 UTC", timestamp: 1791722530000, cause: "Social Engineering Infiltration & Con Artistry" },
-  { id: "REC-18", name: "Wedy (Merrie Kenwood)", time: "2026-10-11 09:45:12 UTC", timestamp: 1791707112000, cause: "Surveillance Camera Wiretapping & Lockpicking" },
-  { id: "REC-19", name: "Rod Ross", time: "2026-10-10 21:18:05 UTC", timestamp: 1791662285000, cause: "Los Angeles Syndicate LDAP Shadow Domain Pwn" },
-  { id: "REC-20", name: "Jack Neylon (Kal Snydar)", time: "2026-10-10 16:30:40 UTC", timestamp: 1791645040000, cause: "Host Header Injection & Hostage Extraction" },
-  { id: "REC-21", name: "dc01.corp.internal", time: "2026-10-10 11:22:15 UTC", timestamp: 1791626535000, cause: "ESC1 Active Directory Certificate Abuse → Forest Root" },
-  { id: "REC-22", name: "Root Domain Administrator", time: "2026-10-09 23:45:00 UTC", timestamp: 1791584700000, cause: "DSRM Password Sync & DCSync Replication" },
-  { id: "REC-23", name: "Exchange Server 2022", time: "2026-10-09 18:12:30 UTC", timestamp: 1791564750000, cause: "ProxyShell Server-Side Request Forgery & RCE" },
-  { id: "REC-24", name: "KDC Kerberos Controller", time: "2026-10-09 13:05:19 UTC", timestamp: 1791546319000, cause: "AS-REP Roasting & Golden Ticket Generation" },
-  { id: "REC-25", name: "Telecom Forest Root", time: "2026-10-08 22:40:02 UTC", timestamp: 1791494402000, cause: "Cross-Forest Trust Impersonation & ESXi Wipe" },
-  { id: "REC-26", name: "ESXi Hypervisor 7.0", time: "2026-10-08 17:15:45 UTC", timestamp: 1791474945000, cause: "Python CLI Heap Overflow & Virtual Machine Takeover" },
-  { id: "REC-27", name: "AD CS Certificate Authority", time: "2026-10-08 12:00:10 UTC", timestamp: 1791456010000, cause: "Subject Alternative Name (SAN) Forgery" },
-  { id: "REC-28", name: "LDAP Central Directory", time: "2026-10-07 20:34:22 UTC", timestamp: 1791400462000, cause: "Resource-Based Constrained Delegation (RBCD)" },
-  { id: "REC-29", name: "SQL-DB01.telecom.local", time: "2026-10-07 15:10:00 UTC", timestamp: 1791381000000, cause: "xp_cmdshell Code Execution & Token Impersonation" },
-  { id: "REC-30", name: "Shadow AI Neural Gateway", time: "2026-10-07 10:25:18 UTC", timestamp: 1791363918000, cause: "Prompt Injection & Vector Database Extraction" },
-  { id: "REC-31", name: "Insecure Direct Object Target", time: "2026-10-06 22:50:40 UTC", timestamp: 1791322240000, cause: "Admin Cookie Alteration & Session SUID Hijack" },
-  { id: "REC-32", name: "SUID /bin/cat Root Daemon", time: "2026-10-06 17:18:02 UTC", timestamp: 1791302282000, cause: "Relative PATH Variable Injection & Code Execution" },
-  { id: "REC-33", name: "FreeBSD Gateway Router", time: "2026-10-06 12:04:15 UTC", timestamp: 1791283455000, cause: "BGP Route Poisoning & Traffic Redirection" },
-  { id: "REC-34", name: "Cloudflare Edge Worker", time: "2026-10-05 21:30:00 UTC", timestamp: 1791231000000, cause: "Request Smuggling & Cache Poisoning" },
-  { id: "REC-35", name: "Kubernetes Master Node", time: "2026-10-05 16:45:20 UTC", timestamp: 1791213920000, cause: "Kubelet API Unauthenticated Pod Creation" },
-  { id: "REC-36", name: "Docker Daemon Socket", time: "2026-10-05 11:12:44 UTC", timestamp: 1791193964000, cause: "Container Breakout via /var/run/docker.sock" },
-  { id: "REC-37", name: "AWS Identity IAM Root", time: "2026-10-04 23:20:10 UTC", timestamp: 1791151210000, cause: "Metadata IMDSv1 Credential Exfiltration" },
-  { id: "REC-38", name: "Azure AD Connect Sync", time: "2026-10-04 18:05:00 UTC", timestamp: 1791132300000, cause: "Cloud Administrator Seamless SSO Compromise" },
-  { id: "REC-39", name: "Okta Identity Provider", time: "2026-10-04 13:40:19 UTC", timestamp: 1791116419000, cause: "Session Hijacking & MFA Bypass" },
-  { id: "REC-40", name: "GitHub Enterprise Runner", time: "2026-10-03 22:15:33 UTC", timestamp: 1791060933000, cause: "Action CI/CD Workflow Privilege Escalation" },
-  { id: "REC-41", name: "GitLab Self-Hosted 16.0", time: "2026-10-03 17:30:12 UTC", timestamp: 1791043812000, cause: "Arbitrary File Read & Admin Token Hijack" },
-  { id: "REC-42", name: "Jira Data Center Host", time: "2026-10-03 12:10:05 UTC", timestamp: 1791024605000, cause: "OGNL Expression Injection & Shell Access" },
-  { id: "REC-43", name: "Fortinet SSL-VPN Gateway", time: "2026-10-02 21:45:00 UTC", timestamp: 1790972700000, cause: "Buffer Overflow in SSL-VPN Daemon (CVE-2023-27997)" },
-  { id: "REC-44", name: "Palo Alto GlobalProtect", time: "2026-10-02 16:20:18 UTC", timestamp: 1790953218000, cause: "Command Injection via Zero-Touch Provisioning" },
-  { id: "REC-45", name: "SonicWall SMA 1000", time: "2026-10-02 11:05:40 UTC", timestamp: 1790934340000, cause: "Pre-Auth Access Control Bypass" },
-  { id: "REC-46", name: "Citrix NetScaler Gateway", time: "2026-10-01 22:30:15 UTC", timestamp: 1790889015000, cause: "Citrix Bleed Session Token Leak (CVE-2023-4966)" },
-  { id: "REC-47", name: "F5 BIG-IP TMOS Host", time: "2026-10-01 17:10:02 UTC", timestamp: 1790869802000, cause: "iControl REST Authentication Bypass" },
-  { id: "REC-48", name: "Zero-Day Exploit Broker", time: "2026-10-01 12:45:30 UTC", timestamp: 1790853930000, cause: "Forensic Disappearance & Anti-Forensic Scrubbing" },
-  { id: "REC-49", name: "Rival Red Team Operator", time: "2026-09-30 20:15:00 UTC", timestamp: 1790794500000, cause: "Cobalt Strike Beacon Configuration Decoding" },
-  { id: "REC-50", name: "Target Entity 0x5342", time: "2026-09-30 15:00:00 UTC", timestamp: 1790775600000, cause: "Finalized Proof-of-Concept & Ethical Report Dispatched" },
-];
+export type { InscribedRecord };
+export { DEFAULT_CAUSES, INITIAL_INSCRIBED_ARCHIVE };
 
 export default function KiraEngagementNote() {
   const [targetName, setTargetName] = useState("");
@@ -105,6 +41,7 @@ export default function KiraEngagementNote() {
   const [videoProgress, setVideoProgress] = useState({ current: 0, total: 16 });
   const [videoMuted, setVideoMuted] = useState(false);
   const [showPlayOverlay, setShowPlayOverlay] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
 
   // Archive Modal State
   const [isArchiveModalOpen, setIsArchiveModalOpen] = useState(false);
@@ -118,28 +55,60 @@ export default function KiraEngagementNote() {
   const writingTimerRef = useRef<NodeJS.Timeout | null>(null);
   const countdownTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Load session records on mount & merge with 50 default records
+  // Fetch records from server API & sync with local storage
+  const syncRecordsFromServer = async () => {
+    try {
+      setIsSyncing(true);
+      const res = await fetch("/api/deathnote", { cache: "no-store" });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && Array.isArray(data.records) && data.records.length > 0) {
+          setRecords(data.records);
+          try {
+            localStorage.setItem("kira_inscribed_records", JSON.stringify(data.records));
+          } catch {}
+        }
+      }
+    } catch (err) {
+      console.warn("Could not sync with /api/deathnote:", err);
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  // Mount: Load localStorage immediately, then fetch from server, and setup auto-update polling
   useEffect(() => {
     try {
-      const stored = sessionStorage.getItem("kira_inscribed_records");
+      const stored = localStorage.getItem("kira_inscribed_records");
       if (stored) {
-        const customRecords: InscribedRecord[] = JSON.parse(stored);
-        // Deduplicate and place user's recent inscriptions at top
-        const merged = [
-          ...customRecords,
-          ...INITIAL_INSCRIBED_ARCHIVE.filter(
-            (def) => !customRecords.some((c) => c.name.toLowerCase() === def.name.toLowerCase())
-          ),
-        ];
-        setRecords(merged);
-      } else {
-        setRecords(INITIAL_INSCRIBED_ARCHIVE);
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setRecords(parsed);
+        }
       }
-    } catch {
-      setRecords(INITIAL_INSCRIBED_ARCHIVE);
-    }
+    } catch {}
+
+    // Fetch latest records on load
+    syncRecordsFromServer();
+
+    // Auto-update itself every 7 seconds so newly inscribed names appear in real time
+    const pollTimer = setInterval(() => {
+      syncRecordsFromServer();
+    }, 7000);
+
     setSoundEnabled(soundManager.isEnabled());
+
+    return () => {
+      clearInterval(pollTimer);
+    };
   }, []);
+
+  // Re-sync when modal opens
+  useEffect(() => {
+    if (isArchiveModalOpen) {
+      syncRecordsFromServer();
+    }
+  }, [isArchiveModalOpen]);
 
   // Filtered records for the ledger modal
   const filteredRecords = useMemo(() => {
@@ -184,6 +153,35 @@ export default function KiraEngagementNote() {
       cause: chosenCause,
     };
     setCurrentRecord(newRecord);
+
+    // 1. Instantly save and update local UI (optimistic update)
+    const updated = [newRecord, ...records.filter((r) => r.name.toLowerCase() !== clean.toLowerCase())];
+    setRecords(updated);
+    try {
+      localStorage.setItem("kira_inscribed_records", JSON.stringify(updated));
+    } catch {}
+
+    // 2. Persist to server backend API so it is saved permanently & updates itself across users
+    fetch("/api/deathnote", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: clean, cause: chosenCause }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.records) && data.records.length > 0) {
+          setRecords(data.records);
+          try {
+            localStorage.setItem("kira_inscribed_records", JSON.stringify(data.records));
+          } catch {}
+          if (data.record) {
+            setCurrentRecord(data.record);
+          }
+        }
+      })
+      .catch((err) => {
+        console.warn("Backend save deferred, local save active:", err);
+      });
 
     setTimeout(() => {
       let charIndex = 0;
@@ -302,12 +300,11 @@ export default function KiraEngagementNote() {
     setPhase("verdict");
     setSecondsRemaining(40);
 
-    // Prepend user's new record to top of records
+    // Ensure state and storage include the record
     const updated = [rec, ...records.filter((r) => r.name.toLowerCase() !== rec.name.toLowerCase())];
     setRecords(updated);
     try {
-      const customOnly = updated.filter((r) => !INITIAL_INSCRIBED_ARCHIVE.some((init) => init.id === r.id));
-      sessionStorage.setItem("kira_inscribed_records", JSON.stringify(customOnly));
+      localStorage.setItem("kira_inscribed_records", JSON.stringify(updated));
     } catch {}
 
     // 40-second countdown (Death Note rule)
@@ -824,10 +821,16 @@ SECURITY DISCLOSURE  : Non-destructive ethical simulation completed.
            ======================================================== */}
         <div className="mt-8 p-6 rounded-2xl bg-black/40 border border-white/5">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 pb-3 border-b border-white/5 text-xs font-mono gap-3">
-            <span className="text-gray-400 flex items-center gap-2">
-              <Terminal size={13} className="text-[#ff1a2e]" />
-              DEATH NOTE ARCHIVE RECORD LEDGER
-            </span>
+            <div className="flex items-center gap-3">
+              <span className="text-gray-400 flex items-center gap-2">
+                <Terminal size={13} className="text-[#ff1a2e]" />
+                DEATH NOTE ARCHIVE RECORD LEDGER
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[10px] text-emerald-400 font-mono">
+                <span className={`w-1.5 h-1.5 rounded-full bg-emerald-400 ${isSyncing ? "animate-spin" : "animate-pulse"}`} />
+                LIVE SYNC
+              </span>
+            </div>
             <button
               onClick={() => {
                 soundManager.playTick();
@@ -884,6 +887,11 @@ SECURITY DISCLOSURE  : Non-destructive ethical simulation completed.
                   <div className="flex items-center gap-2 text-xs font-mono text-[#ff1a2e] uppercase tracking-widest mb-1">
                     <Skull size={14} />
                     <span>DEATH NOTE // SYSTEM RECORD ARCHIVE</span>
+                    <span className="text-gray-600">•</span>
+                    <span className="inline-flex items-center gap-1.5 text-[10px] text-emerald-400 font-mono">
+                      <span className={`w-1.5 h-1.5 rounded-full bg-emerald-400 ${isSyncing ? "animate-spin" : "animate-pulse"}`} />
+                      LIVE SYNC ACTIVE
+                    </span>
                   </div>
                   <h3 className="text-xl sm:text-2xl font-deathnote text-white tracking-wider">
                     ALL INSCRIBED TARGETS ({records.length})

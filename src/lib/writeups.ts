@@ -1,22 +1,36 @@
 export interface Writeup {
   slug: string;
+  caseNumber: string;
+  caseCode: string;
   title: string;
   desc: string;
   platform: string;
   date: string;
+  threatLevel: "Low" | "Elevated" | "Critical";
+  stamp: "ROOTED" | "CASE CLOSED";
+  timeToRoot: string;
+  killChain: string;
   tags: string[];
   mediumUrl: string;
   thumbnail: string;
   content: string;
 }
 
+export const RULE_ZERO_DISCLAIMER = "Rule 0: only retired or authorized targets are inscribed.";
+
 export const writeups: Writeup[] = [
   {
     slug: "cloudsek-ctf-2026",
+    caseNumber: "CASE-001",
+    caseCode: "CASE-001 · CloudSEK CTF: StrikeVigil",
     title: "CloudSEK CTF 2026 — OSINT & Web Security",
     desc: "Comprehensive writeup covering OSINT reconnaissance through username enumeration and GitHub API exploitation, plus web security attacks including Host header injection and password reset poisoning for full admin account takeover.",
     platform: "CloudSEK CTF",
     date: "Aug 2026",
+    threatLevel: "Elevated",
+    stamp: "CASE CLOSED",
+    timeToRoot: "2h 45m",
+    killChain: "Username Recon → GitHub API Leak → Host Header Poisoning → Password Reset → Admin RCE",
     tags: ["OSINT", "Web Security", "CTF", "Host Header Injection", "Password Reset Poisoning"],
     mediumUrl: "https://medium.com/@anlenjeban7/cloud-sek-ctf-2026-56a8e24508eb",
     thumbnail: "/writeups/writeup-1-1.png",
@@ -215,10 +229,16 @@ Both challenges demonstrated how seemingly minor oversights — a username in a 
   },
   {
     slug: "ad-rts-telecom-inc",
+    caseNumber: "CASE-003",
+    caseCode: "CASE-003 · AD RTS: Telecom Inc.",
     title: "AD RTS — TELECOM INC: Full Attack Chain",
     desc: "Complete attack chain against an Active Directory environment — from anonymous LDAP enumeration and AS-REP Roasting through Exchange impersonation, GodPotato privilege escalation, ESC1 certificate abuse, to VMware ESXi hypervisor compromise.",
     platform: "Cyberwarfare Labs",
     date: "Jul 2026",
+    threatLevel: "Critical",
+    stamp: "ROOTED",
+    timeToRoot: "6h 40m",
+    killChain: "LDAP → AS-REP → Exchange → GodPotato → ESC1 → ESXi",
     tags: ["Active Directory", "Red Team", "Lateral Movement", "ESC1", "Privilege Escalation"],
     mediumUrl: "https://medium.com/@anlenjeban7/ad-rts-telecom-inc-a-full-attack-chain-walkthrough-81d3a15fadfb",
     thumbnail: "/writeups/ad-rts-cert.png",
@@ -393,10 +413,16 @@ Extracted sensitive data from virtual machines and file shares.
   },
   {
     slug: "hackthebox-oopsie",
+    caseNumber: "CASE-002",
+    caseCode: "CASE-002 · HTB: Oopsie Linux",
     title: "HackTheBox — Oopsie Walkthrough",
     desc: "Detailed analysis of IDOR, Unrestricted File Upload, and SUID PATH Hijacking vulnerabilities with full exploitation chain and remediation strategies.",
     platform: "HackTheBox",
     date: "Jun 2026",
+    threatLevel: "Low",
+    stamp: "ROOTED",
+    timeToRoot: "1h 15m",
+    killChain: "Tmap Port Scan → IDOR Cookie Hijack → PHP Reverse Shell → SUID PATH Hijack → Root",
     tags: ["IDOR", "Reverse Shell", "PATH Hijacking", "OWASP Top 10"],
     mediumUrl: "https://medium.com/@anlenjeban7/hackthebox-oopsie-walkthrough-489bc2208d96",
     thumbnail: "/writeups/oopsie-1.png",

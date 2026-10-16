@@ -4,17 +4,17 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Volume2, VolumeX, FileText, Terminal, Skull, BookOpen, Code2 } from "lucide-react";
+import { Volume2, VolumeX, FileText, Skull, BookOpen, Code2, Mail, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { soundManager } from "@/lib/audio";
 
 const navItems = [
   { label: "DOSSIER", href: "/", icon: Skull },
-  { label: "WRITEUPS", href: "/#editorial", icon: BookOpen },
-  { label: "PROJECTS", href: "/#projects", icon: Code2 },
-  { label: "ARCHIVE", href: "/writeup", icon: FileText },
-  { label: "KIRA CODEX", href: "/#inscribe", icon: Skull },
-  { label: "SHADOW INTEL", href: "/chatbot", icon: Terminal },
+  { label: "CASE FILES", href: "/#cases", icon: BookOpen },
+  { label: "EVIDENCE & TOOLING", href: "/#projects", icon: Code2 },
+  { label: "CASE ARCHIVE", href: "/writeup", icon: FileText },
+  { label: "ABOUT", href: "/about", icon: User },
+  { label: "CONTACT L", href: "/#contact", icon: Mail },
 ];
 
 export default function Navbar() {

@@ -6,9 +6,9 @@ import Navbar from "@/components/Navbar";
 import Preloader from "@/components/Preloader";
 
 export const metadata: Metadata = {
-  title: "Anlen Jeban (AN1EN) — The Cyber Dossier | Offensive Red Team & Security Research",
+  title: "Anlen Jeban (AN1EN) — The Cyber Dossier | Write the name. Root the host.",
   description:
-    "Adversarial security codex by Anlen Jeban (AN1EN). Active Directory Red Team Specialist (AD-RTS), Certified Red Team Analyst (CRTA), CTF player. Proving ground writeups and offensive cyber research.",
+    "Active Directory attack chains, CTF casefiles, and offensive tooling by Anlen Jeban (AN1EN). Active Directory Red Team Specialist (AD-RTS), Certified Red Team Analyst (CRTA). Rule 0: only retired or authorized targets are inscribed.",
   keywords: [
     "Anlen Jeban",
     "AN1EN",
@@ -24,9 +24,9 @@ export const metadata: Metadata = {
     "CTF",
   ],
   openGraph: {
-    title: "Anlen Jeban (AN1EN) — The Cyber Dossier",
+    title: "Anlen Jeban (AN1EN) — Write the name. Root the host.",
     description:
-      "Offensive security research, interactive target inscription, and proving ground writeups by Anlen Jeban.",
+      "Active Directory attack chains, CTF casefiles, and offensive tooling by Anlen Jeban (AN1EN).",
     type: "website",
   },
 };
