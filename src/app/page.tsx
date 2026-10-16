@@ -32,7 +32,6 @@ import {
   type BootLine,
 } from "@/components/motion-effects";
 import AsciiLAnimation from "@/components/AsciiLAnimation";
-import TargetInscriber from "@/components/TargetInscriber";
 import PenguinEditorial from "@/components/PenguinEditorial";
 import ThreeDeathNoteModel from "@/components/ThreeDeathNoteModel";
 import { soundManager } from "@/lib/audio";
@@ -322,7 +321,7 @@ export default function Home() {
             </a>
           </div>
 
-          {/* 3-MODEL PERSPECTIVE SELECTOR BAR */}
+          {/* PERSPECTIVE QUICK JUMP BAR */}
           <div className="flex flex-wrap items-center gap-2 mb-8 p-1.5 rounded-2xl bg-white/[0.03] border border-white/10 max-w-fit">
             <button
               onClick={() => {
@@ -332,17 +331,7 @@ export default function Home() {
               className="px-3.5 py-1.5 rounded-xl text-xs font-mono bg-[#ff1a2e]/15 border border-[#ff1a2e]/40 text-white font-semibold flex items-center gap-2 shadow-[0_0_15px_rgba(255,26,46,0.2)]"
             >
               <span className="text-[#ff1a2e] font-bold">01 //</span>
-              <span>L LAWLIET DOSSIER</span>
-            </button>
-            <button
-              onClick={() => {
-                soundManager.playTick();
-                document.getElementById("inscriber")?.scrollIntoView({ behavior: "smooth" });
-              }}
-              className="px-3.5 py-1.5 rounded-xl text-xs font-mono text-gray-400 hover:text-white hover:bg-white/5 transition-colors flex items-center gap-2"
-            >
-              <span className="text-[#ff1a2e]">02 //</span>
-              <span>TARGET INSCRIBER (KIRA)</span>
+              <span>L DOSSIER</span>
             </button>
             <button
               onClick={() => {
@@ -351,8 +340,28 @@ export default function Home() {
               }}
               className="px-3.5 py-1.5 rounded-xl text-xs font-mono text-gray-400 hover:text-white hover:bg-white/5 transition-colors flex items-center gap-2"
             >
+              <span className="text-[#ff1a2e]">02 //</span>
+              <span>SELECTED WRITEUPS</span>
+            </button>
+            <button
+              onClick={() => {
+                soundManager.playTick();
+                document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="px-3.5 py-1.5 rounded-xl text-xs font-mono text-gray-400 hover:text-white hover:bg-white/5 transition-colors flex items-center gap-2"
+            >
               <span className="text-[#ff1a2e]">03 //</span>
-              <span>PENGUIN EDITORIAL (彼岸花)</span>
+              <span>OFFENSIVE PROJECTS</span>
+            </button>
+            <button
+              onClick={() => {
+                soundManager.playTick();
+                document.getElementById("certifications")?.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="px-3.5 py-1.5 rounded-xl text-xs font-mono text-gray-400 hover:text-white hover:bg-white/5 transition-colors flex items-center gap-2"
+            >
+              <span className="text-[#ff1a2e]">04 //</span>
+              <span>CERTIFICATIONS</span>
             </button>
           </div>
 
@@ -572,15 +581,12 @@ export default function Home() {
         <div className="mt-12 text-center">
           <div className="inline-flex items-center gap-2 text-gray-500 font-mono text-xs">
             <ChevronDown size={14} className="text-[#ff1a2e] animate-bounce" />
-            <span>SCROLL TO INSCRIBE TARGETS &amp; AUDIT NOTES</span>
+            <span>SCROLL TO CONSULT WRITEUPS &amp; AUDIT NOTES</span>
           </div>
         </div>
       </section>
 
-      {/* SECTION 2: INTERACTIVE DEATH NOTE TARGET INSCRIBER (PROJECT KIRA MECHANIC) */}
-      <TargetInscriber />
-
-      {/* SECTION 3: PENGUIN EDITORIAL (PENGUIN PORTFOLIO MANIFESTO & TECHNICAL NOTES) */}
+      {/* SECTION 2: PENGUIN EDITORIAL (PENGUIN PORTFOLIO MANIFESTO & TECHNICAL NOTES) */}
       <PenguinEditorial />
 
       {/* SECTION 4: HOW TO USE IT (DEATH NOTE RULES OF CYBERSECURITY) */}

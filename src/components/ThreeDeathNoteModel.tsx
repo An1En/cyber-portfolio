@@ -201,11 +201,10 @@ export default function ThreeDeathNoteModel({
       pageCtx.fillText("TARGET INVENTORY // ROOTED", 80, 390);
 
       const targets = [
-        "1. dc01.telecom.local [ESC1 ABUSE]",
-        "2. oopsie.htb [SUID PATH HIJACK]",
-        "3. strikevigil.corp [PASSWORD POISON]",
-        "4. darkzero.htb [RBCD KERBEROS]",
-        "5. esxi01.internal [HYPERVISOR TAKEOVER]",
+        "1. dc.telecom.local [AD-RTS ESC1]",
+        "2. oopsie.htb [HTB SUID HIJACK]",
+        "3. strikevigil.portal [CLOUDSEK CTF]",
+        "4. Tmap Engine [PORT AUTOMATION]",
       ];
 
       pageCtx.fillStyle = "#cbd5e1";
