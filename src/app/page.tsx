@@ -345,13 +345,28 @@ export default function Home() {
           {/* Main Doppelrand Double-Bezel Card */}
           <div className="double-bezel mb-8">
             <div className="double-bezel-inner p-6 md:p-8">
-              <div className="flex items-center gap-2 text-[#ff1a2e] text-xs font-mono mb-5 pb-3 border-b border-white/5">
+              <div
+                onClick={() => setBooted(true)}
+                className="flex items-center gap-2 text-[#ff1a2e] text-xs font-mono mb-5 pb-3 border-b border-white/5 cursor-pointer"
+              >
                 <Terminal size={14} />
                 <span>~/investigation/an1en_dossier.sh</span>
-                <span className="ml-auto flex items-center gap-1.5 text-[10px] text-gray-400 uppercase tracking-widest">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#ff1a2e] animate-pulse" />
-                  CLASSIFIED // RED TEAM
-                </span>
+                {!booted ? (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setBooted(true);
+                    }}
+                    className="ml-auto text-[10px] text-gray-400 hover:text-[#ff1a2e] transition-colors border border-white/10 px-2 py-0.5 rounded font-mono"
+                  >
+                    [ SKIP BOOT › ]
+                  </button>
+                ) : (
+                  <span className="ml-auto flex items-center gap-1.5 text-[10px] text-gray-400 uppercase tracking-widest font-mono">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#ff1a2e] animate-pulse" />
+                    CLASSIFIED // RED TEAM
+                  </span>
+                )}
               </div>
 
               <BootLines

@@ -4,81 +4,99 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { soundManager } from "@/lib/audio";
 
-// Frame 1: The Iconic Gothic Calligraphic "L" Emblem
-const GOTHIC_L_FRAMES = [
-`   .▄▄▄▄▄▄▄▄▄▄▄.  
-  ▐█████████████▌ 
-  ▐███▀      ▀███ 
-  ▐███            
-  ▐███   ▄▄▄▄     
-  ▐███  ▐████▌    
-  ▐███   ▀▀▀▀     
-  ▐███            
-  ▐███            
-  ▐███▄▄▄▄▄▄▄▄▄▄▄ 
- ▄███████████████▌
- ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀`,
-`   .▄▄▄▄▄▄▄▄▄▄▄.  
-  ▐█████████████▌ 
-  ▐███▀  ░░  ▀███ 
-  ▐███    ░       
-  ▐███   ▄▄▄▄     
-  ▐███  ▐████▌    
-  ▐███   ▀▀▀▀     
-  ▐███   ░        
-  ▐███   ░░       
-  ▐███▄▄▄▄▄▄▄▄▄▄▄ 
- ▄███████████████▌
- ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀`,
-`   .▄▄▄▄▄▄▄▄▄▄▄.  
-  ▐█████████████▌ 
-  ▐███▀  ▓▓  ▀███ 
-  ▐███    ▓       
-  ▐███   ▄▄▄▄     
-  ▐███  ▐████▌    
-  ▐███   ▀▀▀▀     
-  ▐███    ▓       
-  ▐███            
-  ▐███▄▄▄▄▄▄▄▄▄▄▄ 
- ▄███████████████▌
- ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀`,
+// Authentic visible character L (Lawliet from Death Note) crouching on his chair
+const L_CROUCHING_FRAMES = [
+`               /\\   /\\   /\\   /\\
+          /\\  /  \\_/  \\_/  \\_/  \\  /\\
+         /  \\/                   \\/  \\
+        /    /  __           __   \\   \\
+       |    /  /  \\         /  \\   \\   |
+       |   |  | (◉)|       | (◉)|   |  |   [ L : LAWLIET ]
+       |   |   \\__/         \\__/    |  |   [ DEDUCTION: 99.8% ]
+       |    \\         /\\           /   |
+        \\    \\       (..)         /   /
+         \\    \`------\`--\`--------\`   /
+        .-/                         \\-.
+       /  |     .-.         .-.      | \\
+      /   |    /   \\   _   /   \\     |  \\
+     /    |   |     | ( ) |     |    |   \\
+    |     |   |     |/   \\|     |    |    |
+    |     |   |     |     |     |    |    |
+     \\    \\    \\   / \\___/ \\   /    /    /
+      \`---'     \`-"         \`-"     \`---'`,
+`               /\\   /\\   /\\   /\\
+          /\\  /  \\_/  \\_/  \\_/  \\  /\\
+         /  \\/                   \\/  \\
+        /    /  __           __   \\   \\
+       |    /  /  \\         /  \\   \\   |
+       |   |  | (•)|       | (•)|   |  |   [ L : SCANNING ]
+       |   |   \\__/         \\__/    |  |   [ TARGET LOCKED ]
+       |    \\         /\\           /   |
+        \\    \\       (..)         /   /
+         \\    \`------\`--\`--------\`   /
+        .-/                         \\-.
+       /  |     .-.         .-.      | \\
+      /   |    /   \\   _   /   \\     |  \\
+     /    |   |     | ( ) |     |    |   \\
+    |     |   |     |/   \\|     |    |    |
+    |     |   |     |     |     |    |    |
+     \\    \\    \\   / \\___/ \\   /    /    /
+      \`---'     \`-"         \`-"     \`---'`,
+`               /\\   /\\   /\\   /\\
+          /\\  /  \\_/  \\_/  \\_/  \\  /\\
+         /  \\/                   \\/  \\
+        /    /  __           __   \\   \\
+       |    /  /  \\         /  \\   \\   |
+       |   |  | (◉)|   †   | (◉)|   |  |   [ L : ADVERSARY ]
+       |   |   \\__/         \\__/    |  |   [ ROOT IMMINENT ]
+       |    \\         /\\           /   |
+        \\    \\       (..)         /   /
+         \\    \`------\`--\`--------\`   /
+        .-/                         \\-.
+       /  |     .-.         .-.      | \\
+      /   |    /   \\   _   /   \\     |  \\
+     /    |   |     | ( ) |     |    |   \\
+    |     |   |     |/   \\|     |    |    |
+    |     |   |     |     |     |    |    |
+     \\    \\    \\   / \\___/ \\   /    /    /
+      \`---'     \`-"         \`-"     \`---'`,
 ];
 
-// Frame 2: The Iconic Crouching Detective "L" (Lawliet) Silhouette
-const DETECTIVE_L_FRAMES = [
-`           .---.           
-          /     \\    [◉ ◉] 
-         | () () |  < EYE  
-        / \\  -  / \\        
-       /   '---'   \\       
-      /  /|     |\\  \\      
-     |  | |  L  | |  |     
-     |  | \\     / |  |     
-      \\  \\ '---' /  /      
-       \\  '-----'  /       
-        '---------'        `,
-`           .---.           
-          /     \\    [• •] 
-         |  - -  |  < EYE  
-        / \\  =  / \\        
-       /   '---'   \\       
-      /  /|     |\\  \\      
-     |  | |  L  | |  |     
-     |  | \\     / |  |     
-      \\  \\ '---' /  /      
-       \\  '-----'  /       
-        '---------'        `,
-`           .---.           
-          /     \\    [◉ ◉] 
-         | (o)(o)|  < LOCK 
-        / \\  -  / \\        
-       /   '---'   \\       
-      /  /|  †  |\\  \\      
-     |  | |  L  | |  |     
-     |  | \\  †  / |  |     
-      \\  \\ '---' /  /      
-       \\  '-----'  /       
-        '---------'        `,
+// Visible character L close-up portrait with his intense gaze
+const L_PORTRAIT_FRAMES = [
+`           /\\   /\\  _/\\_  /\\   /\\
+          /  \\_/  \\/    \\/  \\_/  \\
+         /   /                  \\  \\
+        |   /   /--\\      /--\\   \\  |
+        |  |   | (◉)|    | (◉)|   | |    [ L : LAWLIET ]
+        |  |    \\__/      \\__/    | |    [ SHINIGAMI EYE RETICLE ]
+        |   \\        ____        /  |    [ LATENCY: 0.04ms ]
+         \\   \\      /    \\      /  /
+          \\   '----' (..) '----'  /
+           \\         \\__/        /
+            '-------------------'`,
+`           /\\   /\\  _/\\_  /\\   /\\
+          /  \\_/  \\/    \\/  \\_/  \\
+         /   /                  \\  \\
+        |   /   /--\\      /--\\   \\  |
+        |  |   | (•)|    | (•)|   | |    [ L : EYE BLINK ]
+        |  |    \\__/      \\__/    | |    [ SCANNING TARGET ]
+        |   \\        ____        /  |    [ LATENCY: 0.02ms ]
+         \\   \\      /    \\      /  /
+          \\   '----' (..) '----'  /
+           \\         \\__/        /
+            '-------------------'`,
+`           /\\   /\\  _/\\_  /\\   /\\
+          /  \\_/  \\/    \\/  \\_/  \\
+         /   /                  \\  \\
+        |   /   /--\\  †   /--\\   \\  |
+        |  |   | (◉)|    | (◉)|   | |    [ L : ROOT DEDUCTION ]
+        |  |    \\__/      \\__/    | |    [ PROVING GROUNDS: HTB ]
+        |   \\        ____        /  |    [ LATENCY: 0.01ms ]
+         \\   \\      /    \\      /  /
+          \\   '----' (..) '----'  /
+           \\         \\__/        /
+            '-------------------'`,
 ];
 
 interface AsciiLProps {
@@ -92,11 +110,10 @@ export default function AsciiLAnimation({
   className = "",
   showControls = true,
 }: AsciiLProps) {
-  const [mode, setMode] = useState<"gothic" | "detective">("gothic");
+  const [pose, setPose] = useState<"crouching" | "portrait">("crouching");
   const [frameIndex, setFrameIndex] = useState(0);
   const [isGlitching, setIsGlitching] = useState(false);
 
-  // Cycle animation frames smoothly
   useEffect(() => {
     const interval = setInterval(() => {
       setFrameIndex((prev) => (prev + 1) % 3);
@@ -104,73 +121,72 @@ export default function AsciiLAnimation({
     return () => clearInterval(interval);
   }, []);
 
-  // Occasional random glitch pulse
   useEffect(() => {
     const glitchInterval = setInterval(() => {
       if (Math.random() > 0.6) {
         setIsGlitching(true);
         setTimeout(() => setIsGlitching(false), 120);
       }
-    }, 2800);
+    }, 3000);
     return () => clearInterval(glitchInterval);
   }, []);
 
-  const currentFrames = mode === "gothic" ? GOTHIC_L_FRAMES : DETECTIVE_L_FRAMES;
+  const currentFrames = pose === "crouching" ? L_CROUCHING_FRAMES : L_PORTRAIT_FRAMES;
   const rawArt = currentFrames[frameIndex];
 
-  const toggleMode = () => {
+  const togglePose = () => {
     soundManager.playTick();
-    setMode((prev) => (prev === "gothic" ? "detective" : "gothic"));
+    setPose((prev) => (prev === "crouching" ? "portrait" : "crouching"));
   };
 
   const sizeClasses = {
-    sm: "text-[9px] leading-[10px]",
-    md: "text-[11px] leading-[12px] md:text-xs md:leading-[13px]",
-    lg: "text-xs leading-[13px] md:text-sm md:leading-[15px]",
+    sm: "text-[8px] leading-[9px] md:text-[9px] md:leading-[10px]",
+    md: "text-[9px] leading-[10px] sm:text-[10px] sm:leading-[11px] md:text-[11px] md:leading-[12px]",
+    lg: "text-[10px] leading-[11px] sm:text-xs sm:leading-[13px] md:text-sm md:leading-[15px]",
   };
 
   return (
     <div className={`relative flex flex-col items-center ${className}`}>
-      {/* ASCII Canvas Box */}
+      {/* ASCII Character Container */}
       <div
-        onClick={toggleMode}
-        title="Click to toggle L ASCII mode (Sigil / Detective)"
-        className="relative group cursor-pointer select-none rounded-xl bg-[#09090e] border border-[#ff1a2e]/30 hover:border-[#ff1a2e] transition-all p-3 md:p-4 shadow-[0_0_20px_rgba(0,0,0,0.8),inset_0_0_15px_rgba(255,26,46,0.05)] overflow-hidden"
+        onClick={togglePose}
+        title="Click to toggle L character pose (Crouch / Close-up)"
+        className="relative group cursor-pointer select-none rounded-2xl bg-[#08080d] border border-[#ff1a2e]/30 hover:border-[#ff1a2e] transition-all p-3.5 md:p-5 shadow-[0_0_30px_rgba(0,0,0,0.85),inset_0_0_20px_rgba(255,26,46,0.06)] overflow-hidden"
       >
-        {/* Top telemetry line */}
-        <div className="flex items-center justify-between text-[9px] font-mono text-gray-500 mb-2 pb-1.5 border-b border-white/5">
+        {/* Top Header Bar */}
+        <div className="flex items-center justify-between text-[9px] font-mono text-gray-400 mb-2.5 pb-2 border-b border-white/5">
           <span className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#ff1a2e] animate-ping" />
+            <span className="w-2 h-2 rounded-full bg-[#ff1a2e] animate-ping" />
             <span className="text-[#ff1a2e] font-bold">
-              {mode === "gothic" ? "SIGIL // 0x4C" : "INVESTIGATOR // LAWLIET"}
+              {pose === "crouching" ? "L LAWLIET // CROUCH POSE" : "L LAWLIET // INVESTIGATOR STARE"}
             </span>
           </span>
-          <span className="text-gray-400">FRAME: {frameIndex + 1}/3</span>
+          <span className="text-gray-500 font-mono">FRAME: {frameIndex + 1}/3</span>
         </div>
 
-        {/* ASCII Art Content */}
+        {/* ASCII Character Art Display */}
         <pre
-          className={`font-mono text-[#ff1a2e] transition-all whitespace-pre text-center ${
+          className={`font-mono text-[#ff1a2e] transition-all whitespace-pre text-left ${
             sizeClasses[size]
           } ${isGlitching ? "glitch opacity-80 translate-x-[1px]" : "opacity-95"}`}
-          style={{ textShadow: "0 0 10px rgba(255, 26, 46, 0.45)" }}
+          style={{ textShadow: "0 0 10px rgba(255, 26, 46, 0.5)" }}
         >
           {rawArt}
         </pre>
 
-        {/* Scanning beam line */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-30">
+        {/* Scanline Sweep Animation */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-25">
           <motion.div
             animate={{ y: ["-100%", "200%"] }}
-            transition={{ duration: 2.4, repeat: Infinity, ease: "linear" }}
-            className="w-full h-8 bg-gradient-to-b from-transparent via-[#ff1a2e]/30 to-transparent"
+            transition={{ duration: 2.2, repeat: Infinity, ease: "linear" }}
+            className="w-full h-10 bg-gradient-to-b from-transparent via-[#ff1a2e]/40 to-transparent"
           />
         </div>
 
-        {/* Bottom hover prompt */}
-        <div className="mt-2 pt-1.5 border-t border-white/5 flex items-center justify-between text-[9px] font-mono text-gray-500 group-hover:text-gray-300 transition-colors">
-          <span>MODE: {mode.toUpperCase()}</span>
-          <span className="text-[#ff1a2e] group-hover:underline">TOGGLE ›</span>
+        {/* Bottom Interactive Prompt */}
+        <div className="mt-2.5 pt-2 border-t border-white/5 flex items-center justify-between text-[9px] font-mono text-gray-500 group-hover:text-gray-300 transition-colors">
+          <span>CHARACTER: L (DEATH NOTE)</span>
+          <span className="text-[#ff1a2e] group-hover:underline">TOGGLE POSE ›</span>
         </div>
       </div>
 
@@ -179,28 +195,28 @@ export default function AsciiLAnimation({
           <button
             onClick={() => {
               soundManager.playTick();
-              setMode("gothic");
+              setPose("crouching");
             }}
-            className={`px-2 py-0.5 rounded text-[10px] font-mono transition-colors ${
-              mode === "gothic"
+            className={`px-2.5 py-1 rounded text-[10px] font-mono transition-colors ${
+              pose === "crouching"
                 ? "bg-[#ff1a2e] text-white font-bold"
                 : "bg-white/5 text-gray-400 hover:text-white"
             }`}
           >
-            Sigil
+            L Crouch Pose
           </button>
           <button
             onClick={() => {
               soundManager.playTick();
-              setMode("detective");
+              setPose("portrait");
             }}
-            className={`px-2 py-0.5 rounded text-[10px] font-mono transition-colors ${
-              mode === "detective"
+            className={`px-2.5 py-1 rounded text-[10px] font-mono transition-colors ${
+              pose === "portrait"
                 ? "bg-[#ff1a2e] text-white font-bold"
                 : "bg-white/5 text-gray-400 hover:text-white"
             }`}
           >
-            Detective
+            L Close-Up Stare
           </button>
         </div>
       )}
