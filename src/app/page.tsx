@@ -90,48 +90,6 @@ const deathNoteRules = [
   },
 ];
 
-const archiveCases = [
-  {
-    caseId: "CASE-2026-08",
-    target: "CloudSEK CTF 2026",
-    category: "OSINT & WEB SECURITY",
-    finding: "Host Header Injection & Password Reset Poisoning → Admin Account Takeover",
-    outcome: "GLOBAL TOP 8 FINALIST",
-    link: "/writeup/cloudsek-ctf-2026",
-    external: false,
-    severity: "CRITICAL",
-  },
-  {
-    caseId: "CASE-2026-04",
-    target: "Telecom Inc (AD-RTS)",
-    category: "ACTIVE DIRECTORY EXPLOITATION",
-    finding: "LDAP Recon → AS-REP Roasting → GodPotato Esc → ESC1 Certificate Abuse → ESXi Takeover",
-    outcome: "FOREST ROOT COMPROMISE",
-    link: "/writeup/ad-rts-telecom-inc",
-    external: false,
-    severity: "DOMAIN ADMIN",
-  },
-  {
-    caseId: "CASE-2026-02",
-    target: "Hack The Box — Oopsie",
-    category: "LINUX PROVING GROUNDS",
-    finding: "Insecure Direct Object Reference (IDOR) & SUID PATH Hijacking",
-    outcome: "ROOT FLAG CAPTURED",
-    link: "/writeup/hackthebox-oopsie",
-    external: false,
-    severity: "SYSTEM ROOT",
-  },
-  {
-    caseId: "CASE-2025-11",
-    target: "Tmap Recon Automation",
-    category: "SECURITY TOOLING",
-    finding: "Automated port service fingerprinting and CVE mapping engine",
-    outcome: "DEPLOYED OPEN-SOURCE",
-    link: "https://github.com/An1En",
-    external: true,
-    severity: "OPERATIONAL",
-  },
-];
 
 const skills = [
   {
@@ -216,7 +174,7 @@ const statCards = [
   { label: "Proving Grounds", value: "HTB ID", link: "https://profile.hackthebox.com/profile/019cfb0e-4078-7246-87bb-feace4b36378" },
   { label: "CTFs Conquered", value: "55+", link: "https://learn.cylabacademy.org/users/An1En" },
   { label: "Active Directory RTS", value: "SPECIALIST", section: "certifications" },
-  { label: "Case Dossiers", value: "3 PUBLISHED", section: "archive" },
+  { label: "Case Dossiers", value: "3 PUBLISHED", section: "editorial" },
 ];
 
 const socials = [
@@ -231,10 +189,8 @@ export default function Home() {
   const router = useRouter();
   const [booted, setBooted] = useState(false);
   const [handshakeDone, setHandshakeDone] = useState(false);
-  const [activeTab, setActiveTab] = useState<string>("ALL");
 
   const rulesRef = useRef<HTMLElement | null>(null);
-  const archiveRef = useRef<HTMLElement | null>(null);
   const projectsRef = useRef<HTMLElement | null>(null);
   const skillsRef = useRef<HTMLElement | null>(null);
   const certsRef = useRef<HTMLElement | null>(null);
@@ -496,117 +452,7 @@ export default function Home() {
       {/* SECTION 2: PENGUIN EDITORIAL (PENGUIN PORTFOLIO MANIFESTO & WRITEUPS) */}
       <PenguinEditorial />
 
-      {/* SECTION 3: CLASSIFIED CASE FILES & TARGET ARCHIVE (Quang Dinh / Luke Baffait Style) */}
-      <section ref={archiveRef} className="py-24 px-4 bg-[#050507]" id="archive">
-        <div className="max-w-5xl mx-auto">
-          <ScrollDivider target={archiveRef} />
-
-          <GlitchIn>
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
-              <div>
-                <span className="text-[10px] uppercase font-mono tracking-[0.25em] text-[#ff1a2e] font-bold">
-                  TARGET ARCHIVE // INVESTIGATION LOG
-                </span>
-                <h2 className="text-3xl md:text-5xl font-deathnote tracking-wider text-white mt-1">
-                  CLASSIFIED CASE FILES
-                </h2>
-              </div>
-              <div className="flex items-center gap-2">
-                {["ALL", "RED TEAM", "OSINT", "TOOLING"].map((tab) => (
-                  <button
-                    key={tab}
-                    onClick={() => {
-                      soundManager.playTick();
-                      setActiveTab(tab);
-                    }}
-                    className={`px-3 py-1 rounded-full text-xs font-mono transition-colors ${
-                      activeTab === tab
-                        ? "bg-[#ff1a2e] text-white font-bold"
-                        : "bg-white/5 text-gray-400 hover:text-white"
-                    }`}
-                  >
-                    {tab}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </GlitchIn>
-
-          {/* Interactive Case Table */}
-          <div className="double-bezel overflow-hidden">
-            <div className="double-bezel-inner divide-y divide-white/5">
-              {archiveCases
-                .filter((c) => {
-                  if (activeTab === "ALL") return true;
-                  if (activeTab === "RED TEAM") return c.category.includes("ACTIVE") || c.category.includes("LINUX");
-                  if (activeTab === "OSINT") return c.category.includes("OSINT");
-                  if (activeTab === "TOOLING") return c.category.includes("TOOLING");
-                  return true;
-                })
-                .map((caseItem) => (
-                  <div
-                    key={caseItem.caseId}
-                    onMouseEnter={handleRowHover}
-                    onClick={() => {
-                      soundManager.playTick();
-                      if (caseItem.external) {
-                        window.open(caseItem.link, "_blank", "noopener,noreferrer");
-                      } else {
-                        router.push(caseItem.link);
-                      }
-                    }}
-                    className="p-5 md:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-white/[0.03] transition-colors cursor-pointer group relative"
-                  >
-                    <div className="flex items-start md:items-center gap-4">
-                      <span className="font-mono text-xs text-[#ff1a2e] font-bold shrink-0 pt-0.5 md:pt-0">
-                        [{caseItem.caseId}]
-                      </span>
-                      <div>
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <h3 className="font-deathnote text-lg md:text-xl text-white group-hover:text-[#ff1a2e] transition-colors tracking-wide">
-                            {caseItem.target}
-                          </h3>
-                          <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-white/5 border border-white/10 text-gray-400">
-                            {caseItem.category}
-                          </span>
-                        </div>
-                        <p className="font-mono text-xs text-gray-400 mt-1 max-w-xl">
-                          {caseItem.finding}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between md:justify-end gap-4 shrink-0 pt-2 md:pt-0 border-t border-white/5 md:border-0">
-                      <div className="text-right">
-                        <span className="text-[10px] font-mono tracking-wider px-2.5 py-1 rounded-full bg-[#ff1a2e]/10 border border-[#ff1a2e]/30 text-[#ff1a2e] font-semibold">
-                          {caseItem.outcome}
-                        </span>
-                      </div>
-                      <div className="w-8 h-8 rounded-full border border-white/10 group-hover:border-[#ff1a2e] group-hover:bg-[#ff1a2e] flex items-center justify-center text-gray-400 group-hover:text-white transition-all">
-                        <ArrowUpRight size={14} />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-            </div>
-          </div>
-
-          <div className="mt-4 flex items-center justify-between text-xs font-mono text-gray-500 px-2">
-            <span>INDEX: 4 DECLASSIFIED INCIDENTS</span>
-            <Link
-              href="/writeup"
-              onClick={() => soundManager.playTick()}
-              className="text-[#ff1a2e] hover:underline flex items-center gap-1"
-            >
-              <span>View Full Dossier Index</span>
-              <ArrowUpRight size={12} />
-            </Link>
-          </div>
-
-        </div>
-      </section>
-
-      {/* SECTION 4: OFFENSIVE ARSENAL (PROJECTS) */}
+      {/* SECTION 3: OFFENSIVE ARSENAL (PROJECTS) */}
       <section ref={projectsRef} className="py-24 px-4 bg-[#07070b] border-t border-white/5" id="projects">
         <div className="max-w-5xl mx-auto">
           <ScrollDivider target={projectsRef} />
