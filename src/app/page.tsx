@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -189,6 +189,20 @@ export default function Home() {
   const router = useRouter();
   const [booted, setBooted] = useState(false);
   const [handshakeDone, setHandshakeDone] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      // Prevent browser from auto-restoring scroll position down to Death Note
+      if ("scrollRestoration" in window.history) {
+        window.history.scrollRestoration = "manual";
+      }
+      // If browser reloaded with an anchor hash in address bar, strip it
+      if (window.location.hash) {
+        window.history.replaceState(null, "", window.location.pathname);
+      }
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+    }
+  }, []);
 
   const rulesRef = useRef<HTMLElement | null>(null);
   const projectsRef = useRef<HTMLElement | null>(null);

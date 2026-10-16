@@ -407,7 +407,6 @@ SECURITY DISCLOSURE  : Non-destructive ethical simulation completed.
                       onChange={(e) => setTargetName(e.target.value)}
                       placeholder="NAME OF THE TARGET TO DESTROY..."
                       maxLength={32}
-                      autoFocus
                       required
                       className="w-full bg-transparent border-b-2 border-white/20 focus:border-[#ff1a2e] pb-3 text-lg sm:text-2xl font-mono text-white placeholder:text-gray-600 focus:outline-none transition-all tracking-wider"
                     />
