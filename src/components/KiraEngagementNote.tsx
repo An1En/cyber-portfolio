@@ -103,6 +103,8 @@ export default function KiraEngagementNote() {
   const [secondsRemaining, setSecondsRemaining] = useState(40);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [videoProgress, setVideoProgress] = useState({ current: 0, total: 16 });
+  const [videoMuted, setVideoMuted] = useState(false);
+  const [showPlayOverlay, setShowPlayOverlay] = useState(false);
 
   // Archive Modal State
   const [isArchiveModalOpen, setIsArchiveModalOpen] = useState(false);
@@ -212,37 +214,87 @@ export default function KiraEngagementNote() {
   const triggerCinematicTransition = (rec: InscribedRecord) => {
     soundManager.playHeartbeat();
     setPhase("cinematic");
+    setShowPlayOverlay(false);
 
     setTimeout(() => {
       const video = videoRef.current;
       if (video) {
+        // Enforce iOS WebKit inline playback attributes
+        video.setAttribute("playsinline", "true");
+        video.setAttribute("webkit-playsinline", "true");
+        video.setAttribute("x5-playsinline", "true");
+
         video.currentTime = 0;
-        video.volume = soundEnabled ? 0.85 : 0;
+        // Start with audio preference, but prepare for mobile fallback
         video.muted = !soundEnabled;
+        setVideoMuted(!soundEnabled);
 
         const playPromise = video.play();
         if (playPromise !== undefined) {
-          playPromise.catch(() => {
-            if (videoRef.current) {
-              videoRef.current.muted = true;
-              videoRef.current.play().catch(() => {
-                setTimeout(() => finishToVerdict(rec), 3000);
-              });
-            }
-          });
+          playPromise
+            .then(() => {
+              setShowPlayOverlay(false);
+            })
+            .catch(() => {
+              // Unmuted autoplay blocked by mobile browser: immediately mute and retry
+              if (videoRef.current) {
+                videoRef.current.muted = true;
+                setVideoMuted(true);
+                videoRef.current
+                  .play()
+                  .then(() => {
+                    setShowPlayOverlay(false);
+                  })
+                  .catch(() => {
+                    // Mobile Low Power Mode or user gesture strictly required:
+                    // Show a dramatic tap-to-play overlay so user tap initiates it
+                    setShowPlayOverlay(true);
+                  });
+              }
+            });
         }
       }
-    }, 60);
+    }, 80);
 
-    // Watchdog fallback (allow full 16s video + buffer)
+    // Watchdog fallback (allow 22s buffer so video is never cut off prematurely)
     setTimeout(() => {
       setPhase((currentPhase) => {
-        if (currentPhase === "cinematic") {
+        if (currentPhase === "cinematic" && (!videoRef.current || videoRef.current.paused || videoRef.current.ended)) {
           finishToVerdict(rec);
         }
         return currentPhase;
       });
-    }, 18000);
+    }, 22000);
+  };
+
+  const handleManualPlay = () => {
+    const video = videoRef.current;
+    if (video) {
+      video.muted = !soundEnabled;
+      setVideoMuted(!soundEnabled);
+      video
+        .play()
+        .then(() => {
+          setShowPlayOverlay(false);
+        })
+        .catch(() => {
+          video.muted = true;
+          setVideoMuted(true);
+          video.play().then(() => {
+            setShowPlayOverlay(false);
+          });
+        });
+    }
+  };
+
+  const toggleVideoMute = () => {
+    const video = videoRef.current;
+    if (video) {
+      const next = !video.muted;
+      video.muted = next;
+      setVideoMuted(next);
+      soundManager.playTick();
+    }
   };
 
   const finishToVerdict = (rec: InscribedRecord) => {
@@ -534,8 +586,13 @@ SECURITY DISCLOSURE  : Non-destructive ethical simulation completed.
                   src="/images/kira/kill2.mp4"
                   playsInline
                   autoPlay
+                  muted={videoMuted}
+                  controls={false}
                   preload="auto"
-                  className="w-full h-full object-cover select-none"
+                  className="w-full h-full object-contain sm:object-cover select-none bg-black"
+                  onPlay={() => {
+                    setShowPlayOverlay(false);
+                  }}
                   onTimeUpdate={(e) => {
                     const video = e.currentTarget;
                     setVideoProgress({
@@ -553,6 +610,46 @@ SECURITY DISCLOSURE  : Non-destructive ethical simulation completed.
                   onEnded={() => currentRecord && finishToVerdict(currentRecord)}
                 />
 
+                {/* Mobile Tap-to-Play Overlay if browser blocked initial autoplay */}
+                {showPlayOverlay && (
+                  <div
+                    onClick={handleManualPlay}
+                    className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center gap-4 cursor-pointer p-6 text-center select-none"
+                  >
+                    <div className="w-20 h-20 rounded-full bg-[#ff1a2e] text-white flex items-center justify-center shadow-[0_0_40px_rgba(255,26,46,0.85)] animate-pulse">
+                      <Play size={36} className="ml-1" />
+                    </div>
+                    <div>
+                      <h3 className="font-deathnote text-2xl sm:text-3xl text-white tracking-widest deathnote-glow">
+                        START EXECUTION CINEMATIC
+                      </h3>
+                      <p className="text-xs font-mono text-gray-300 mt-1 uppercase tracking-wider">
+                        Tap anywhere on screen to play
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Sound Toggle (Top Left) */}
+                <button
+                  type="button"
+                  onClick={toggleVideoMute}
+                  className="absolute top-6 left-6 z-50 px-3.5 py-2 rounded-full bg-black/80 hover:bg-[#ff1a2e] border border-white/20 hover:border-[#ff1a2e] text-white font-mono text-xs tracking-wider uppercase transition-all backdrop-blur-md flex items-center gap-2 shadow-[0_4px_25px_rgba(0,0,0,0.8)] cursor-pointer"
+                  title={videoMuted ? "Unmute Video" : "Mute Video"}
+                >
+                  {videoMuted ? (
+                    <>
+                      <VolumeX size={14} className="text-[#ff1a2e]" />
+                      <span className="text-[11px]">MUTED (TAP FOR SOUND)</span>
+                    </>
+                  ) : (
+                    <>
+                      <Volume2 size={14} className="text-green-400" />
+                      <span className="text-[11px]">AUDIO ON</span>
+                    </>
+                  )}
+                </button>
+
                 {/* Top Right Skip Button */}
                 <button
                   type="button"
@@ -565,11 +662,11 @@ SECURITY DISCLOSURE  : Non-destructive ethical simulation completed.
 
                 {/* Bottom Timeline & Subtitle */}
                 <div className="absolute bottom-6 left-6 right-6 z-40 max-w-xl mx-auto flex flex-col items-center gap-2">
-                  <div className="font-deathnote text-sm sm:text-base text-white/90 tracking-[0.25em] drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] uppercase">
+                  <div className="font-deathnote text-sm sm:text-base text-white/90 tracking-[0.25em] drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] uppercase text-center">
                     KIRA EXECUTION PROTOCOL IN EFFECT
                   </div>
                   {currentRecord && (
-                    <div className="text-xs font-mono text-[#ff1a2e] tracking-widest uppercase drop-shadow-[0_2px_8px_rgba(255,26,46,0.6)]">
+                    <div className="text-xs font-mono text-[#ff1a2e] tracking-widest uppercase drop-shadow-[0_2px_8px_rgba(255,26,46,0.6)] text-center">
                       TARGET: {currentRecord.name}
                     </div>
                   )}
@@ -883,6 +980,15 @@ SECURITY DISCLOSURE  : Non-destructive ethical simulation completed.
         )}
       </AnimatePresence>
 
+      {/* Hidden preloader so mobile devices buffer the video in background */}
+      <video
+        src="/images/kira/kill2.mp4"
+        preload="auto"
+        muted
+        playsInline
+        className="hidden"
+        aria-hidden="true"
+      />
     </section>
   );
 }
