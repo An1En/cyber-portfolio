@@ -32,6 +32,9 @@ import {
   type BootLine,
 } from "@/components/motion-effects";
 import AsciiLAnimation from "@/components/AsciiLAnimation";
+import TargetInscriber from "@/components/TargetInscriber";
+import PenguinEditorial from "@/components/PenguinEditorial";
+import ThreeDeathNoteModel from "@/components/ThreeDeathNoteModel";
 import { soundManager } from "@/lib/audio";
 
 const projects = [
@@ -246,6 +249,7 @@ export default function Home() {
   const [handshakeDone, setHandshakeDone] = useState(false);
   const [countdown, setCountdown] = useState(40);
   const [activeTab, setActiveTab] = useState<string>("ALL");
+  const [heroVisualMode, setHeroVisualMode] = useState<"3d" | "ascii">("3d");
 
   const rulesRef = useRef<HTMLElement | null>(null);
   const archiveRef = useRef<HTMLElement | null>(null);
@@ -290,7 +294,7 @@ export default function Home() {
       <ScrollReadout />
 
       {/* HERO: DEATH NOTE INVESTIGATOR DOSSIER */}
-      <section className="min-h-[100dvh] flex flex-col justify-center px-4 pt-28 pb-16 relative overflow-hidden">
+      <section className="min-h-[100dvh] flex flex-col justify-center px-4 pt-28 pb-16 relative overflow-hidden" id="dossier">
         <div className="max-w-5xl mx-auto w-full">
           
           {/* Eyebrow / Shinigami Telemetry Banner */}
@@ -318,7 +322,41 @@ export default function Home() {
             </a>
           </div>
 
-          {/* Macro Hacking & Gothic Header + ASCII L Animation side by side */}
+          {/* 3-MODEL PERSPECTIVE SELECTOR BAR */}
+          <div className="flex flex-wrap items-center gap-2 mb-8 p-1.5 rounded-2xl bg-white/[0.03] border border-white/10 max-w-fit">
+            <button
+              onClick={() => {
+                soundManager.playTick();
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              className="px-3.5 py-1.5 rounded-xl text-xs font-mono bg-[#ff1a2e]/15 border border-[#ff1a2e]/40 text-white font-semibold flex items-center gap-2 shadow-[0_0_15px_rgba(255,26,46,0.2)]"
+            >
+              <span className="text-[#ff1a2e] font-bold">01 //</span>
+              <span>L LAWLIET DOSSIER</span>
+            </button>
+            <button
+              onClick={() => {
+                soundManager.playTick();
+                document.getElementById("inscriber")?.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="px-3.5 py-1.5 rounded-xl text-xs font-mono text-gray-400 hover:text-white hover:bg-white/5 transition-colors flex items-center gap-2"
+            >
+              <span className="text-[#ff1a2e]">02 //</span>
+              <span>TARGET INSCRIBER (KIRA)</span>
+            </button>
+            <button
+              onClick={() => {
+                soundManager.playTick();
+                document.getElementById("editorial")?.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="px-3.5 py-1.5 rounded-xl text-xs font-mono text-gray-400 hover:text-white hover:bg-white/5 transition-colors flex items-center gap-2"
+            >
+              <span className="text-[#ff1a2e]">03 //</span>
+              <span>PENGUIN EDITORIAL (彼岸花)</span>
+            </button>
+          </div>
+
+          {/* Macro Hacking & Gothic Header + Visual Model Switcher (3D WebGL vs Braille ASCII) */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8">
             <div className="flex-1">
               <div className="flex items-center gap-2 text-xs font-mono text-[#ff1a2e] mb-2 uppercase tracking-[0.25em]">
@@ -334,11 +372,50 @@ export default function Home() {
               <p className="font-mono text-xs md:text-sm text-gray-400 tracking-wider uppercase mt-2">
                 <span className="text-[#ff1a2e]">{'//'}</span> THE ADVERSARIAL CODEX • INSCRIBE TARGET HOSTS • FORENSIC ROOT EXTRACTION
               </p>
+
+              {/* Toggle Visual Switcher between 3D Tome and ASCII L */}
+              <div className="mt-5 flex items-center gap-2">
+                <span className="text-[11px] font-mono text-gray-500 uppercase">VISUAL RUNTIME:</span>
+                <div className="inline-flex rounded-lg bg-black/60 border border-white/10 p-0.5">
+                  <button
+                    onClick={() => {
+                      soundManager.playTick();
+                      setHeroVisualMode("3d");
+                    }}
+                    className={`px-3 py-1 rounded-md text-[11px] font-mono transition-all ${
+                      heroVisualMode === "3d"
+                        ? "bg-[#ff1a2e] text-white font-bold shadow-[0_0_12px_rgba(255,26,46,0.4)]"
+                        : "text-gray-400 hover:text-white"
+                    }`}
+                  >
+                    3D WEBGL TOME
+                  </button>
+                  <button
+                    onClick={() => {
+                      soundManager.playTick();
+                      setHeroVisualMode("ascii");
+                    }}
+                    className={`px-3 py-1 rounded-md text-[11px] font-mono transition-all ${
+                      heroVisualMode === "ascii"
+                        ? "bg-[#ff1a2e] text-white font-bold shadow-[0_0_12px_rgba(255,26,46,0.4)]"
+                        : "text-gray-400 hover:text-white"
+                    }`}
+                  >
+                    ASCII L (ANIME)
+                  </button>
+                </div>
+              </div>
             </div>
 
-            {/* ASCII L Animation Widget in Hero */}
-            <div className="shrink-0 self-center lg:self-auto">
-              <AsciiLAnimation size="md" />
+            {/* Visual Widget in Hero: EITHER 3D WebGL Tome OR ASCII L */}
+            <div className="shrink-0 self-center lg:self-auto w-full lg:w-auto flex justify-center">
+              {heroVisualMode === "3d" ? (
+                <div className="w-full max-w-sm sm:max-w-md">
+                  <ThreeDeathNoteModel height="340px" />
+                </div>
+              ) : (
+                <AsciiLAnimation size="md" />
+              )}
             </div>
           </div>
 
@@ -495,12 +572,18 @@ export default function Home() {
         <div className="mt-12 text-center">
           <div className="inline-flex items-center gap-2 text-gray-500 font-mono text-xs">
             <ChevronDown size={14} className="text-[#ff1a2e] animate-bounce" />
-            <span>SCROLL TO CONSULT NOTE RULES</span>
+            <span>SCROLL TO INSCRIBE TARGETS &amp; AUDIT NOTES</span>
           </div>
         </div>
       </section>
 
-      {/* SECTION 2: HOW TO USE IT (DEATH NOTE RULES OF CYBERSECURITY) */}
+      {/* SECTION 2: INTERACTIVE DEATH NOTE TARGET INSCRIBER (PROJECT KIRA MECHANIC) */}
+      <TargetInscriber />
+
+      {/* SECTION 3: PENGUIN EDITORIAL (PENGUIN PORTFOLIO MANIFESTO & TECHNICAL NOTES) */}
+      <PenguinEditorial />
+
+      {/* SECTION 4: HOW TO USE IT (DEATH NOTE RULES OF CYBERSECURITY) */}
       <section ref={rulesRef} className="py-24 px-4 relative border-t border-[#ff1a2e]/15 bg-[#07070b]" id="rules">
         <div className="max-w-5xl mx-auto">
           <ScrollDivider target={rulesRef} />

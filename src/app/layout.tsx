@@ -6,21 +6,27 @@ import Navbar from "@/components/Navbar";
 import Preloader from "@/components/Preloader";
 
 export const metadata: Metadata = {
-  title: "Anlen Jeban | Cybersecurity Portfolio",
+  title: "Anlen Jeban (AN1EN) — The Cyber Dossier | Offensive Red Team & Security Research",
   description:
-    "Cybersecurity researcher, CTF player, and full-stack developer. Specializing in penetration testing, network security, and AI-powered security tools.",
+    "Adversarial security codex by Anlen Jeban (AN1EN). Active Directory Red Team Specialist (AD-RTS), RHCSA certified, CTF player. Interactive Death Note target inscription terminal, proving ground writeups, and offensive cyber research.",
   keywords: [
+    "Anlen Jeban",
+    "AN1EN",
     "cybersecurity",
+    "Active Directory",
+    "Red Team",
+    "AD-RTS",
+    "ESC1",
+    "Hack The Box",
     "penetration testing",
+    "Death Note",
+    "Cyber Dossier",
     "CTF",
-    "ethical hacking",
-    "network security",
-    "portfolio",
   ],
   openGraph: {
-    title: "Anlen Jeban | Cybersecurity Portfolio",
+    title: "Anlen Jeban (AN1EN) — The Cyber Dossier",
     description:
-      "Cybersecurity researcher, CTF player, and full-stack developer.",
+      "Offensive security research, interactive target inscription, and proving ground writeups by Anlen Jeban.",
     type: "website",
   },
 };
