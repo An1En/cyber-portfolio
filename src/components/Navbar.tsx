@@ -10,7 +10,8 @@ import { soundManager } from "@/lib/audio";
 
 const navItems = [
   { label: "DOSSIER", href: "/", icon: Skull },
-  { label: "EDITORIAL", href: "/#editorial", icon: BookOpen },
+  { label: "WRITEUPS", href: "/#editorial", icon: BookOpen },
+  { label: "KIRA CODEX", href: "/#inscribe", icon: Skull },
   { label: "PROJECTS", href: "/#projects", icon: Code2 },
   { label: "ARCHIVE", href: "/writeup", icon: FileText },
   { label: "SHADOW INTEL", href: "/chatbot", icon: Terminal },

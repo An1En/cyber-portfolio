@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -33,7 +33,7 @@ import {
 } from "@/components/motion-effects";
 import AsciiLAnimation from "@/components/AsciiLAnimation";
 import PenguinEditorial from "@/components/PenguinEditorial";
-import ThreeDeathNoteModel from "@/components/ThreeDeathNoteModel";
+import KiraEngagementNote from "@/components/KiraEngagementNote";
 import { soundManager } from "@/lib/audio";
 
 const projects = [
@@ -172,21 +172,6 @@ const certifications = [
     image: "/cert-crta.png",
   },
   {
-    title: "Red Hat Certified System Administrator",
-    issuer: "Red Hat — Virtual Instructor-Led Training",
-    date: "2025",
-    skills: [
-      "Linux Administration",
-      "Shell Scripting",
-      "User & Group Management",
-      "SELinux",
-      "Storage Management",
-      "Networking",
-      "Systemd",
-      "Package Management",
-    ],
-  },
-  {
     title: "Fundamentals of Encryption & Quantum Safe Techniques",
     issuer: "IBM — Cognitive Class",
     date: "2025",
@@ -246,9 +231,7 @@ export default function Home() {
   const router = useRouter();
   const [booted, setBooted] = useState(false);
   const [handshakeDone, setHandshakeDone] = useState(false);
-  const [countdown, setCountdown] = useState(40);
   const [activeTab, setActiveTab] = useState<string>("ALL");
-  const [heroVisualMode, setHeroVisualMode] = useState<"3d" | "ascii">("3d");
 
   const rulesRef = useRef<HTMLElement | null>(null);
   const archiveRef = useRef<HTMLElement | null>(null);
@@ -256,14 +239,6 @@ export default function Home() {
   const skillsRef = useRef<HTMLElement | null>(null);
   const certsRef = useRef<HTMLElement | null>(null);
   const contactRef = useRef<HTMLElement | null>(null);
-
-  // Shinigami Eye 40-second countdown ticker simulation
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCountdown((prev) => (prev > 1 ? prev - 1 : 40));
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
 
   const openProject = (url?: string) => {
     soundManager.playTick();
@@ -296,24 +271,14 @@ export default function Home() {
       <section className="min-h-[100dvh] flex flex-col justify-center px-4 pt-28 pb-16 relative overflow-hidden" id="dossier">
         <div className="max-w-5xl mx-auto w-full">
           
-          {/* Eyebrow / Shinigami Telemetry Banner */}
-          <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-            <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#ff1a2e]/10 border border-[#ff1a2e]/30 text-xs font-mono text-[#ff1a2e]">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ff1a2e] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#ff1a2e]"></span>
-              </span>
-              <span className="tracking-widest uppercase font-semibold">Shinigami Eyes: Active</span>
-              <span className="text-gray-500">|</span>
-              <span className="text-gray-300">Target Time to Root: <span className="text-[#ff1a2e] font-bold">00:00:{countdown < 10 ? `0${countdown}` : countdown}</span></span>
-            </div>
-
+          {/* Top Bar with HTB link */}
+          <div className="flex items-center justify-end mb-6">
             <a
               href="https://profile.hackthebox.com/profile/019cfb0e-4078-7246-87bb-feace4b36378"
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => soundManager.playTick()}
-              className="inline-flex items-center gap-2 text-xs font-mono text-gray-400 hover:text-[#ff1a2e] transition-colors"
+              className="inline-flex items-center gap-2 text-xs font-mono text-gray-400 hover:text-[#ff1a2e] transition-colors bg-white/[0.03] border border-white/10 px-3.5 py-1.5 rounded-full"
             >
               <Skull size={13} className="text-[#ff1a2e]" />
               <span>HTB ID: 019cfb0e-4078-7246-87bb</span>
@@ -321,52 +286,8 @@ export default function Home() {
             </a>
           </div>
 
-          {/* PERSPECTIVE QUICK JUMP BAR */}
-          <div className="flex flex-wrap items-center gap-2 mb-8 p-1.5 rounded-2xl bg-white/[0.03] border border-white/10 max-w-fit">
-            <button
-              onClick={() => {
-                soundManager.playTick();
-                window.scrollTo({ top: 0, behavior: "smooth" });
-              }}
-              className="px-3.5 py-1.5 rounded-xl text-xs font-mono bg-[#ff1a2e]/15 border border-[#ff1a2e]/40 text-white font-semibold flex items-center gap-2 shadow-[0_0_15px_rgba(255,26,46,0.2)]"
-            >
-              <span className="text-[#ff1a2e] font-bold">01 //</span>
-              <span>L DOSSIER</span>
-            </button>
-            <button
-              onClick={() => {
-                soundManager.playTick();
-                document.getElementById("editorial")?.scrollIntoView({ behavior: "smooth" });
-              }}
-              className="px-3.5 py-1.5 rounded-xl text-xs font-mono text-gray-400 hover:text-white hover:bg-white/5 transition-colors flex items-center gap-2"
-            >
-              <span className="text-[#ff1a2e]">02 //</span>
-              <span>SELECTED WRITEUPS</span>
-            </button>
-            <button
-              onClick={() => {
-                soundManager.playTick();
-                document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" });
-              }}
-              className="px-3.5 py-1.5 rounded-xl text-xs font-mono text-gray-400 hover:text-white hover:bg-white/5 transition-colors flex items-center gap-2"
-            >
-              <span className="text-[#ff1a2e]">03 //</span>
-              <span>OFFENSIVE PROJECTS</span>
-            </button>
-            <button
-              onClick={() => {
-                soundManager.playTick();
-                document.getElementById("certifications")?.scrollIntoView({ behavior: "smooth" });
-              }}
-              className="px-3.5 py-1.5 rounded-xl text-xs font-mono text-gray-400 hover:text-white hover:bg-white/5 transition-colors flex items-center gap-2"
-            >
-              <span className="text-[#ff1a2e]">04 //</span>
-              <span>CERTIFICATIONS</span>
-            </button>
-          </div>
-
-          {/* Macro Hacking & Gothic Header + Visual Model Switcher (3D WebGL vs Braille ASCII) */}
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8">
+          {/* Macro Hacking & Gothic Header + ASCII L Animation side by side */}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mb-8">
             <div className="flex-1">
               <div className="flex items-center gap-2 text-xs font-mono text-[#ff1a2e] mb-2 uppercase tracking-[0.25em]">
                 <span>[ 0xDEAD ]</span>
@@ -378,53 +299,14 @@ export default function Home() {
                 CYBER DOSSIER
               </h1>
               
-              <p className="font-mono text-xs md:text-sm text-gray-400 tracking-wider uppercase mt-2">
-                <span className="text-[#ff1a2e]">{'//'}</span> THE ADVERSARIAL CODEX • INSCRIBE TARGET HOSTS • FORENSIC ROOT EXTRACTION
+              <p className="font-mono text-xs md:text-sm text-gray-400 tracking-wider uppercase mt-2 max-w-xl">
+                <span className="text-[#ff1a2e]">{'//'}</span> THE ADVERSARIAL CODEX • ADVANCED ATTACK SIMULATION • ROOT EXTRACTION
               </p>
-
-              {/* Toggle Visual Switcher between 3D Tome and ASCII L */}
-              <div className="mt-5 flex items-center gap-2">
-                <span className="text-[11px] font-mono text-gray-500 uppercase">VISUAL RUNTIME:</span>
-                <div className="inline-flex rounded-lg bg-black/60 border border-white/10 p-0.5">
-                  <button
-                    onClick={() => {
-                      soundManager.playTick();
-                      setHeroVisualMode("3d");
-                    }}
-                    className={`px-3 py-1 rounded-md text-[11px] font-mono transition-all ${
-                      heroVisualMode === "3d"
-                        ? "bg-[#ff1a2e] text-white font-bold shadow-[0_0_12px_rgba(255,26,46,0.4)]"
-                        : "text-gray-400 hover:text-white"
-                    }`}
-                  >
-                    3D WEBGL TOME
-                  </button>
-                  <button
-                    onClick={() => {
-                      soundManager.playTick();
-                      setHeroVisualMode("ascii");
-                    }}
-                    className={`px-3 py-1 rounded-md text-[11px] font-mono transition-all ${
-                      heroVisualMode === "ascii"
-                        ? "bg-[#ff1a2e] text-white font-bold shadow-[0_0_12px_rgba(255,26,46,0.4)]"
-                        : "text-gray-400 hover:text-white"
-                    }`}
-                  >
-                    ASCII L (ANIME)
-                  </button>
-                </div>
-              </div>
             </div>
 
-            {/* Visual Widget in Hero: EITHER 3D WebGL Tome OR ASCII L */}
-            <div className="shrink-0 self-center lg:self-auto w-full lg:w-auto flex justify-center">
-              {heroVisualMode === "3d" ? (
-                <div className="w-full max-w-sm sm:max-w-md">
-                  <ThreeDeathNoteModel height="340px" />
-                </div>
-              ) : (
-                <AsciiLAnimation size="md" />
-              )}
+            {/* ASCII L Animation Widget in Hero */}
+            <div className="shrink-0 self-center lg:self-auto flex justify-center">
+              <AsciiLAnimation size="md" />
             </div>
           </div>
 
@@ -489,7 +371,7 @@ export default function Home() {
 
                   <p className="text-gray-300 font-sans text-sm md:text-base max-w-3xl mb-8 leading-relaxed">
                     <span className="text-[#ff1a2e] font-mono font-bold font-deathnote text-lg mr-1">&ldquo;</span>
-                    The system whose vulnerability is inscribed within this note shall fall. Specializing in Active Directory exploitation, stealth privilege escalation, and AI-engineered offensive intelligence. Red Hat Certified, CTF competitor, and published security researcher.
+                    The system whose vulnerability is inscribed within this note shall fall. Specializing in Active Directory exploitation, stealth privilege escalation, and AI-engineered offensive intelligence. Active Directory Red Team Specialist, CTF competitor, and published security researcher.
                     <span className="text-[#ff1a2e] font-mono font-bold font-deathnote text-lg ml-1">&rdquo;</span>
                   </p>
 
@@ -505,6 +387,19 @@ export default function Home() {
                         <ArrowUpRight size={14} />
                       </span>
                     </Link>
+
+                    <button
+                      onClick={() => {
+                        soundManager.playTick();
+                        document.getElementById("inscribe")?.scrollIntoView({ behavior: "smooth" });
+                      }}
+                      className="group relative rounded-full pl-6 pr-2 py-2 bg-[#ff1a2e]/10 border border-[#ff1a2e]/40 hover:bg-[#ff1a2e]/20 text-[#ff1a2e] font-mono text-xs flex items-center gap-3 transition-all duration-300"
+                    >
+                      <span>INSCRIBE AUDIT TARGET</span>
+                      <span className="w-8 h-8 rounded-full bg-[#ff1a2e]/20 flex items-center justify-center text-[#ff1a2e]">
+                        <Skull size={13} />
+                      </span>
+                    </button>
 
                     <Link
                       href="/writeup"
@@ -586,8 +481,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SECTION 2: PENGUIN EDITORIAL (PENGUIN PORTFOLIO MANIFESTO & TECHNICAL NOTES) */}
+      {/* SECTION 2: PENGUIN EDITORIAL (PENGUIN PORTFOLIO MANIFESTO & WRITEUPS) */}
       <PenguinEditorial />
+
+      {/* SECTION 3: KIRA DEATH NOTE ENGAGEMENT INSCRIBER */}
+      <KiraEngagementNote />
 
       {/* SECTION 4: HOW TO USE IT (DEATH NOTE RULES OF CYBERSECURITY) */}
       <section ref={rulesRef} className="py-24 px-4 relative border-t border-[#ff1a2e]/15 bg-[#07070b]" id="rules">
@@ -1097,7 +995,7 @@ export default function Home() {
           <div className="flex items-center gap-4 text-[11px]">
             <span>HTB ID: 019cfb0e-4078</span>
             <span>•</span>
-            <span>RHCSA CERTIFIED</span>
+            <span>AD-RTS SPECIALIST</span>
             <span>•</span>
             <span>© 2026 MIT</span>
           </div>

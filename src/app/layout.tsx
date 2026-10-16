@@ -8,7 +8,7 @@ import Preloader from "@/components/Preloader";
 export const metadata: Metadata = {
   title: "Anlen Jeban (AN1EN) — The Cyber Dossier | Offensive Red Team & Security Research",
   description:
-    "Adversarial security codex by Anlen Jeban (AN1EN). Active Directory Red Team Specialist (AD-RTS), RHCSA certified, CTF player. Interactive Death Note target inscription terminal, proving ground writeups, and offensive cyber research.",
+    "Adversarial security codex by Anlen Jeban (AN1EN). Active Directory Red Team Specialist (AD-RTS), Certified Red Team Analyst (CRTA), CTF player. Proving ground writeups and offensive cyber research.",
   keywords: [
     "Anlen Jeban",
     "AN1EN",

