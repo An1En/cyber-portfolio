@@ -13,6 +13,7 @@ import {
   Clock,
   Terminal,
   FastForward,
+  Play,
 } from "lucide-react";
 import { soundManager } from "@/lib/audio";
 
@@ -41,6 +42,7 @@ export default function KiraEngagementNote() {
   const [records, setRecords] = useState<InscribedRecord[]>([]);
   const [secondsRemaining, setSecondsRemaining] = useState(40);
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [videoProgress, setVideoProgress] = useState({ current: 0, total: 16 });
 
   // References
   const textRef = useRef<HTMLHeadingElement | null>(null);
@@ -423,7 +425,22 @@ SECURITY DISCLOSURE  : Non-destructive ethical simulation completed.
                   src="/images/kira/kill2.mp4"
                   playsInline
                   autoPlay
+                  preload="auto"
                   className="w-full h-full object-cover select-none"
+                  onTimeUpdate={(e) => {
+                    const video = e.currentTarget;
+                    setVideoProgress({
+                      current: video.currentTime,
+                      total: video.duration || 16,
+                    });
+                  }}
+                  onLoadedMetadata={(e) => {
+                    const video = e.currentTarget;
+                    setVideoProgress((prev) => ({
+                      ...prev,
+                      total: video.duration || 16,
+                    }));
+                  }}
                   onEnded={() => currentRecord && finishToVerdict(currentRecord)}
                 />
 
@@ -437,16 +454,30 @@ SECURITY DISCLOSURE  : Non-destructive ethical simulation completed.
                   <span>SKIP CINEMATIC</span>
                 </button>
 
-                {/* Bottom Target Inscription Subtitle */}
-                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-40 text-center pointer-events-none px-4">
+                {/* Bottom Timeline & Subtitle */}
+                <div className="absolute bottom-6 left-6 right-6 z-40 max-w-xl mx-auto flex flex-col items-center gap-2">
                   <div className="font-deathnote text-sm sm:text-base text-white/90 tracking-[0.25em] drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] uppercase">
                     KIRA EXECUTION PROTOCOL IN EFFECT
                   </div>
                   {currentRecord && (
-                    <div className="text-xs font-mono text-[#ff1a2e] tracking-widest uppercase mt-1 drop-shadow-[0_2px_8px_rgba(255,26,46,0.6)]">
+                    <div className="text-xs font-mono text-[#ff1a2e] tracking-widest uppercase drop-shadow-[0_2px_8px_rgba(255,26,46,0.6)]">
                       TARGET: {currentRecord.name}
                     </div>
                   )}
+
+                  {/* Progress timeline bar */}
+                  <div className="w-full flex items-center gap-3 font-mono text-[11px] text-gray-400 mt-1">
+                    <span className="w-8 text-right">{Math.floor(videoProgress.current)}s</span>
+                    <div className="flex-1 h-1.5 bg-white/20 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-[#ff1a2e] transition-all duration-100"
+                        style={{
+                          width: `${(videoProgress.current / (videoProgress.total || 16)) * 100}%`,
+                        }}
+                      />
+                    </div>
+                    <span className="w-8">{Math.floor(videoProgress.total || 16)}s</span>
+                  </div>
                 </div>
               </div>
             )}
@@ -532,6 +563,15 @@ SECURITY DISCLOSURE  : Non-destructive ethical simulation completed.
                   >
                     <RotateCcw size={14} />
                     <span>REWRITE ANOTHER TARGET</span>
+                  </button>
+
+                  <button
+                    onClick={() => currentRecord && triggerCinematicTransition(currentRecord)}
+                    type="button"
+                    className="py-3 px-4 rounded-xl bg-white/10 hover:bg-[#ff1a2e]/30 border border-white/10 text-white font-mono text-xs flex items-center gap-2 transition-all cursor-pointer"
+                  >
+                    <Play size={13} className="text-[#ff1a2e]" />
+                    <span>REPLAY CINEMATIC (16s)</span>
                   </button>
 
                   <a

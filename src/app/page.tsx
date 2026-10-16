@@ -378,36 +378,12 @@ export default function Home() {
                   {/* Button-in-Button CTA Architecture (High-End Visual Design) */}
                   <div className="flex flex-wrap items-center gap-4">
                     <Link
-                      href="/chatbot"
-                      onClick={() => soundManager.playTargetAcquired()}
+                      href="/#editorial"
+                      onClick={() => soundManager.playTick()}
                       className="group relative rounded-full pl-6 pr-2 py-2 bg-[#ff1a2e] text-white font-mono text-xs font-semibold flex items-center gap-3 transition-all duration-300 hover:shadow-[0_0_25px_rgba(255,26,46,0.6)] hover:scale-[1.02]"
                     >
-                      <span>INITIATE SHADOW INTEL</span>
+                      <span>EXPLORE WRITEUPS</span>
                       <span className="w-8 h-8 rounded-full bg-black/25 flex items-center justify-center transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-                        <ArrowUpRight size={14} />
-                      </span>
-                    </Link>
-
-                    <button
-                      onClick={() => {
-                        soundManager.playTick();
-                        document.getElementById("inscribe")?.scrollIntoView({ behavior: "smooth" });
-                      }}
-                      className="group relative rounded-full pl-6 pr-2 py-2 bg-[#ff1a2e]/10 border border-[#ff1a2e]/40 hover:bg-[#ff1a2e]/20 text-[#ff1a2e] font-mono text-xs flex items-center gap-3 transition-all duration-300"
-                    >
-                      <span>INSCRIBE AUDIT TARGET</span>
-                      <span className="w-8 h-8 rounded-full bg-[#ff1a2e]/20 flex items-center justify-center text-[#ff1a2e]">
-                        <Skull size={13} />
-                      </span>
-                    </button>
-
-                    <Link
-                      href="/writeup"
-                      onClick={() => soundManager.playTick()}
-                      className="group relative rounded-full pl-6 pr-2 py-2 bg-white/5 border border-white/10 hover:border-[#ff1a2e]/40 text-gray-200 font-mono text-xs flex items-center gap-3 transition-all duration-300 hover:bg-white/10"
-                    >
-                      <span>CASE ARCHIVE</span>
-                      <span className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-white transition-colors">
                         <BookOpen size={13} />
                       </span>
                     </Link>
@@ -423,6 +399,42 @@ export default function Home() {
                         <Download size={13} />
                       </span>
                     </a>
+
+                    <Link
+                      href="/#projects"
+                      onClick={() => soundManager.playTick()}
+                      className="group relative rounded-full pl-6 pr-2 py-2 bg-white/5 border border-white/10 hover:border-[#ff1a2e]/40 text-gray-200 font-mono text-xs flex items-center gap-3 transition-all duration-300 hover:bg-white/10"
+                    >
+                      <span>OFFENSIVE PROJECTS</span>
+                      <span className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-white transition-colors">
+                        <Code2 size={13} />
+                      </span>
+                    </Link>
+
+                    <Link
+                      href="/chatbot"
+                      onClick={() => soundManager.playTargetAcquired()}
+                      className="group relative rounded-full pl-6 pr-2 py-2 bg-white/5 border border-white/10 hover:border-[#ff1a2e]/40 text-gray-200 font-mono text-xs flex items-center gap-3 transition-all duration-300 hover:bg-white/10"
+                    >
+                      <span>SHADOW INTEL</span>
+                      <span className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-white transition-colors">
+                        <ArrowUpRight size={13} />
+                      </span>
+                    </Link>
+
+                    <button
+                      onClick={() => {
+                        soundManager.playTick();
+                        document.getElementById("inscribe")?.scrollIntoView({ behavior: "smooth" });
+                      }}
+                      className="group relative rounded-full pl-5 pr-2 py-2 bg-[#ff1a2e]/10 border border-[#ff1a2e]/30 hover:bg-[#ff1a2e]/20 text-[#ff1a2e] font-mono text-xs flex items-center gap-2.5 transition-all duration-300"
+                      title="Scroll to interactive Kira Death Note simulation"
+                    >
+                      <span>KIRA CODEX [SIM]</span>
+                      <span className="w-8 h-8 rounded-full bg-[#ff1a2e]/20 flex items-center justify-center text-[#ff1a2e]">
+                        <Skull size={13} />
+                      </span>
+                    </button>
                   </div>
 
                   {/* Social Links Row */}
@@ -483,73 +495,6 @@ export default function Home() {
 
       {/* SECTION 2: PENGUIN EDITORIAL (PENGUIN PORTFOLIO MANIFESTO & WRITEUPS) */}
       <PenguinEditorial />
-
-      {/* SECTION 3: KIRA DEATH NOTE ENGAGEMENT INSCRIBER */}
-      <KiraEngagementNote />
-
-      {/* SECTION 4: HOW TO USE IT (DEATH NOTE RULES OF CYBERSECURITY) */}
-      <section ref={rulesRef} className="py-24 px-4 relative border-t border-[#ff1a2e]/15 bg-[#07070b]" id="rules">
-        <div className="max-w-5xl mx-auto">
-          <ScrollDivider target={rulesRef} />
-          
-          <GlitchIn>
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
-              <div>
-                <span className="text-[10px] uppercase font-mono tracking-[0.25em] text-[#ff1a2e] font-bold">
-                  RULES OF ENGAGEMENT // NOTE MANUAL
-                </span>
-                <h2 className="text-4xl md:text-6xl font-deathnote tracking-wider text-white mt-1">
-                  HOW TO USE IT
-                </h2>
-              </div>
-              <p className="font-mono text-xs text-gray-400 max-w-md">
-                Strict operational guidelines governing vulnerability discovery, exploitation mechanics, and ethical disclosures.
-              </p>
-            </div>
-          </GlitchIn>
-
-          {/* Death Note Rule Bento Cards */}
-          <div className="grid md:grid-cols-2 gap-6">
-            {deathNoteRules.map((r, i) => (
-              <motion.div
-                key={r.roman}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ margin: "-10% 0px" }}
-                transition={{ duration: 0.3, delay: i * 0.1 }}
-                whileHover={{ y: -4 }}
-                onMouseEnter={handleRowHover}
-                className="deathnote-card rounded-xl p-6 md:p-8 flex flex-col justify-between group"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-4 pb-3 border-b border-white/5">
-                    <span className="font-deathnote text-3xl md:text-4xl text-[#ff1a2e] font-bold deathnote-glow">
-                      RULE {r.roman}
-                    </span>
-                    <span className="text-[10px] font-mono tracking-widest text-gray-500 uppercase">
-                      SEC_CLAUSE // 0x0{i + 1}
-                    </span>
-                  </div>
-
-                  <h3 className="font-deathnote text-lg md:text-xl text-white tracking-wide mb-3 group-hover:text-[#ff1a2e] transition-colors">
-                    {r.title}
-                  </h3>
-
-                  <p className="font-sans text-sm text-gray-300 leading-relaxed italic">
-                    &ldquo;{r.rule}&rdquo;
-                  </p>
-                </div>
-
-                <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-gray-500">
-                  <span>STATUS: CODIFIED</span>
-                  <Crosshair size={12} className="text-[#ff1a2e]/60 group-hover:text-[#ff1a2e] transition-colors" />
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-        </div>
-      </section>
 
       {/* SECTION 3: CLASSIFIED CASE FILES & TARGET ARCHIVE (Quang Dinh / Luke Baffait Style) */}
       <section ref={archiveRef} className="py-24 px-4 bg-[#050507]" id="archive">
@@ -914,7 +859,74 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SECTION 7: CONTACT ENCRYPTED HANDSHAKE */}
+      {/* SECTION 7: HOW TO USE IT (DEATH NOTE RULES OF CYBERSECURITY) */}
+      <section ref={rulesRef} className="py-24 px-4 relative border-t border-[#ff1a2e]/15 bg-[#07070b]" id="rules">
+        <div className="max-w-5xl mx-auto">
+          <ScrollDivider target={rulesRef} />
+          
+          <GlitchIn>
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
+              <div>
+                <span className="text-[10px] uppercase font-mono tracking-[0.25em] text-[#ff1a2e] font-bold">
+                  RULES OF ENGAGEMENT // NOTE MANUAL
+                </span>
+                <h2 className="text-4xl md:text-6xl font-deathnote tracking-wider text-white mt-1">
+                  HOW TO USE IT
+                </h2>
+              </div>
+              <p className="font-mono text-xs text-gray-400 max-w-md">
+                Strict operational guidelines governing vulnerability discovery, exploitation mechanics, and ethical disclosures.
+              </p>
+            </div>
+          </GlitchIn>
+
+          {/* Death Note Rule Bento Cards */}
+          <div className="grid md:grid-cols-2 gap-6">
+            {deathNoteRules.map((r, i) => (
+              <motion.div
+                key={r.roman}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ margin: "-10% 0px" }}
+                transition={{ duration: 0.3, delay: i * 0.1 }}
+                whileHover={{ y: -4 }}
+                onMouseEnter={handleRowHover}
+                className="deathnote-card rounded-xl p-6 md:p-8 flex flex-col justify-between group"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-4 pb-3 border-b border-white/5">
+                    <span className="font-deathnote text-3xl md:text-4xl text-[#ff1a2e] font-bold deathnote-glow">
+                      RULE {r.roman}
+                    </span>
+                    <span className="text-[10px] font-mono tracking-widest text-gray-500 uppercase">
+                      SEC_CLAUSE // 0x0{i + 1}
+                    </span>
+                  </div>
+
+                  <h3 className="font-deathnote text-lg md:text-xl text-white tracking-wide mb-3 group-hover:text-[#ff1a2e] transition-colors">
+                    {r.title}
+                  </h3>
+
+                  <p className="font-sans text-sm text-gray-300 leading-relaxed italic">
+                    &ldquo;{r.rule}&rdquo;
+                  </p>
+                </div>
+
+                <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-gray-500">
+                  <span>STATUS: CODIFIED</span>
+                  <Crosshair size={12} className="text-[#ff1a2e]/60 group-hover:text-[#ff1a2e] transition-colors" />
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+        </div>
+      </section>
+
+      {/* SECTION 8: KIRA DEATH NOTE TARGET INSCRIBER (INTERACTIVE ENGINE & EASTER EGG) */}
+      <KiraEngagementNote />
+
+      {/* SECTION 9: CONTACT ENCRYPTED HANDSHAKE */}
       <section ref={contactRef} className="py-24 px-4 bg-[#050507]" id="contact">
         <div className="max-w-4xl mx-auto">
           <ScrollDivider target={contactRef} />
