@@ -12,6 +12,7 @@ import {
   VolumeX,
   Clock,
   Terminal,
+  FastForward,
 } from "lucide-react";
 import { soundManager } from "@/lib/audio";
 
@@ -125,32 +126,39 @@ export default function KiraEngagementNote() {
     soundManager.playHeartbeat();
     setPhase("cinematic");
 
-    // Attempt video playback, with a safe 3-second fallback
-    const video = videoRef.current;
-    let videoPlayed = false;
-
-    if (video) {
-      video.currentTime = 0;
-      video.muted = !soundEnabled;
-      const playPromise = video.play();
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            videoPlayed = true;
-          })
-          .catch(() => {
-            // Video autoplay restricted, proceed immediately
-            finishToVerdict(rec);
-          });
-      }
-    }
-
-    // Auto-advance after 2.8s if video doesn't end earlier
+    // Attempt full video playback with audio
     setTimeout(() => {
-      if (!videoPlayed || phase !== "verdict") {
-        finishToVerdict(rec);
+      const video = videoRef.current;
+      if (video) {
+        video.currentTime = 0;
+        video.volume = soundEnabled ? 0.85 : 0;
+        video.muted = !soundEnabled;
+
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            // If browser policy blocks unmuted autoplay, retry muted
+            if (videoRef.current) {
+              videoRef.current.muted = true;
+              videoRef.current.play().catch(() => {
+                // If completely blocked, advance safely
+                setTimeout(() => finishToVerdict(rec), 3000);
+              });
+            }
+          });
+        }
       }
-    }, 2800);
+    }, 60);
+
+    // Watchdog fallback: Allow full 16.0s video plus buffer before safety auto-advance
+    setTimeout(() => {
+      setPhase((currentPhase) => {
+        if (currentPhase === "cinematic") {
+          finishToVerdict(rec);
+        }
+        return currentPhase;
+      });
+    }, 18000);
   };
 
   const finishToVerdict = (rec: InscribedRecord) => {
@@ -405,21 +413,40 @@ SECURITY DISCLOSURE  : Non-destructive ethical simulation completed.
             {/* --------------------------------------------------------
                 PHASE 3: CINEMATIC RED STRIKE / VIDEO FLASH
                -------------------------------------------------------- */}
+            {/* --------------------------------------------------------
+                PHASE 3: CINEMATIC VIDEO (16s FULL CUT // FULLSCREEN)
+               -------------------------------------------------------- */}
             {phase === "cinematic" && (
-              <div className="relative w-full h-[480px] bg-black flex items-center justify-center overflow-hidden">
+              <div className="fixed inset-0 z-[120] bg-black flex items-center justify-center overflow-hidden">
                 <video
                   ref={videoRef}
                   src="/images/kira/kill2.mp4"
                   playsInline
                   autoPlay
-                  className="absolute inset-0 w-full h-full object-cover z-10"
+                  className="w-full h-full object-cover select-none"
                   onEnded={() => currentRecord && finishToVerdict(currentRecord)}
                 />
-                
-                {/* Fallback visual pulse if video is blocked */}
-                <div className="absolute inset-0 bg-[#ff1a2e]/30 animate-pulse pointer-events-none z-20" />
-                <div className="relative z-30 text-center font-deathnote text-4xl sm:text-6xl text-white tracking-widest animate-ping">
-                  DEATH NOTE
+
+                {/* Top Right Skip Button */}
+                <button
+                  type="button"
+                  onClick={() => currentRecord && finishToVerdict(currentRecord)}
+                  className="absolute top-6 right-6 z-50 px-4 py-2 rounded-full bg-black/80 hover:bg-[#ff1a2e] border border-white/20 hover:border-[#ff1a2e] text-white font-mono text-xs tracking-wider uppercase transition-all backdrop-blur-md flex items-center gap-2 shadow-[0_4px_25px_rgba(0,0,0,0.8)] cursor-pointer"
+                >
+                  <FastForward size={14} />
+                  <span>SKIP CINEMATIC</span>
+                </button>
+
+                {/* Bottom Target Inscription Subtitle */}
+                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-40 text-center pointer-events-none px-4">
+                  <div className="font-deathnote text-sm sm:text-base text-white/90 tracking-[0.25em] drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] uppercase">
+                    KIRA EXECUTION PROTOCOL IN EFFECT
+                  </div>
+                  {currentRecord && (
+                    <div className="text-xs font-mono text-[#ff1a2e] tracking-widest uppercase mt-1 drop-shadow-[0_2px_8px_rgba(255,26,46,0.6)]">
+                      TARGET: {currentRecord.name}
+                    </div>
+                  )}
                 </div>
               </div>
             )}
