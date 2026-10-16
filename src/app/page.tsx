@@ -31,6 +31,7 @@ import {
   Typewriter,
   type BootLine,
 } from "@/components/motion-effects";
+import AsciiLAnimation from "@/components/AsciiLAnimation";
 import { soundManager } from "@/lib/audio";
 
 const projects = [
@@ -317,22 +318,28 @@ export default function Home() {
             </a>
           </div>
 
-          {/* Macro Gothic Typography Header */}
-          <div className="mb-8">
-            <div className="flex items-center gap-4 mb-2">
-              <span className="font-deathnote text-5xl md:text-8xl text-white tracking-widest deathnote-glow">
-                DEATH NOTE
-              </span>
-              <div className="w-12 h-12 md:w-16 md:h-16 rounded-2xl border border-[#ff1a2e]/40 bg-[#120508] flex items-center justify-center shrink-0">
-                <span className="font-deathnote text-3xl md:text-5xl text-[#ff1a2e] leading-none select-none">
-                  L
-                </span>
+          {/* Macro Hacking & Gothic Header + ASCII L Animation side by side */}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8">
+            <div className="flex-1">
+              <div className="flex items-center gap-2 text-xs font-mono text-[#ff1a2e] mb-2 uppercase tracking-[0.25em]">
+                <span>[ 0xDEAD ]</span>
+                <span>•</span>
+                <span>OFFENSIVE CYBER WARFARE MANIFEST</span>
               </div>
+              
+              <h1 className="font-deathnote text-4xl sm:text-6xl md:text-7xl text-white tracking-wider deathnote-glow">
+                CYBER DOSSIER
+              </h1>
+              
+              <p className="font-mono text-xs md:text-sm text-gray-400 tracking-wider uppercase mt-2">
+                <span className="text-[#ff1a2e]">{'//'}</span> THE ADVERSARIAL CODEX • INSCRIBE TARGET HOSTS • FORENSIC ROOT EXTRACTION
+              </p>
             </div>
-            
-            <p className="font-mono text-xs md:text-sm text-gray-400 tracking-widest uppercase">
-              <span className="text-[#ff1a2e]">{'//'}</span> THE CYBERSECURITY INVESTIGATOR DOSSIER • OPERATIONAL CODEX 0xDEAD
-            </p>
+
+            {/* ASCII L Animation Widget in Hero */}
+            <div className="shrink-0 self-center lg:self-auto">
+              <AsciiLAnimation size="md" />
+            </div>
           </div>
 
           {/* Main Doppelrand Double-Bezel Card */}

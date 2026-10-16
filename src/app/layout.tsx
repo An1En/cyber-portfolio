@@ -3,6 +3,7 @@ import Script from "next/script";
 import "./globals.css";
 import MatrixBackground from "@/components/MatrixBackground";
 import Navbar from "@/components/Navbar";
+import Preloader from "@/components/Preloader";
 
 export const metadata: Metadata = {
   title: "Anlen Jeban | Cybersecurity Portfolio",
@@ -44,6 +45,7 @@ export default function RootLayout({
         `}
       </Script>
       <body className="crt">
+        <Preloader />
         <div className="noise-overlay" />
         <div className="scanline" />
         <MatrixBackground />
