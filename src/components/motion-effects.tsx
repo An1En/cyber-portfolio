@@ -257,15 +257,15 @@ export function BootLines({
                     <Typewriter
                       text={line.text}
                       speed={speed}
-                      className={line.cmd ? "text-[#ff8899]" : undefined}
+                      className={line.cmd ? "text-[#ffd166]" : undefined}
                       onDone={() => handleDone(i)}
                     />
                   ) : (
                     <span>
-                      <span className={line.cmd ? "text-[#ff8899]" : undefined}>
+                      <span className={line.cmd ? "text-[#ffd166]" : undefined}>
                         {line.text}
                       </span>
-                      {line.ok && <span className="text-[#ff0033]"> [ok]</span>}
+                      {line.ok && <span className="text-[#ffb000]"> [ok]</span>}
                     </span>
                   )}
                 </motion.div>
@@ -296,12 +296,12 @@ export function CmdLine({
 
   return (
     <div ref={ref} className={className}>
-      <span className="text-[#ff0033]">$ </span>
+      <span className="text-[#ffb000]">$ </span>
       <Typewriter
         text={command}
         speed={speed}
         start={reduced || inView}
-        className="text-[#ff8899]"
+        className="text-[#ffd166]"
       />
       {!reduced && inView && <span className="typing-cursor" />}
     </div>
@@ -397,7 +397,7 @@ export function ScrollReadout() {
     <>
       <motion.div
         style={{ scaleX: scrollYProgress }}
-        className="fixed top-0 left-0 right-0 h-[2px] origin-left z-[70] bg-[#ff0033] shadow-[0_0_12px_rgba(255,0,51,0.8)]"
+        className="fixed top-0 left-0 right-0 h-[2px] origin-left z-[70] bg-[#ffb000] shadow-[0_0_12px_rgba(255,176,0,0.8)]"
       />
       <div className="fixed bottom-3 right-3 z-[70] font-mono text-[10px] text-gray-600 pointer-events-none select-none">
         [scroll {String(pct).padStart(3, "0")}%]
@@ -425,7 +425,7 @@ export function ScrollDivider({
     <div className="section-divider relative">
       <motion.div
         style={reduced ? undefined : { scaleX: scrollYProgress }}
-        className="absolute inset-0 origin-left bg-gradient-to-r from-transparent via-[#ff0033] to-transparent opacity-70"
+        className="absolute inset-0 origin-left bg-gradient-to-r from-transparent via-[#ffb000] to-transparent opacity-70"
       />
     </div>
   );

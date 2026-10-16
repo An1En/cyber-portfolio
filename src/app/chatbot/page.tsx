@@ -320,16 +320,23 @@ ${chatLog}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="glass p-4 mb-6"
+          className="double-bezel mb-6"
         >
-          <div className="flex items-center justify-between">
+          <div className="double-bezel-inner p-4 md:p-6 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Shield className="text-[#ff0033]" size={24} />
+              <div className="w-10 h-10 rounded-xl bg-[#120508] border border-[#ff1a2e]/40 flex items-center justify-center text-[#ff1a2e]">
+                <Shield size={20} />
+              </div>
               <div>
-                <h1 className="text-lg font-bold text-white">SHADOW AI — CYBERSECURITY PENTESTING ASSISTANT</h1>
-                <p className="text-xs text-gray-500 font-mono">
-                  <span className={`${sessionActive ? "text-[#ff0033]" : "text-gray-500"}`}>●</span>{" "}
-                  {sessionActive ? "Session Active" : loading ? "Processing..." : "Ready"}
+                <span className="text-[10px] font-mono uppercase tracking-widest text-[#ff1a2e] font-bold">
+                  NEURAL OFFENSIVE INTEL // SHADOW v2.0
+                </span>
+                <h1 className="text-lg md:text-xl font-deathnote tracking-wider text-white">
+                  SHADOW AI ASSISTANT
+                </h1>
+                <p className="text-xs text-gray-500 font-mono mt-0.5">
+                  <span className={`${sessionActive ? "text-[#ff1a2e]" : "text-gray-500"}`}>●</span>{" "}
+                  {sessionActive ? "Tactical Session Active" : loading ? "Processing Query..." : "System Armed"}
                   {sessionActive && ` • ${messages.filter((m) => m.role !== "system").length} messages`}
                 </p>
               </div>
@@ -338,10 +345,10 @@ ${chatLog}
               {!isSessionEmpty && (
                 <button
                   onClick={generateWriteup}
-                  className="hacker-btn text-xs flex items-center gap-1 px-3 py-2 border-[#ff8899] text-[#ff8899] hover:bg-[#ff8899] hover:text-black"
+                  className="hacker-btn text-xs flex items-center gap-1.5 px-3 py-2 border-[#ff1a2e] text-white hover:bg-[#ff1a2e]"
                   title="Generate writeup from all session data"
                 >
-                  <FileText size={14} />
+                  <FileText size={14} className="text-[#ff1a2e]" />
                   <span className="hidden md:inline">End Session → Writeup</span>
                 </button>
               )}
@@ -358,76 +365,76 @@ ${chatLog}
         </motion.div>
 
         {/* Messages */}
-        <div className="terminal-box mb-4">
-          <div className="flex items-center gap-2 px-4 py-2 text-xs text-gray-500 border-b border-[#ff0033]/20">
-            <span className="w-3 h-3 rounded-full bg-[#ff0033]" />
-            <span className="w-3 h-3 rounded-full bg-[#ffcc00]" />
-            <span className="w-3 h-3 rounded-full bg-[#ff0033]" />
-            <span className="ml-2">~/shadow_ai.sh — interactive session</span>
-            {sessionActive && (
-              <span className="ml-auto text-[#ff0033] text-[10px]">
-                <span className="animate-pulse">●</span> recording
-              </span>
-            )}
-          </div>
+        <div className="double-bezel mb-4">
+          <div className="double-bezel-inner overflow-hidden">
+            <div className="flex items-center gap-2 px-4 py-2.5 text-xs text-gray-400 border-b border-white/5 bg-[#07070b]">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#ff1a2e]" />
+              <span className="ml-1 font-mono">~/shadow_ai.sh — interactive neural terminal</span>
+              {sessionActive && (
+                <span className="ml-auto text-[#ff1a2e] text-[10px] font-mono uppercase tracking-wider">
+                  <span className="animate-pulse">●</span> telemetry recording
+                </span>
+              )}
+            </div>
 
-          <div className="h-[50vh] md:h-[55vh] overflow-y-auto p-4 space-y-4">
-            {messages.map((msg) => (
-              <motion.div
-                key={msg.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className={`font-mono text-sm ${
-                  msg.role === "system"
-                    ? "text-gray-500"
-                    : msg.role === "user"
-                    ? "chat-user"
-                    : "chat-assistant"
-                }`}
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  {msg.role === "user" ? (
-                    <>
-                      <Send size={12} className="text-[#ff8899]" />
-                      <span className="text-[#ff8899] font-bold">an1en@query:~$</span>
-                    </>
-                  ) : msg.role === "assistant" ? (
-                    <>
-                      <Terminal size={12} className="text-[#ff0033]" />
-                      <span className="text-[#ff0033] font-bold">shadow@response:~$</span>
-                    </>
-                  ) : (
-                    <>
-                      <AlertTriangle size={12} />
-                      <span className="text-gray-500">system@init:~$</span>
-                    </>
-                  )}
-                </div>
-
-                {msg.role === "system" || msg.role === "user" ? (
-                  <div className="whitespace-pre-wrap pl-5">{msg.content}</div>
-                ) : (
-                  <div className="pl-5 chat-markdown prose prose-invert max-w-none">
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                      {msg.content}
-                    </ReactMarkdown>
+            <div className="h-[50vh] md:h-[55vh] overflow-y-auto p-4 space-y-4">
+              {messages.map((msg) => (
+                <motion.div
+                  key={msg.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`font-mono text-sm ${
+                    msg.role === "system"
+                      ? "text-gray-500"
+                      : msg.role === "user"
+                      ? "chat-user"
+                      : "chat-assistant"
+                  }`}
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    {msg.role === "user" ? (
+                      <>
+                        <Send size={12} className="text-[#ff6b7e]" />
+                        <span className="text-[#ff6b7e] font-bold">an1en@query:~$</span>
+                      </>
+                    ) : msg.role === "assistant" ? (
+                      <>
+                        <Terminal size={12} className="text-[#ff1a2e]" />
+                        <span className="text-[#ff1a2e] font-bold">shadow@intel:~$</span>
+                      </>
+                    ) : (
+                      <>
+                        <AlertTriangle size={12} />
+                        <span className="text-gray-500">system@init:~$</span>
+                      </>
+                    )}
                   </div>
-                )}
-              </motion.div>
-            ))}
 
-            {loading && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="flex items-center gap-2 text-[#ff0033] font-mono text-sm"
-              >
-                <Loader2 size={14} className="animate-spin" />
-                <span>shadow@think:~$ Generating response...</span>
-              </motion.div>
-            )}
+                  {msg.role === "system" || msg.role === "user" ? (
+                    <div className="whitespace-pre-wrap pl-5 text-gray-200">{msg.content}</div>
+                  ) : (
+                    <div className="pl-5 chat-markdown prose prose-invert max-w-none text-gray-200">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {msg.content}
+                      </ReactMarkdown>
+                    </div>
+                  )}
+                </motion.div>
+              ))}
 
-            <div ref={messagesEndRef} />
+              {loading && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="flex items-center gap-2 text-[#ff1a2e] font-mono text-sm"
+                >
+                  <Loader2 size={14} className="animate-spin" />
+                  <span>shadow@think:~$ Computing attack chain vectors...</span>
+                </motion.div>
+              )}
+
+              <div ref={messagesEndRef} />
+            </div>
           </div>
         </div>
 
@@ -438,16 +445,16 @@ ${chatLog}
             animate={{ opacity: 1, y: 0 }}
             className="mb-4"
           >
-            <div className="flex items-center gap-2 mb-3 text-sm text-gray-500 font-mono">
-              <Sparkles size={14} className="text-[#ff0033]" />
-              <span>Quick Actions</span>
+            <div className="flex items-center gap-2 mb-3 text-xs text-gray-400 font-mono">
+              <Sparkles size={14} className="text-[#ff1a2e]" />
+              <span>OFFENSIVE QUICK ACTIONS</span>
             </div>
             <div className="flex flex-wrap gap-2">
               {quickActions.map((action) => (
                 <button
                   key={action.label}
                   onClick={() => sendMessage(action.query)}
-                  className="skill-badge text-xs cursor-pointer hover:bg-[#ff0033]/10 transition-all"
+                  className="skill-badge text-xs cursor-pointer hover:bg-[#ff1a2e]/15 transition-all"
                 >
                   {action.label}
                 </button>
@@ -461,12 +468,14 @@ ${chatLog}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-4 glass p-3 flex items-center gap-3"
+            className="mb-4 double-bezel"
           >
-            <Flag size={16} className="text-[#ff0033]" />
-            <span className="text-xs text-gray-400 font-mono flex-1">
-              Session recording all data. When done, click <span className="text-[#ff8899]">End Session → Writeup</span> to generate a professional report with everything discussed.
-            </span>
+            <div className="double-bezel-inner p-3 flex items-center gap-3 text-xs font-mono text-gray-300">
+              <Flag size={16} className="text-[#ff1a2e]" />
+              <span className="flex-1">
+                Operational telemetry logging active. When finished, select <span className="text-[#ff1a2e] font-bold">End Session → Writeup</span> to compile an automated post-mortem report.
+              </span>
+            </div>
           </motion.div>
         )}
 

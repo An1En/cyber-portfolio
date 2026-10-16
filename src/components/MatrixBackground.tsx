@@ -12,44 +12,70 @@ export default function MatrixBackground() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    let animationFrameId: number;
 
-    const chars = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEF";
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+
+    // Death Note / Cyber characters: Gothic, Katakana, Hex, and Symbols
+    const chars = "†‡☠ψΩλ0123456789ABCDEFアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
     const fontSize = 14;
-    const columns = Math.floor(canvas.width / fontSize);
-    const drops: number[] = Array(columns).fill(1);
+    let columns = Math.floor(canvas.width / fontSize);
+    let drops: number[] = Array(columns).fill(1);
 
-    function draw() {
+    const onResize = () => {
+      resize();
+      columns = Math.floor(canvas.width / fontSize);
+      drops = Array(columns).fill(1);
+    };
+
+    window.addEventListener("resize", onResize);
+
+    let lastTime = 0;
+    const interval = 45; // ms between frames
+
+    function render(time: number) {
+      animationFrameId = requestAnimationFrame(render);
+      if (time - lastTime < interval) return;
+      lastTime = time;
+
       if (!ctx || !canvas) return;
-      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      // Deep obsidian trail fade
+      ctx.fillStyle = "rgba(5, 5, 7, 0.07)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "#ff1e27";
+
       ctx.font = `${fontSize}px monospace`;
 
       for (let i = 0; i < drops.length; i++) {
-        const text = chars[Math.floor(Math.random() * chars.length)];
-        ctx.fillStyle = Math.random() > 0.98 ? "#ff6b72" : "#ff1e27";
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+        const char = chars[Math.floor(Math.random() * chars.length)];
+        const rand = Math.random();
+
+        // Shinigami Eye Crimson & Bone highlights
+        if (rand > 0.985) {
+          ctx.fillStyle = "#ffffff"; // Rare bright flash
+        } else if (rand > 0.94) {
+          ctx.fillStyle = "#ff6b7e"; // Coral/crimson ember
+        } else {
+          ctx.fillStyle = "#ff1a2e"; // Deep Shinigami crimson
+        }
+
+        ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.98) {
           drops[i] = 0;
         }
         drops[i]++;
       }
     }
 
-    const interval = setInterval(draw, 50);
-
-    const handleResize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-
-    window.addEventListener("resize", handleResize);
+    animationFrameId = requestAnimationFrame(render);
 
     return () => {
-      clearInterval(interval);
-      window.removeEventListener("resize", handleResize);
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener("resize", onResize);
     };
   }, []);
 
@@ -57,6 +83,7 @@ export default function MatrixBackground() {
     <canvas
       ref={canvasRef}
       id="matrix-canvas"
+      aria-hidden="true"
       style={{
         position: "fixed",
         top: 0,
@@ -65,7 +92,7 @@ export default function MatrixBackground() {
         height: "100vh",
         zIndex: 0,
         pointerEvents: "none",
-        opacity: 0.15,
+        opacity: 0.16,
       }}
     />
   );

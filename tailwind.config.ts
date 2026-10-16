@@ -10,20 +10,24 @@ const config: Config = {
     extend: {
       colors: {
         cyber: {
-          black: "#000000",
-          dark: "#0a0a0a",
-          deeper: "#050505",
-          green: "#ff0033",
-          "green-dim": "#cc0029",
-          "green-dark": "#3b0005",
-          cyan: "#ff8899",
-          red: "#ff0033",
-          purple: "#9b59b6",
-          gray: "#1a1a2e",
-          light: "#cccccc",
+          black: "#050507",
+          dark: "#0a0a0e",
+          deeper: "#07070a",
+          obsidian: "#0f0f14",
+          crimson: "#ff1a2e",
+          "crimson-dim": "#b91c1c",
+          "crimson-dark": "#450a0a",
+          blood: "#e11d48",
+          bone: "#f4f4f6",
+          parchment: "#e5e7eb",
+          slate: "#9ca3af",
+          muted: "#4b5563",
+          amber: "#ffb000",
+          gray: "#111116",
         },
       },
       fontFamily: {
+        deathnote: ["DeathNote", "Cinzel", "serif"],
         mono: ["JetBrains Mono", "Fira Code", "Courier New", "monospace"],
       },
       animation: {
@@ -52,8 +56,8 @@ const config: Config = {
           "50%": { opacity: "0" },
         },
         glow: {
-          from: { textShadow: "0 0 5px #ff0033, 0 0 10px #ff0033" },
-          to: { textShadow: "0 0 10px #ff0033, 0 0 20px #ff0033, 0 0 40px #ff0033" },
+          from: { textShadow: "0 0 5px #ffb000, 0 0 10px #ffb000" },
+          to: { textShadow: "0 0 10px #ffb000, 0 0 20px #ffb000, 0 0 40px #ffb000" },
         },
         "matrix-rain": {
           "0%": { transform: "translateY(-100%)" },
@@ -61,7 +65,7 @@ const config: Config = {
         },
       },
       backgroundImage: {
-        "cyber-grid": "linear-gradient(rgba(255, 0, 51, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 0, 51, 0.03) 1px, transparent 1px)",
+        "cyber-grid": "linear-gradient(rgba(255, 176, 0, 0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 176, 0, 0.035) 1px, transparent 1px)",
       },
       backgroundSize: {
         "grid": "50px 50px",

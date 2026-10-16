@@ -44,6 +44,7 @@ export default function RootLayout({
         `}
       </Script>
       <body className="crt">
+        <div className="noise-overlay" />
         <div className="scanline" />
         <MatrixBackground />
         <Navbar />
