@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=JetBrains+Mono:wght@300;400;500;600;700&family=Alex+Brush&family=MedievalSharp&display=swap');
+@import url('https://fonts.cdnfonts.com/css/antro-vectra');
 
 @tailwind base;
 @tailwind components;
@@ -74,6 +75,23 @@ body {
 
 .deathnote-glow-white {
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.6), 0 0 20px rgba(255, 26, 46, 0.4);
+}
+
+.font-cursive {
+  font-family: 'Antro Vectra', 'Alex Brush', cursive, sans-serif;
+}
+
+.font-medieval {
+  font-family: 'MedievalSharp', serif;
+}
+
+@keyframes paperZoomIn {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.18); }
+}
+
+.animate-paper-zoom {
+  animation: paperZoomIn 3.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
 /* Double-Bezel "Doppelrand" Architecture */

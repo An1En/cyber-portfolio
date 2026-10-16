@@ -1,333 +1,575 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   Skull,
+  RotateCcw,
+  Send,
+  Download,
   Mail,
-  RefreshCw,
-  Crosshair,
-  ShieldCheck,
-  CheckCircle2,
-  Sparkles,
+  Volume2,
+  VolumeX,
+  Clock,
+  Terminal,
 } from "lucide-react";
 import { soundManager } from "@/lib/audio";
 
-const ATTACK_VECTORS = [
-  "Active Directory Domain & Forest Infiltration (ESC1 / Kerberos)",
-  "Web Application Vulnerability Assessment & Account Takeover",
-  "Full-Scope Red Team Adversarial Simulation & Lateral Movement",
-  "Cloud Infrastructure & Identity Privilege Escalation",
-  "Stealth OSINT Reconnaissance & Social Engineering Audit",
+interface InscribedRecord {
+  id: string;
+  name: string;
+  time: string;
+  timestamp: number;
+  cause: string;
+}
+
+const DEFAULT_CAUSES = [
+  "ESC1 Active Directory Certificate Abuse → Forest Root Takeover",
+  "Zero-Click Kerberos TGT Impersonation → Domain Admin",
+  "Dynamic Linker Hijack & SUID /bin/cat Abuse → System Root",
+  "Heart Attack // Catastrophic Kerberoasting Total Collapse",
 ];
 
 export default function KiraEngagementNote() {
   const [targetName, setTargetName] = useState("");
-  const [targetVector, setTargetVector] = useState(ATTACK_VECTORS[0]);
-  const [clientContact, setClientContact] = useState("");
-  const [specialDirectives, setSpecialDirectives] = useState("");
+  const [phase, setPhase] = useState<"input" | "writing" | "cinematic" | "verdict">("input");
+  
+  // Writing animation state
+  const [displayText, setDisplayText] = useState("");
+  const [currentRecord, setCurrentRecord] = useState<InscribedRecord | null>(null);
+  const [records, setRecords] = useState<InscribedRecord[]>([]);
+  const [secondsRemaining, setSecondsRemaining] = useState(40);
+  const [soundEnabled, setSoundEnabled] = useState(true);
 
-  // Inscription states: "form" | "writing" | "sealed"
-  const [state, setState] = useState<"form" | "writing" | "sealed">("form");
-  const [writtenTarget, setWrittenTarget] = useState("");
-  const [writtenVector, setWrittenVector] = useState("");
+  // References
+  const textRef = useRef<HTMLHeadingElement | null>(null);
+  const paperRef = useRef<HTMLDivElement | null>(null);
+  const pencilRef = useRef<HTMLImageElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const writingTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const countdownTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const writingIntervalRef = useRef<NodeJS.Timeout | null>(null);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const cleanTarget = targetName.trim();
-    if (!cleanTarget) return;
-
-    soundManager.playTick();
-    setState("writing");
-    setWrittenTarget("");
-    setWrittenVector("");
-
-    let charIdx = 0;
-    const textTarget = cleanTarget;
-    const textVector = `Cause: ${targetVector}`;
-
-    // Handwriting sequence with pen scratching audio
-    writingIntervalRef.current = setInterval(() => {
-      if (charIdx < textTarget.length) {
-        charIdx++;
-        setWrittenTarget(textTarget.substring(0, charIdx));
-        soundManager.playPenScratch();
-      } else {
-        if (writingIntervalRef.current) clearInterval(writingIntervalRef.current);
-
-        // Write vector
-        setTimeout(() => {
-          let vIdx = 0;
-          const vInterval = setInterval(() => {
-            if (vIdx < textVector.length) {
-              vIdx++;
-              setWrittenVector(textVector.substring(0, vIdx));
-              soundManager.playPenScratch();
-            } else {
-              clearInterval(vInterval);
-              // Seal the contract with heartbeat and chime
-              setTimeout(() => {
-                soundManager.playHeartbeat();
-                soundManager.playChime();
-                setState("sealed");
-              }, 400);
-            }
-          }, 40);
-        }, 300);
+  // Load session records on mount
+  useEffect(() => {
+    try {
+      const stored = sessionStorage.getItem("kira_inscribed_records");
+      if (stored) {
+        setRecords(JSON.parse(stored));
       }
-    }, 70);
+    } catch {}
+    setSoundEnabled(soundManager.isEnabled());
+  }, []);
+
+  // Update pencil position dynamically to match text end
+  const updatePencilPosition = () => {
+    if (!textRef.current || !pencilRef.current || !paperRef.current) return;
+    const textRect = textRef.current.getBoundingClientRect();
+    const paperRect = paperRef.current.getBoundingClientRect();
+
+    // Calculate relative coordinates inside the paper container
+    const relativeX = textRect.right - paperRect.left;
+    const relativeY = textRect.top - paperRect.top + textRect.height * 0.2;
+
+    pencilRef.current.style.left = `${relativeX - 15}px`;
+    pencilRef.current.style.top = `${relativeY - 70}px`;
   };
 
-  const handleReset = () => {
+  const handleStartWriting = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const clean = targetName.trim();
+    if (!clean) return;
+
+    soundManager.playTick();
+    setPhase("writing");
+    setDisplayText("");
+
+    const chosenCause = DEFAULT_CAUSES[Math.floor(Math.random() * DEFAULT_CAUSES.length)];
+    const newRecord: InscribedRecord = {
+      id: `KIRA-${Date.now().toString().slice(-4)}`,
+      name: clean,
+      time: new Date().toLocaleTimeString(),
+      timestamp: Date.now(),
+      cause: chosenCause,
+    };
+    setCurrentRecord(newRecord);
+
+    // Initial delay before pen touches the parchment
+    setTimeout(() => {
+      let charIndex = 0;
+      if (pencilRef.current) {
+        pencilRef.current.style.opacity = "1";
+      }
+
+      writingTimerRef.current = setInterval(() => {
+        if (charIndex < clean.length) {
+          charIndex++;
+          setDisplayText(clean.substring(0, charIndex));
+          soundManager.playPenScratch();
+          setTimeout(updatePencilPosition, 10);
+        } else {
+          if (writingTimerRef.current) clearInterval(writingTimerRef.current);
+          
+          // Complete writing sequence: trigger cinematic flash
+          setTimeout(() => {
+            if (pencilRef.current) {
+              pencilRef.current.style.opacity = "0";
+            }
+            triggerCinematicTransition(newRecord);
+          }, 1000);
+        }
+      }, 85);
+    }, 600);
+  };
+
+  const triggerCinematicTransition = (rec: InscribedRecord) => {
+    soundManager.playHeartbeat();
+    setPhase("cinematic");
+
+    // Attempt video playback, with a safe 3-second fallback
+    const video = videoRef.current;
+    let videoPlayed = false;
+
+    if (video) {
+      video.currentTime = 0;
+      video.muted = !soundEnabled;
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            videoPlayed = true;
+          })
+          .catch(() => {
+            // Video autoplay restricted, proceed immediately
+            finishToVerdict(rec);
+          });
+      }
+    }
+
+    // Auto-advance after 2.8s if video doesn't end earlier
+    setTimeout(() => {
+      if (!videoPlayed || phase !== "verdict") {
+        finishToVerdict(rec);
+      }
+    }, 2800);
+  };
+
+  const finishToVerdict = (rec: InscribedRecord) => {
+    soundManager.playChime();
+    setPhase("verdict");
+    setSecondsRemaining(40);
+
+    // Persist into session records
+    const updated = [rec, ...records.filter((r) => r.name !== rec.name)].slice(0, 8);
+    setRecords(updated);
+    try {
+      sessionStorage.setItem("kira_inscribed_records", JSON.stringify(updated));
+    } catch {}
+
+    // 40-second countdown (Death Note rule)
+    if (countdownTimerRef.current) clearInterval(countdownTimerRef.current);
+    countdownTimerRef.current = setInterval(() => {
+      setSecondsRemaining((prev) => {
+        if (prev <= 1) {
+          if (countdownTimerRef.current) clearInterval(countdownTimerRef.current);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  const handleRewrite = () => {
+    if (writingTimerRef.current) clearInterval(writingTimerRef.current);
+    if (countdownTimerRef.current) clearInterval(countdownTimerRef.current);
     soundManager.playTick();
     setTargetName("");
-    setClientContact("");
-    setSpecialDirectives("");
-    setWrittenTarget("");
-    setWrittenVector("");
-    setState("form");
+    setDisplayText("");
+    setPhase("input");
   };
 
-  const mailtoUrl = `mailto:anlenjeban7@gmail.com?subject=${encodeURIComponent(
-    `[Penetration Test Inquiry] Target: ${targetName}`
-  )}&body=${encodeURIComponent(
-    `Target / System to Audit: ${targetName}\nRequested Scope: ${targetVector}\nClient Contact: ${clientContact || "Anonymous"}\nDirectives: ${specialDirectives || "Standard Ethical Rules of Engagement"}\n\nInitiated via Cyber Dossier Inscriber.`
-  )}`;
+  const toggleSound = () => {
+    const val = soundManager.toggle();
+    setSoundEnabled(val);
+  };
+
+  const handleDownloadDossier = () => {
+    if (!currentRecord) return;
+    const content = `=====================================================
+DEATH NOTE // FORENSIC TARGET AUDIT DOSSIER
+OPERATOR: ANLEN JEBAN (AN1EN) // AD-RTS / CRTA
+=====================================================
+
+TARGET IDENTIFIER    : ${currentRecord.name}
+AUDIT TIMESTAMP      : ${new Date(currentRecord.timestamp).toISOString()}
+ATTACK VECTOR        : ${currentRecord.cause}
+RULE OF EXECUTION    : 40-SECOND POSTURE COLLAPSE
+STATUS               : COMPROMISED // ROOT PRIVILEGE ACQUIRED
+VERDICT              : Justice has been served. All credentials harvested.
+
+DISPATCH POINT       : anlenjeban7@gmail.com
+SECURITY DISCLOSURE  : Non-destructive ethical simulation completed.
+=====================================================`;
+
+    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `deathnote-target-${currentRecord.name.toLowerCase().replace(/[^a-z0-9]/g, "-")}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   return (
-    <section className="py-24 px-4 bg-[#050507] border-t border-white/5 relative" id="inscribe">
+    <section className="py-24 px-4 bg-[#050507] border-t border-white/5 relative overflow-hidden" id="inscribe">
+      
+      {/* Background Ambience */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,26,46,0.06)_0%,transparent_70%)] pointer-events-none" />
+
+      {/* Floating Sound Toggle */}
+      <div className="max-w-4xl mx-auto flex justify-end mb-4">
+        <button
+          onClick={toggleSound}
+          type="button"
+          className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/60 border border-white/10 text-[11px] font-mono text-gray-400 hover:text-[#ff1a2e] hover:border-[#ff1a2e]/40 transition-all"
+          title="Toggle synthesized pen sound"
+        >
+          {soundEnabled ? <Volume2 size={13} className="text-[#ff1a2e]" /> : <VolumeX size={13} />}
+          <span>{soundEnabled ? "AUDIO ON" : "AUDIO MUTED"}</span>
+        </button>
+      </div>
+
       <div className="max-w-4xl mx-auto">
         
-        {/* Section Heading */}
-        <div className="text-center mb-12">
+        {/* Section Header */}
+        <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#ff1a2e]/10 border border-[#ff1a2e]/30 text-xs font-mono text-[#ff1a2e] mb-3 uppercase tracking-widest">
             <Skull size={13} />
-            <span>KIRA NOTEBOOK MECHANIC // ADVERSARIAL CODEX</span>
+            <span>KIRA NOTEBOOK // TARGET EXECUTION ENGINE</span>
           </div>
 
-          <h2 className="text-3xl sm:text-5xl md:text-6xl font-deathnote tracking-wider text-white mb-3">
-            INSCRIBE AUDIT TARGET
+          <h2 className="text-4xl sm:text-6xl md:text-7xl font-deathnote tracking-wider text-white mb-3">
+            DEATH NOTE
           </h2>
 
-          <p className="font-mono text-xs sm:text-sm text-gray-400 max-w-xl mx-auto leading-relaxed">
-            In Death Note, Kira inscribed names to pass judgment. In this codex, inscribe any target organization, host, or system to codify an adversarial penetration test.
+          <p className="font-mono text-xs sm:text-sm text-gray-400 max-w-lg mx-auto leading-relaxed">
+            The human or system whose name is written in this note shall be rooted. Enter the name of the target you wish to destroy.
           </p>
         </div>
 
-        {/* The Authentic Death Note Parchment Container */}
-        <div className="double-bezel relative overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.9)]">
-          <div className="double-bezel-inner p-6 sm:p-10 bg-[#09090d] relative overflow-hidden">
-            
-            {/* Notebook Margin Guidelines */}
-            <div className="absolute top-0 bottom-0 left-8 sm:left-12 w-[1px] bg-[#ff1a2e]/20 pointer-events-none" />
-            <div className="absolute top-0 bottom-0 left-10 sm:left-14 w-[1px] bg-[#ff1a2e]/10 pointer-events-none" />
+        {/* ========================================================
+            MAIN INTERACTIVE WORKSPACE
+           ======================================================== */}
+        <div className="double-bezel relative overflow-hidden shadow-[0_25px_60px_rgba(0,0,0,0.95)]">
+          <div className="double-bezel-inner bg-[#0a0a0f] relative overflow-hidden min-h-[460px] flex flex-col justify-center">
 
-            {/* Notebook Header Rule */}
-            <div className="pl-8 sm:pl-12 pb-4 mb-8 border-b border-white/5 flex items-center justify-between text-xs font-mono text-gray-500">
-              <span className="font-deathnote text-sm sm:text-base text-[#ff1a2e] tracking-widest flex items-center gap-2">
-                <Crosshair size={15} />
-                DEATH NOTE // ENGAGEMENT CONTRACT
-              </span>
-              <span className="text-[10px] uppercase text-gray-500 hidden sm:inline">
-                OPERATOR: ANLEN JEBAN (AN1EN)
-              </span>
-            </div>
+            {/* Subtle red margin line resembling notebook page */}
+            <div className="absolute top-0 bottom-0 left-6 sm:left-12 w-[1px] bg-[#ff1a2e]/25 pointer-events-none" />
+            <div className="absolute top-0 bottom-0 left-7 sm:left-14 w-[1px] bg-[#ff1a2e]/10 pointer-events-none" />
 
-            {/* STATE 1: FORM ENTRY */}
-            {state === "form" && (
-              <form onSubmit={handleSubmit} className="pl-8 sm:pl-12 space-y-6">
-                <div>
-                  <label className="block text-xs font-mono text-gray-300 uppercase tracking-wider mb-2">
-                    1. Target Entity / System / Domain to Audit
-                  </label>
-                  <input
-                    type="text"
-                    value={targetName}
-                    onChange={(e) => setTargetName(e.target.value)}
-                    placeholder="e.g. corp.internal, dc01.telecom.local, or Organization Name"
-                    maxLength={50}
-                    required
-                    className="w-full px-4 py-3 bg-black/60 border border-white/10 focus:border-[#ff1a2e] rounded-xl text-white font-mono text-sm placeholder:text-gray-600 focus:outline-none focus:ring-1 focus:ring-[#ff1a2e] transition-all"
-                  />
-                  <span className="text-[10px] font-mono text-gray-500 mt-1 block">
-                    The entity whose security posture shall be audited without forensic attribution.
+            {/* --------------------------------------------------------
+                PHASE 1: ENTER TARGET NAME (Clean, direct & ominous)
+               -------------------------------------------------------- */}
+            {phase === "input" && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="p-8 sm:p-14 pl-12 sm:pl-24"
+              >
+                <div className="mb-8">
+                  <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-gray-500 block mb-2">
+                    RULE I // EXECUTION PROTOCOL
                   </span>
+                  <h3 className="text-xl sm:text-2xl font-deathnote text-gray-200 tracking-wide">
+                    HOW TO USE: TYPE TARGET NAME
+                  </h3>
+                  <p className="text-xs font-mono text-gray-400 mt-1">
+                    Once inscribed, the penetration testing sequence begins in 40 seconds.
+                  </p>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-mono text-gray-300 uppercase tracking-wider mb-2">
-                    2. Designated Cause of Compromise (Attack Scope)
-                  </label>
-                  <select
-                    value={targetVector}
-                    onChange={(e) => setTargetVector(e.target.value)}
-                    className="w-full px-4 py-3 bg-black/60 border border-white/10 focus:border-[#ff1a2e] rounded-xl text-white font-mono text-xs focus:outline-none focus:ring-1 focus:ring-[#ff1a2e] transition-all cursor-pointer"
-                  >
-                    {ATTACK_VECTORS.map((v) => (
-                      <option key={v} value={v} className="bg-[#09090d] text-gray-200">
-                        {v}
-                      </option>
+                <form onSubmit={handleStartWriting} className="space-y-6 max-w-xl">
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={targetName}
+                      onChange={(e) => setTargetName(e.target.value)}
+                      placeholder="NAME OF THE TARGET TO DESTROY..."
+                      maxLength={32}
+                      autoFocus
+                      required
+                      className="w-full bg-transparent border-b-2 border-white/20 focus:border-[#ff1a2e] pb-3 text-lg sm:text-2xl font-mono text-white placeholder:text-gray-600 focus:outline-none transition-all tracking-wider"
+                    />
+                    <div className="flex items-center justify-between mt-2 text-[10px] font-mono text-gray-500">
+                      <span>Max 32 characters • Real-time ink animation</span>
+                      <span>{targetName.length}/32</span>
+                    </div>
+                  </div>
+
+                  {/* Preset Suggestions */}
+                  <div className="flex flex-wrap items-center gap-2 pt-2">
+                    <span className="text-[10px] font-mono text-gray-500 mr-1">QUICK INSCRIBE:</span>
+                    {["Domain Controller", "dc01.corp.local", "Exchange Server", "Rival Operator"].map((preset) => (
+                      <button
+                        key={preset}
+                        type="button"
+                        onClick={() => setTargetName(preset)}
+                        className="text-[11px] font-mono px-2.5 py-1 rounded bg-white/5 hover:bg-[#ff1a2e]/20 text-gray-400 hover:text-white border border-white/5 transition-all"
+                      >
+                        {preset}
+                      </button>
                     ))}
-                  </select>
-                </div>
-
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-mono text-gray-300 uppercase tracking-wider mb-2">
-                      3. Inscriber Contact / Email (Optional)
-                    </label>
-                    <input
-                      type="text"
-                      value={clientContact}
-                      onChange={(e) => setClientContact(e.target.value)}
-                      placeholder="e.g. security-lead@company.com"
-                      className="w-full px-4 py-2.5 bg-black/60 border border-white/10 focus:border-[#ff1a2e] rounded-xl text-white font-mono text-xs placeholder:text-gray-600 focus:outline-none"
-                    />
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-mono text-gray-300 uppercase tracking-wider mb-2">
-                      4. Special Directives / Rules
-                    </label>
-                    <input
-                      type="text"
-                      value={specialDirectives}
-                      onChange={(e) => setSpecialDirectives(e.target.value)}
-                      placeholder="e.g. Zero-knowledge, simulate external adversary"
-                      className="w-full px-4 py-2.5 bg-black/60 border border-white/10 focus:border-[#ff1a2e] rounded-xl text-white font-mono text-xs placeholder:text-gray-600 focus:outline-none"
-                    />
+                  <div className="pt-4 flex flex-col sm:flex-row gap-4">
+                    <button
+                      type="submit"
+                      disabled={!targetName.trim()}
+                      className="flex-1 group py-4 px-8 rounded-xl bg-[#ff1a2e] hover:bg-[#ff1a2e]/90 disabled:opacity-40 disabled:cursor-not-allowed text-white font-mono text-xs font-bold tracking-widest uppercase transition-all duration-300 shadow-[0_0_25px_rgba(255,26,46,0.4)] hover:shadow-[0_0_35px_rgba(255,26,46,0.7)] flex items-center justify-center gap-3 cursor-pointer"
+                    >
+                      <Skull size={16} />
+                      <span>INSCRIBE IN DEATH NOTE</span>
+                      <Send size={14} className="group-hover:translate-x-1 transition-transform" />
+                    </button>
                   </div>
-                </div>
-
-                <div className="pt-2">
-                  <button
-                    type="submit"
-                    className="w-full group py-3 px-6 rounded-xl bg-[#ff1a2e] hover:bg-[#ff1a2e]/90 text-white font-mono text-xs font-bold tracking-wider uppercase transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,26,46,0.6)] flex items-center justify-center gap-3"
-                  >
-                    <Skull size={15} />
-                    <span>INSCRIBE IN DEATH NOTE</span>
-                    <Sparkles size={14} className="group-hover:rotate-12 transition-transform" />
-                  </button>
-                </div>
-              </form>
+                </form>
+              </motion.div>
             )}
 
-            {/* STATE 2: WRITING ANIMATION (PEN SCRATCHING) */}
-            {state === "writing" && (
-              <div className="pl-8 sm:pl-12 py-16 flex flex-col items-center justify-center text-center">
-                <div className="w-12 h-12 rounded-full border border-[#ff1a2e]/40 flex items-center justify-center mb-6 bg-[#ff1a2e]/10">
-                  <Sparkles size={20} className="text-[#ff1a2e] animate-spin" />
+            {/* --------------------------------------------------------
+                PHASE 2: REAL-TIME NOTEBOOK WRITING ANIMATION
+               -------------------------------------------------------- */}
+            {phase === "writing" && (
+              <div
+                ref={paperRef}
+                className="relative w-full h-[480px] bg-[#fbf9f4] text-black overflow-hidden flex flex-col items-center justify-center select-none"
+                style={{
+                  backgroundImage: "url('/images/kira/paper1.png')",
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+              >
+                {/* Horizontal lined rules */}
+                <div
+                  className="absolute inset-0 pointer-events-none opacity-20"
+                  style={{
+                    backgroundImage: "linear-gradient(rgba(0,0,0,0.12) 1px, transparent 1px)",
+                    backgroundSize: "100% 38px",
+                  }}
+                />
+
+                {/* Left Margin Line */}
+                <div className="absolute top-0 bottom-0 left-12 sm:left-20 w-[2px] bg-red-400/40 pointer-events-none" />
+
+                {/* Status Ticker at Top Right */}
+                <div className="absolute top-4 right-6 font-mono text-[11px] text-gray-700 uppercase tracking-widest flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-red-600 animate-ping" />
+                  <span>WRITING IN PROGRESS...</span>
                 </div>
 
-                <span className="text-[11px] font-mono uppercase tracking-[0.25em] text-[#ff1a2e] mb-3">
-                  INSCRIBING IN NOTEBOOK...
-                </span>
-
-                <div className="text-3xl sm:text-4xl md:text-5xl font-deathnote text-white tracking-widest min-h-[60px] border-b border-[#ff1a2e]/50 px-6 py-2 mb-3">
-                  {writtenTarget}
-                  <span className="inline-block w-2.5 h-7 bg-[#ff1a2e] ml-1.5 animate-pulse" />
+                {/* Center Writing Area */}
+                <div className="relative px-8 sm:px-16 text-center max-w-3xl z-10">
+                  <h1
+                    ref={textRef}
+                    className="font-cursive text-5xl sm:text-7xl md:text-8xl text-neutral-900 tracking-wide font-normal leading-tight inline-block"
+                    style={{
+                      textShadow: "1px 1px 1px rgba(0,0,0,0.15)",
+                    }}
+                  >
+                    {displayText}
+                  </h1>
                 </div>
 
-                <p className="font-mono text-xs text-gray-400 min-h-[24px]">
-                  {writtenVector}
-                </p>
+                {/* Floating Pencil Moving in Real-Time */}
+                <img
+                  ref={pencilRef}
+                  src="/images/kira/pencil.png"
+                  alt="Writing Pencil"
+                  className="absolute pointer-events-none transition-all duration-75 z-20"
+                  style={{
+                    width: "clamp(120px, 16vw, 220px)",
+                    height: "auto",
+                    opacity: 0,
+                    filter: "drop-shadow(4px 10px 8px rgba(0,0,0,0.3))",
+                    transform: "rotate(-10deg)",
+                  }}
+                />
+
+                {/* Scratch Audio Status */}
+                <div className="absolute bottom-4 left-6 sm:left-14 font-mono text-[10px] text-gray-500 uppercase">
+                  <span>AUDIO SYNTHESIS: WEBAUDIO SCRATCH ACTIVE</span>
+                </div>
               </div>
             )}
 
-            {/* STATE 3: SEALED DOSSIER VERDICT & REAL ENGAGEMENT DISPATCH */}
-            {state === "sealed" && (
+            {/* --------------------------------------------------------
+                PHASE 3: CINEMATIC RED STRIKE / VIDEO FLASH
+               -------------------------------------------------------- */}
+            {phase === "cinematic" && (
+              <div className="relative w-full h-[480px] bg-black flex items-center justify-center overflow-hidden">
+                <video
+                  ref={videoRef}
+                  src="/images/kira/kill2.mp4"
+                  playsInline
+                  autoPlay
+                  className="absolute inset-0 w-full h-full object-cover z-10"
+                  onEnded={() => currentRecord && finishToVerdict(currentRecord)}
+                />
+                
+                {/* Fallback visual pulse if video is blocked */}
+                <div className="absolute inset-0 bg-[#ff1a2e]/30 animate-pulse pointer-events-none z-20" />
+                <div className="relative z-30 text-center font-deathnote text-4xl sm:text-6xl text-white tracking-widest animate-ping">
+                  DEATH NOTE
+                </div>
+              </div>
+            )}
+
+            {/* --------------------------------------------------------
+                PHASE 4: TARGET VERDICT & ENGAGEMENT DOSSIER
+               -------------------------------------------------------- */}
+            {phase === "verdict" && currentRecord && (
               <motion.div
-                initial={{ opacity: 0, scale: 0.96 }}
+                initial={{ opacity: 0, scale: 0.97 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="pl-8 sm:pl-12 py-4"
+                className="p-8 sm:p-12 pl-12 sm:pl-24"
               >
-                <div className="rounded-xl border border-[#ff1a2e]/40 bg-[#ff1a2e]/5 p-6 sm:p-8 mb-6 relative overflow-hidden">
-                  
-                  {/* Crimson Seal Stamp */}
-                  <div className="absolute right-4 top-4 rotate-12 border-2 border-[#ff1a2e] rounded-xl px-3 py-1 text-[#ff1a2e] font-deathnote text-xs tracking-wider opacity-80 select-none">
-                    SEALED // 0xDEAD
+                {/* Header Status */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 mb-6 border-b border-white/10 gap-3">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#ff1a2e] animate-ping" />
+                    <span className="text-xs font-mono uppercase tracking-[0.2em] text-[#ff1a2e]">
+                      EXECUTION VERDICT SEALED // {currentRecord.id}
+                    </span>
                   </div>
-
-                  <div className="flex items-center gap-2 text-xs font-mono text-[#ff1a2e] mb-4 uppercase tracking-widest">
-                    <CheckCircle2 size={16} />
-                    <span>TARGET INSCRIBED IN ADVERSARIAL CODEX</span>
-                  </div>
-
-                  <div className="space-y-4 font-mono text-xs">
-                    <div>
-                      <span className="text-gray-500 block text-[10px] uppercase">TARGET TO COMPROMISE</span>
-                      <span className="text-2xl sm:text-3xl font-deathnote text-white tracking-wider">
-                        {targetName}
-                      </span>
-                    </div>
-
-                    <div className="grid sm:grid-cols-2 gap-4 pt-3 border-t border-white/5">
-                      <div>
-                        <span className="text-gray-500 block text-[10px] uppercase">CAUSE / ATTACK VECTOR</span>
-                        <span className="text-gray-200">{targetVector}</span>
-                      </div>
-                      <div>
-                        <span className="text-gray-500 block text-[10px] uppercase">STATUS</span>
-                        <span className="text-[#ff1a2e] font-bold tracking-wider">
-                          [ TARGET AUDIT QUEUED ]
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="pt-3 border-t border-white/5 grid sm:grid-cols-2 gap-4">
-                      <div>
-                        <span className="text-gray-500 block text-[10px] uppercase">ASSIGNED RED TEAM SPECIALIST</span>
-                        <span className="text-gray-200">Anlen Jeban (AN1EN) — AD-RTS</span>
-                      </div>
-                      <div>
-                        <span className="text-gray-500 block text-[10px] uppercase">ENGAGEMENT TIMEFRAME</span>
-                        <span className="text-gray-200">Within 40 seconds of handshake</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 pt-4 border-t border-[#ff1a2e]/20 text-center">
-                    <span className="font-deathnote text-sm text-[#ff1a2e] tracking-wider deathnote-glow">
-                      &ldquo;The rule has taken effect. Justice has been codified.&rdquo;
+                  <div className="flex items-center gap-2 text-xs font-mono text-gray-400">
+                    <Clock size={13} className="text-[#ff1a2e]" />
+                    <span>TIME TO ROOT: </span>
+                    <span className="text-white font-bold font-mono">
+                      {secondsRemaining > 0 ? `${secondsRemaining} SECONDS` : "EXPIRED // ROOTED"}
                     </span>
                   </div>
                 </div>
 
-                {/* Direct Action Buttons */}
-                <div className="flex flex-col sm:flex-row items-center gap-4">
-                  <a
-                    href={mailtoUrl}
-                    onClick={() => soundManager.playTargetAcquired()}
-                    className="w-full sm:flex-1 py-3 px-6 rounded-xl bg-[#ff1a2e] hover:bg-[#ff1a2e]/90 text-white font-mono text-xs font-bold tracking-wider uppercase transition-all duration-300 hover:shadow-[0_0_25px_rgba(255,26,46,0.6)] flex items-center justify-center gap-2"
+                {/* Target Name Presentation */}
+                <div className="mb-6">
+                  <span className="text-[11px] font-mono text-gray-500 uppercase tracking-widest block mb-1">
+                    TARGET INSCRIBED:
+                  </span>
+                  <div className="text-3xl sm:text-5xl font-deathnote text-white tracking-wider deathnote-glow">
+                    {currentRecord.name}
+                  </div>
+                </div>
+
+                {/* Details Grid */}
+                <div className="grid sm:grid-cols-2 gap-4 mb-8">
+                  <div className="p-4 rounded-xl bg-black/50 border border-white/5">
+                    <span className="text-[10px] font-mono text-gray-500 uppercase block mb-1">
+                      CAUSE OF DESTRUCTION:
+                    </span>
+                    <span className="text-xs font-mono text-gray-200 block leading-relaxed">
+                      {currentRecord.cause}
+                    </span>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-black/50 border border-white/5">
+                    <span className="text-[10px] font-mono text-gray-500 uppercase block mb-1">
+                      CURRENT AUDIT STATUS:
+                    </span>
+                    <span className="text-xs font-mono text-[#ff1a2e] font-bold tracking-wider flex items-center gap-2">
+                      <Skull size={13} />
+                      <span>COMPROMISED // TARGET ROOTED</span>
+                    </span>
+                    <span className="text-[10px] font-mono text-gray-400 mt-1 block">
+                      Forensic stamp: {currentRecord.time} UTC
+                    </span>
+                  </div>
+                </div>
+
+                {/* Justice Line */}
+                <div className="p-4 rounded-xl bg-[#ff1a2e]/10 border border-[#ff1a2e]/30 mb-8 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-3">
+                  <div className="text-xs font-mono text-gray-300">
+                    <span className="text-[#ff1a2e] font-deathnote text-base mr-2">JUSTICE:</span>
+                    Justice has been served. All credentials harvested under ethical adversary rules.
+                  </div>
+                  <div className="font-deathnote text-sm text-[#ff1a2e] tracking-widest whitespace-nowrap">
+                    AN1EN // 0xDEAD
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="flex flex-wrap items-center gap-3">
+                  <button
+                    onClick={handleRewrite}
+                    type="button"
+                    className="py-3 px-5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-mono text-xs font-semibold tracking-wider flex items-center gap-2 transition-all cursor-pointer"
                   >
-                    <Mail size={15} />
-                    <span>DISPATCH TO AN1EN (EMAIL AUDIT REQUEST)</span>
+                    <RotateCcw size={14} />
+                    <span>REWRITE ANOTHER TARGET</span>
+                  </button>
+
+                  <a
+                    href={`mailto:anlenjeban7@gmail.com?subject=${encodeURIComponent(
+                      `[Target Audit Engagement] ${currentRecord.name}`
+                    )}&body=${encodeURIComponent(
+                      `Target: ${currentRecord.name}\nVector: ${currentRecord.cause}\nTimestamp: ${currentRecord.time}\n\nPlease proceed with ethical penetration testing scoping.`
+                    )}`}
+                    className="py-3 px-5 rounded-xl bg-[#ff1a2e] hover:bg-[#ff1a2e]/90 text-white font-mono text-xs font-bold tracking-wider flex items-center gap-2 transition-all shadow-[0_0_20px_rgba(255,26,46,0.4)]"
+                  >
+                    <Mail size={14} />
+                    <span>DISPATCH TO ANLEN (AN1EN)</span>
                   </a>
 
                   <button
-                    onClick={handleReset}
-                    className="w-full sm:w-auto py-3 px-6 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-mono text-gray-300 hover:text-white transition-all flex items-center justify-center gap-2"
+                    onClick={handleDownloadDossier}
+                    type="button"
+                    className="py-3 px-4 rounded-xl bg-black/60 hover:bg-white/5 border border-white/10 text-gray-300 hover:text-white font-mono text-xs flex items-center gap-2 transition-all cursor-pointer"
                   >
-                    <RefreshCw size={14} />
-                    <span>INSCRIBE ANOTHER TARGET</span>
+                    <Download size={13} />
+                    <span>SAVE DOSSIER</span>
                   </button>
                 </div>
               </motion.div>
             )}
 
-            {/* Bottom Notebook Footer */}
-            <div className="mt-8 pt-4 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-gray-500 pl-8 sm:pl-12">
-              <span className="flex items-center gap-1.5">
-                <ShieldCheck size={12} className="text-[#ff1a2e]" />
-                ETHICAL RED TEAM ENGAGEMENT PROTOCOL
-              </span>
-              <span>PAGE NO. 0x01</span>
-            </div>
-
           </div>
         </div>
+
+        {/* ========================================================
+            PREVIOUSLY INSCRIBED ARCHIVE LEDGER
+           ======================================================== */}
+        {records.length > 0 && (
+          <div className="mt-8 p-6 rounded-2xl bg-black/40 border border-white/5">
+            <div className="flex items-center justify-between mb-4 pb-3 border-b border-white/5 text-xs font-mono">
+              <span className="text-gray-400 flex items-center gap-2">
+                <Terminal size={13} className="text-[#ff1a2e]" />
+                SESSION INSCRIBED ARCHIVE
+              </span>
+              <span className="text-[#ff1a2e] font-mono">
+                TOTAL TARGETS RECORDED: {records.length}
+              </span>
+            </div>
+
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
+              {records.map((r) => (
+                <div
+                  key={r.id}
+                  className="p-3 rounded-lg bg-white/[0.02] border border-white/5 hover:border-[#ff1a2e]/30 transition-all text-xs font-mono"
+                >
+                  <div className="flex items-center justify-between text-[10px] text-gray-500 mb-1">
+                    <span>{r.id}</span>
+                    <span>{r.time}</span>
+                  </div>
+                  <div className="text-sm font-deathnote text-white truncate mb-1">
+                    {r.name}
+                  </div>
+                  <div className="text-[10px] text-[#ff1a2e] truncate">
+                    {r.cause}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
       </div>
     </section>
