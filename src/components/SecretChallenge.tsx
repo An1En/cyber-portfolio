@@ -36,8 +36,8 @@ interface SecretChallengeProps {
 export default function SecretChallenge({ className = "" }: SecretChallengeProps) {
   const [downloadCount, setDownloadCount] = useState<number>(47);
   const [isOpen, setIsOpen] = useState(false);
-  const [copiedCode, setCopiedCode] = useState(false);
-  const [activeTab, setActiveTab] = useState<"devglan" | "python" | "verify">("devglan");
+  const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"kali" | "devglan" | "verify">("kali");
   const [verificationInput, setVerificationInput] = useState("");
   const [isVerified, setIsVerified] = useState(false);
   const [verifyError, setVerifyError] = useState(false);
@@ -80,23 +80,21 @@ export default function SecretChallenge({ className = "" }: SecretChallengeProps
     setIsOpen(true);
   };
 
-  const pythonOneLiner = `python3 -c "from PIL import Image; img=Image.open('findme.png'); p=img.load(); b=[c&1 for y in range(img.size[1]) for x in range(img.size[0]) for c in p[x,y][:3]]; d=bytes([sum(b[i+j]<<(7-j) for j in range(8)) for i in range(0,25000,8)]); print(d[12:12+int.from_bytes(d[8:12],'big')].decode('utf-8','ignore'))"`;
-
-  const copyPython = () => {
-    navigator.clipboard.writeText(pythonOneLiner);
-    setCopiedCode(true);
+  const copyText = (text: string, id: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedCode(id);
     soundManager.playTick();
-    setTimeout(() => setCopiedCode(false), 2000);
+    setTimeout(() => setCopiedCode(null), 2000);
   };
 
   const handleVerify = (e: React.FormEvent) => {
     e.preventDefault();
-    const clean = verificationInput.trim().toLowerCase();
+    const clean = verificationInput.trim().toUpperCase();
     if (
-      clean.includes("4nl3n") ||
-      clean.includes("instagram.com/4nl3n_") ||
-      clean.includes("you found it") ||
-      clean.includes("not many people dig this deep")
+      clean.includes("4N1EN_SHADOW_ROOT_2026") ||
+      clean.includes("FLAG{4N1EN_SHADOW_ROOT_2026}") ||
+      clean.includes("4N1EN") ||
+      clean.includes("SHADOW_ROOT")
     ) {
       soundManager.playTargetAcquired();
       setIsVerified(true);
@@ -111,6 +109,8 @@ export default function SecretChallenge({ className = "" }: SecretChallengeProps
     }
   };
 
+  const pythonOneLiner = `python3 -c "from PIL import Image; img=Image.open('findme.png'); p=img.load(); b=[c&1 for y in range(img.size[1]) for x in range(img.size[0]) for c in p[x,y][:3]]; d=bytes([sum(b[i+j]<<(7-j) for j in range(8)) for i in range(0,35000,8)]); print(d[12:12+int.from_bytes(d[8:12],'big')].decode('utf-8','ignore'))"`;
+
   return (
     <>
       {/* The Secret Trigger Button in Hero */}
@@ -118,7 +118,7 @@ export default function SecretChallenge({ className = "" }: SecretChallengeProps
         onClick={handleDownloadAndTrigger}
         type="button"
         className={`group relative rounded-full pl-4 pr-3 py-2 bg-black/80 hover:bg-[#ff1a2e]/15 border border-[#ff1a2e]/40 hover:border-[#ff1a2e] text-white font-mono text-xs flex items-center gap-2.5 transition-all duration-300 hover:shadow-[0_0_25px_rgba(255,26,46,0.45)] cursor-pointer select-none ${className}`}
-        title="Classified steganography challenge. Encoded via DevGlan LSB matrix."
+        title="Classified CTF Challenge. Find the hidden flag inside findme.png."
       >
         <span className="relative flex h-2 w-2">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ff1a2e] opacity-80" />
@@ -149,7 +149,7 @@ export default function SecretChallenge({ className = "" }: SecretChallengeProps
               exit={{ opacity: 0, scale: 0.94, y: 15 }}
               className="w-full max-w-xl max-h-[92vh] overflow-y-auto bg-[#09090d] border border-[#ff1a2e]/40 rounded-2xl shadow-[0_25px_80px_rgba(255,26,46,0.3)] relative text-white flex flex-col"
             >
-              {/* Ominous Top Scanner Line */}
+              {/* Top Scanner Line */}
               <div className="h-1 bg-gradient-to-r from-transparent via-[#ff1a2e] to-transparent w-full sticky top-0 z-30" />
 
               {/* Close Button */}
@@ -169,7 +169,7 @@ export default function SecretChallenge({ className = "" }: SecretChallengeProps
                 {/* Header Tag */}
                 <div className="flex items-center gap-2 text-[10px] sm:text-xs font-mono text-[#ff1a2e] uppercase tracking-widest">
                   <Terminal size={14} />
-                  <span>FORENSIC DOSSIER // STEGANOGRAPHY LEVEL 0x01</span>
+                  <span>CLASSIFIED FORENSIC CHALLENGE // CTF LEVEL 0x01</span>
                 </div>
 
                 {/* Dramatic "FIND ME" Banner */}
@@ -180,7 +180,7 @@ export default function SecretChallenge({ className = "" }: SecretChallengeProps
                   </h2>
                   <p className="text-[11px] font-mono text-[#ff1a2e] uppercase tracking-[0.25em] mt-1 flex items-center justify-center gap-1.5 relative z-10">
                     <Sparkles size={12} />
-                    <span>SECRET MESSAGE HIDDEN INSIDE PIXEL BITS</span>
+                    <span>CRACK THE CIPHER TO UNLOCK OPERATOR COMMS</span>
                   </p>
                 </div>
 
@@ -189,19 +189,35 @@ export default function SecretChallenge({ className = "" }: SecretChallengeProps
                   <div className="flex items-center justify-between text-gray-300">
                     <span className="flex items-center gap-2 text-white font-semibold">
                       <Cpu size={14} className="text-[#ff1a2e]" />
-                      <span>findme.png dispatched</span>
+                      <span>findme.png downloaded</span>
                     </span>
                     <span className="text-[11px] text-[#ff1a2e] bg-[#ff1a2e]/10 px-2 py-0.5 rounded border border-[#ff1a2e]/30">
-                      LSB Matrix
+                      FLAG: FLAG&#123;...&#125;
                     </span>
                   </div>
                   <p className="text-gray-400 text-[11px] leading-relaxed">
-                    A secret transmission has been injected into this image. Decrypt the bits to reveal what lies beneath and establish direct communication.
+                    A secret CTF flag has been injected into <code className="text-[#ff1a2e]">findme.png</code>. Use common Kali Linux forensics tools or the DevGlan decoder to extract it, then submit it below to unlock direct communication!
                   </p>
                 </div>
 
                 {/* Navigation Tabs */}
                 <div className="grid grid-cols-3 gap-1 bg-white/5 p-1 rounded-xl border border-white/10 text-xs font-mono">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      soundManager.playTick();
+                      setActiveTab("kali");
+                    }}
+                    className={`py-2 px-2 rounded-lg text-center transition-all flex items-center justify-center gap-1.5 ${
+                      activeTab === "kali"
+                        ? "bg-[#ff1a2e] text-white font-bold shadow-md shadow-[#ff1a2e]/30"
+                        : "text-gray-400 hover:text-white hover:bg-white/5"
+                    }`}
+                  >
+                    <Terminal size={12} />
+                    <span>Kali Tools</span>
+                  </button>
+
                   <button
                     type="button"
                     onClick={() => {
@@ -215,23 +231,9 @@ export default function SecretChallenge({ className = "" }: SecretChallengeProps
                     }`}
                   >
                     <ExternalLink size={12} />
-                    <span>Decoder Portal</span>
+                    <span>DevGlan Web</span>
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      soundManager.playTick();
-                      setActiveTab("python");
-                    }}
-                    className={`py-2 px-2 rounded-lg text-center transition-all flex items-center justify-center gap-1.5 ${
-                      activeTab === "python"
-                        ? "bg-[#ff1a2e] text-white font-bold shadow-md shadow-[#ff1a2e]/30"
-                        : "text-gray-400 hover:text-white hover:bg-white/5"
-                    }`}
-                  >
-                    <Terminal size={12} />
-                    <span>Python Script</span>
-                  </button>
+
                   <button
                     type="button"
                     onClick={() => {
@@ -249,7 +251,86 @@ export default function SecretChallenge({ className = "" }: SecretChallengeProps
                   </button>
                 </div>
 
-                {/* Tab 1: DevGlan Online Decoder Hint & Station */}
+                {/* Tab 1: Kali Linux Forensic Tools */}
+                {activeTab === "kali" && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="space-y-3"
+                  >
+                    <div className="p-4 rounded-xl bg-black/80 border border-white/10 space-y-3">
+                      <div className="flex items-center justify-between text-xs font-mono text-gray-300">
+                        <span className="flex items-center gap-2 font-bold text-white">
+                          <Terminal size={14} className="text-[#ff1a2e]" />
+                          <span>Common Kali Linux Commands</span>
+                        </span>
+                        <span className="text-[10px] text-green-400 border border-green-500/30 px-2 py-0.5 rounded bg-green-500/10">
+                          EASY TO CRACK
+                        </span>
+                      </div>
+
+                      <p className="text-[11px] font-mono text-gray-400 leading-relaxed">
+                        Open your terminal in the directory where you downloaded <code className="text-white">findme.png</code> and run any of these standard commands:
+                      </p>
+
+                      {/* Tool 1: strings */}
+                      <div className="p-2.5 bg-[#050508] rounded-lg border border-white/5 space-y-1">
+                        <div className="flex items-center justify-between text-[11px] font-mono text-gray-400">
+                          <span>Method 1: String Inspection</span>
+                          <button
+                            type="button"
+                            onClick={() => copyText("strings findme.png | grep FLAG", "strings")}
+                            className="text-[#ff1a2e] hover:text-white flex items-center gap-1 text-[10px] cursor-pointer"
+                          >
+                            {copiedCode === "strings" ? <Check size={11} className="text-green-400" /> : <Copy size={11} />}
+                            <span>{copiedCode === "strings" ? "COPIED" : "COPY"}</span>
+                          </button>
+                        </div>
+                        <code className="text-xs font-mono text-green-400 block select-all">
+                          strings findme.png | grep FLAG
+                        </code>
+                      </div>
+
+                      {/* Tool 2: exiftool */}
+                      <div className="p-2.5 bg-[#050508] rounded-lg border border-white/5 space-y-1">
+                        <div className="flex items-center justify-between text-[11px] font-mono text-gray-400">
+                          <span>Method 2: Metadata Analysis</span>
+                          <button
+                            type="button"
+                            onClick={() => copyText("exiftool findme.png", "exiftool")}
+                            className="text-[#ff1a2e] hover:text-white flex items-center gap-1 text-[10px] cursor-pointer"
+                          >
+                            {copiedCode === "exiftool" ? <Check size={11} className="text-green-400" /> : <Copy size={11} />}
+                            <span>{copiedCode === "exiftool" ? "COPIED" : "COPY"}</span>
+                          </button>
+                        </div>
+                        <code className="text-xs font-mono text-green-400 block select-all">
+                          exiftool findme.png | grep -E &quot;Flag|Comment&quot;
+                        </code>
+                      </div>
+
+                      {/* Tool 3: Python one liner */}
+                      <div className="p-2.5 bg-[#050508] rounded-lg border border-white/5 space-y-1">
+                        <div className="flex items-center justify-between text-[11px] font-mono text-gray-400">
+                          <span>Method 3: Raw LSB Pixel Unpacker</span>
+                          <button
+                            type="button"
+                            onClick={() => copyText(pythonOneLiner, "python")}
+                            className="text-[#ff1a2e] hover:text-white flex items-center gap-1 text-[10px] cursor-pointer"
+                          >
+                            {copiedCode === "python" ? <Check size={11} className="text-green-400" /> : <Copy size={11} />}
+                            <span>{copiedCode === "python" ? "COPIED" : "COPY"}</span>
+                          </button>
+                        </div>
+                        <code className="text-[10px] font-mono text-green-400 block truncate">
+                          python3 -c &quot;from PIL import Image...&quot;
+                        </code>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* Tab 2: DevGlan Online Decoder Hint & Station */}
                 {activeTab === "devglan" && (
                   <motion.div
                     initial={{ opacity: 0, y: 8 }}
@@ -261,32 +342,30 @@ export default function SecretChallenge({ className = "" }: SecretChallengeProps
                         <div className="flex items-center gap-2">
                           <Key size={15} className="text-[#ff1a2e]" />
                           <span className="font-mono text-xs font-bold text-white uppercase tracking-wider">
-                            Official Decoder Station
+                            Online Web Decoder
                           </span>
                         </div>
                         <span className="text-[10px] font-mono text-[#ff1a2e] uppercase border border-[#ff1a2e]/40 px-2 py-0.5 rounded-full bg-black/40">
-                          DevGlan Algorithm
+                          No Install Needed
                         </span>
                       </div>
 
                       <p className="text-xs font-mono text-gray-300 leading-relaxed">
-                        This PNG was inscribed using DevGlan&apos;s LSB Steganography engine. You can extract the concealed message in 3 simple clicks:
+                        Don&apos;t have Kali Linux handy? Extract the flag directly in your browser using the online DevGlan Steganography tool:
                       </p>
 
                       <div className="space-y-2 text-[11px] font-mono text-gray-300 bg-black/60 p-3 rounded-lg border border-white/5">
                         <div className="flex items-start gap-2">
                           <span className="text-[#ff1a2e] font-bold">1.</span>
-                          <span>Launch the <strong>DevGlan Steganography</strong> decoder station below.</span>
+                          <span>Click the link below to open <strong>DevGlan Steganography</strong>.</span>
                         </div>
                         <div className="flex items-start gap-2">
                           <span className="text-[#ff1a2e] font-bold">2.</span>
-                          <span>Select the <strong>&quot;Decode / Extract&quot;</strong> section and upload your downloaded <code className="text-[#ff1a2e]">findme.png</code>.</span>
+                          <span>Select the <strong>&quot;Decode / Extract&quot;</strong> section &amp; upload <code className="text-[#ff1a2e]">findme.png</code>.</span>
                         </div>
                         <div className="flex items-start gap-2">
                           <span className="text-[#ff1a2e] font-bold">3.</span>
-                          <span>
-                            <strong>Leave passphrase unchecked/blank</strong> (no password required) &amp; click <strong>&quot;Extract Message&quot;</strong>.
-                          </span>
+                          <span><strong>Leave passphrase blank</strong> &amp; click <strong>&quot;Extract Message&quot;</strong> to reveal the flag!</span>
                         </div>
                       </div>
 
@@ -305,40 +384,6 @@ export default function SecretChallenge({ className = "" }: SecretChallengeProps
                   </motion.div>
                 )}
 
-                {/* Tab 2: Python Script for CTF Players */}
-                {activeTab === "python" && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="space-y-3"
-                  >
-                    <div className="p-4 rounded-xl bg-black/80 border border-white/10 space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-mono text-gray-300 flex items-center gap-2">
-                          <Terminal size={14} className="text-[#ff1a2e]" />
-                          <span>Local Python Extraction One-Liner</span>
-                        </span>
-                        <button
-                          type="button"
-                          onClick={copyPython}
-                          className="text-[11px] font-mono text-[#ff1a2e] hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer bg-white/5 hover:bg-white/10 px-2 py-1 rounded border border-white/10"
-                        >
-                          {copiedCode ? <Check size={12} className="text-green-400" /> : <Copy size={12} />}
-                          <span>{copiedCode ? "COPIED" : "COPY SCRIPT"}</span>
-                        </button>
-                      </div>
-
-                      <div className="p-3 bg-[#050508] rounded-lg border border-white/5 text-[11px] font-mono text-green-400 overflow-x-auto select-all leading-relaxed custom-scrollbar">
-                        <code>{pythonOneLiner}</code>
-                      </div>
-
-                      <p className="text-[11px] font-mono text-gray-400">
-                        Run this in the directory where <code className="text-white">findme.png</code> was saved to unpack the raw LSB RGB streams instantly into terminal stdout.
-                      </p>
-                    </div>
-                  </motion.div>
-                )}
-
                 {/* Tab 3: Verify Extracted Flag */}
                 {activeTab === "verify" && (
                   <motion.div
@@ -350,11 +395,11 @@ export default function SecretChallenge({ className = "" }: SecretChallengeProps
                       <form onSubmit={handleVerify} className="p-4 rounded-xl bg-black/80 border border-white/10 space-y-3">
                         <div className="flex items-center gap-2 text-xs font-mono text-gray-300">
                           <Unlock size={14} className="text-[#ff1a2e]" />
-                          <span>Submit Decoded Signal to Verify</span>
+                          <span>Submit CTF Flag to Verify</span>
                         </div>
 
                         <p className="text-[11px] font-mono text-gray-400 leading-relaxed">
-                          Did you extract the message? Paste the recovered text, signal, or Instagram profile below to verify your forensic solve:
+                          Enter the flag you extracted from <code className="text-white">findme.png</code> to confirm your solve and unlock operator communication:
                         </p>
 
                         <div className="flex gap-2">
@@ -362,8 +407,8 @@ export default function SecretChallenge({ className = "" }: SecretChallengeProps
                             type="text"
                             value={verificationInput}
                             onChange={(e) => setVerificationInput(e.target.value)}
-                            placeholder="e.g. 4nl3n_ or You found it..."
-                            className="flex-1 bg-white/5 border border-white/15 focus:border-[#ff1a2e] rounded-lg px-3 py-2 text-xs font-mono text-white placeholder-gray-600 focus:outline-none"
+                            placeholder="FLAG{...}"
+                            className="flex-1 bg-white/5 border border-white/15 focus:border-[#ff1a2e] rounded-lg px-3 py-2 text-xs font-mono text-white placeholder-gray-600 focus:outline-none uppercase"
                           />
                           <button
                             type="submit"
@@ -376,7 +421,7 @@ export default function SecretChallenge({ className = "" }: SecretChallengeProps
                         {verifyError && (
                           <p className="text-[11px] font-mono text-red-400 flex items-center gap-1.5 animate-pulse">
                             <X size={12} />
-                            <span>Incorrect signal. Check the decoded output from DevGlan or Python script.</span>
+                            <span>Incorrect flag. Inspect findme.png with strings, exiftool, or DevGlan!</span>
                           </p>
                         )}
                       </form>
@@ -385,17 +430,20 @@ export default function SecretChallenge({ className = "" }: SecretChallengeProps
                         <div className="flex items-center justify-between text-green-400 text-xs font-mono font-bold">
                           <span className="flex items-center gap-2">
                             <ShieldCheck size={16} />
-                            <span>MISSION SOLVED // ANALYST VERIFIED</span>
+                            <span>CLEARANCE GRANTED // 100% SOLVED</span>
                           </span>
                           <span className="text-[10px] bg-green-500/20 px-2 py-0.5 rounded border border-green-500/40">
-                            100% SOLVED
+                            FLAG VERIFIED
                           </span>
                         </div>
 
                         <div className="p-3 bg-black/60 rounded-lg border border-green-500/20 text-xs font-mono text-gray-200 space-y-1.5">
-                          <p className="text-green-400 font-semibold">Decoded Payload:</p>
-                          <p className="italic text-gray-300">
-                            &ldquo;You found it. 🎯 Not many people dig this deep — I respect that.&rdquo;
+                          <p className="text-green-400 font-semibold">Flag Authenticated:</p>
+                          <code className="text-green-300 font-bold block bg-black/40 p-1.5 rounded">
+                            FLAG&#123;4N1EN_SHADOW_ROOT_2026&#125;
+                          </code>
+                          <p className="text-gray-400 text-[11px] pt-1">
+                            &ldquo;You dug deep through the pixel matrix — authentic hacker spirit. Let&apos;s connect!&rdquo;
                           </p>
                         </div>
 
