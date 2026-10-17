@@ -26,13 +26,13 @@ export default function WriteupDetailPage() {
     return (
       <div className="min-h-screen pt-28 px-4 pb-16 flex items-center justify-center bg-[#050507] text-[#f4f4f6]">
         <div className="text-center">
-          <h1 className="text-3xl font-deathnote text-white mb-4">CASE FILE NOT FOUND</h1>
+          <h1 className="text-3xl font-deathnote text-white mb-4">WRITEUP NOT FOUND</h1>
           <Link
             href="/writeup"
             onClick={() => soundManager.playTick()}
             className="hacker-btn text-xs inline-flex items-center gap-2"
           >
-            ← Return to Case Archive
+            ← Return to Writeups Archive
           </Link>
         </div>
       </div>
@@ -54,7 +54,7 @@ export default function WriteupDetailPage() {
             className="text-gray-400 hover:text-white transition-colors font-mono text-xs flex items-center gap-2"
           >
             <ArrowLeft size={14} />
-            <span>~/return_to_case_archive</span>
+            <span>← Return to Writeups</span>
           </Link>
 
           <span className="px-2.5 py-0.5 bg-black text-white border border-white/40 font-mono text-[11px] font-bold tracking-[0.2em] uppercase">
@@ -190,7 +190,7 @@ export default function WriteupDetailPage() {
             className="hacker-btn text-xs flex items-center gap-2"
           >
             <ArrowLeft size={14} className="text-[#ff1a2e]" />
-            <span>All Case Files</span>
+            <span>All Writeups</span>
           </Link>
           <a
             href={writeup.mediumUrl}

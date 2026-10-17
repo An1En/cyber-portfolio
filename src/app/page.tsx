@@ -188,8 +188,8 @@ const ROLE_TEXT = "OFFENSIVE_SECURITY_RESEARCHER && RED_TEAM_SPECIALIST";
 const statCards = [
   { label: "Proving Grounds", value: "HTB ID", link: "https://profile.hackthebox.com/profile/019cfb0e-4078-7246-87bb-feace4b36378" },
   { label: "Active Directory RTS", value: "SPECIALIST", section: "certifications" },
-  { label: "Target Quest", value: "HTB CPTS", section: "certifications" },
-  { label: "Open Cases", value: "3 PUBLISHED", section: "cases" },
+  { label: "Target Credential", value: "HTB CPTS", section: "certifications" },
+  { label: "Case Studies", value: "3 AUDITED", section: "cases" },
 ];
 
 const socials = [
@@ -277,7 +277,7 @@ export default function Home() {
               <div className="flex items-center gap-2 text-xs font-mono text-[#ff1a2e] mb-2 uppercase tracking-[0.25em]">
                 <span>[ 0xDEAD ]</span>
                 <span>•</span>
-                <span>OFFENSIVE CYBER WARFARE MANIFEST</span>
+                <span>OFFENSIVE CYBERSECURITY &amp; RED TEAM PORTFOLIO</span>
               </div>
               
               <h1 className="font-deathnote text-4xl sm:text-6xl md:text-7xl text-white tracking-wider deathnote-glow">
@@ -285,7 +285,7 @@ export default function Home() {
               </h1>
               
               <p className="font-mono text-xs md:text-sm text-gray-300 tracking-wider mt-2 max-w-xl">
-                Active Directory attack chains, CTF casefiles, and offensive tooling by Anlen Jeban (AN1EN).
+                Active Directory attack chains, security audits, and offensive tooling by Anlen Jeban (AN1EN).
               </p>
             </div>
 
@@ -369,20 +369,20 @@ export default function Home() {
                       }}
                       className="group relative rounded-full pl-6 pr-2 py-2.5 bg-black border border-white/40 hover:border-white text-white font-mono text-xs font-semibold flex items-center gap-3 transition-all duration-300 hover:shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:scale-[1.02]"
                     >
-                      <span>Open the Dossier</span>
+                      <span>Explore Case Studies</span>
                       <span className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center transition-transform group-hover:scale-105">
                         <Terminal size={13} className="text-white" />
                       </span>
                     </button>
 
                     <Link
-                      href="/#cases"
+                      href="/#projects"
                       onClick={() => soundManager.playTick()}
                       className="group relative rounded-full pl-6 pr-2 py-2.5 bg-[#ff1a2e] text-white font-mono text-xs font-semibold flex items-center gap-3 transition-all duration-300 hover:shadow-[0_0_25px_rgba(255,26,46,0.6)] hover:scale-[1.02]"
                     >
-                      <span>Read Case Files</span>
+                      <span>View Projects &amp; Tools</span>
                       <span className="w-8 h-8 rounded-full bg-black/25 flex items-center justify-center transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-                        <BookOpen size={13} />
+                        <Code2 size={13} />
                       </span>
                     </Link>
 
@@ -391,7 +391,7 @@ export default function Home() {
                       onClick={() => soundManager.playTick()}
                       className="group relative rounded-full pl-6 pr-2 py-2.5 bg-white/5 border border-white/20 hover:border-[#ff1a2e]/50 text-gray-200 font-mono text-xs flex items-center gap-3 transition-all duration-300 hover:bg-white/10"
                     >
-                      <span>Contact L</span>
+                      <span>Get In Touch</span>
                       <span className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-300 group-hover:text-white transition-colors">
                         <Mail size={13} className="text-[#ff1a2e]" />
                       </span>
@@ -401,9 +401,9 @@ export default function Home() {
                       href="/anlen-jeban-resume.pdf"
                       download
                       onClick={() => soundManager.playTick()}
-                      className="group relative rounded-full pl-5 pr-2 py-2 bg-white/5 border border-white/10 hover:border-white/30 text-gray-400 hover:text-white font-mono text-xs flex items-center gap-2.5 transition-all duration-300"
+                      className="group relative rounded-full pl-5 pr-2 py-2 bg-white/5 border border-white/10 hover:border-white/30 text-gray-300 hover:text-white font-mono text-xs flex items-center gap-2.5 transition-all duration-300"
                     >
-                      <span>DECRYPT CV</span>
+                      <span>DOWNLOAD RESUME / CV</span>
                       <span className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-white transition-colors">
                         <Download size={12} />
                       </span>
@@ -412,9 +412,9 @@ export default function Home() {
                     <Link
                       href="/about"
                       onClick={() => soundManager.playTick()}
-                      className="group relative rounded-full pl-5 pr-2 py-2 bg-white/5 border border-white/10 hover:border-white/30 text-gray-400 hover:text-white font-mono text-xs flex items-center gap-2.5 transition-all duration-300"
+                      className="group relative rounded-full pl-5 pr-2 py-2 bg-white/5 border border-white/10 hover:border-white/30 text-gray-300 hover:text-white font-mono text-xs flex items-center gap-2.5 transition-all duration-300"
                     >
-                      <span>ABOUT L</span>
+                      <span>ABOUT ANLEN</span>
                       <span className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-white transition-colors">
                         <ArrowUpRight size={12} />
                       </span>
@@ -474,7 +474,7 @@ export default function Home() {
         <div className="mt-12 text-center">
           <div className="inline-flex items-center gap-2 text-gray-500 font-mono text-xs">
             <ChevronDown size={14} className="text-[#ff1a2e] animate-bounce" />
-            <span>SCROLL TO CONSULT CASE FILES &amp; AUDIT NOTES</span>
+            <span>SCROLL TO EXPLORE CASE STUDIES &amp; TOOLING</span>
           </div>
         </div>
       </section>
@@ -482,7 +482,7 @@ export default function Home() {
       {/* SECTION 2: OPEN CASES */}
       <PenguinEditorial />
 
-      {/* SECTION 3: EVIDENCE & TOOLING (PROJECTS) */}
+      {/* SECTION 3: PROJECTS & TOOLING */}
       <section ref={projectsRef} className="py-24 px-4 bg-[#07070b] border-t border-white/5" id="projects">
         <div className="max-w-5xl mx-auto">
           <ScrollDivider target={projectsRef} />
@@ -491,14 +491,14 @@ export default function Home() {
             <div className="flex items-center justify-between mb-10">
               <div>
                 <span className="text-[10px] uppercase font-mono tracking-[0.25em] text-[#ff1a2e] font-bold">
-                  OFFENSIVE WEAPONRY // RECON TOOLING
+                  SOFTWARE &amp; FRAMEWORKS // OFFENSIVE &amp; AI TOOLING
                 </span>
                 <h2 className="text-3xl md:text-5xl font-deathnote tracking-wider text-white mt-1">
-                  EVIDENCE &amp; TOOLING
+                  PROJECTS &amp; TOOLING
                 </h2>
               </div>
-              <span className="text-xs font-mono text-gray-500 hidden sm:inline">
-                RECON &amp; NEURAL TOOLS
+              <span className="text-xs font-mono text-gray-400 hidden sm:inline">
+                RECON &amp; AI SECURITY TOOLS
               </span>
             </div>
           </GlitchIn>
@@ -815,10 +815,11 @@ export default function Home() {
             <div className="flex items-center gap-3 mb-8">
               <Mail size={22} className="text-[#ff1a2e]" />
               <h2 className="text-3xl md:text-5xl font-deathnote tracking-wider text-white">
-                CONTACT L
+                GET IN TOUCH // CONTACT
               </h2>
-              <span className="ml-auto text-[10px] text-gray-500 font-mono hidden sm:inline">
-                PORT: 443 // TLS 1.3
+              <span className="ml-auto text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full font-mono hidden sm:inline-flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                AVAILABLE FOR HIRE
               </span>
             </div>
           </GlitchIn>
@@ -850,7 +851,7 @@ export default function Home() {
                     className="pt-6 border-t border-white/5 space-y-6"
                   >
                     <p className="font-sans text-sm text-gray-300 max-w-xl leading-relaxed">
-                      Channel active. Available for adversarial simulations, red team assessments, and offensive security research collaborations.
+                      Direct communication channel. Available for penetration testing roles, red team assessments, adversarial simulations, and offensive research collaborations.
                     </p>
 
                     <div className="flex flex-wrap gap-3">
@@ -884,14 +885,18 @@ export default function Home() {
             <span>The notebook is never wrong. © 2026 AN1EN.</span>
           </div>
 
-          <div className="flex items-center gap-4 text-[11px] text-gray-500">
+          <div className="flex flex-wrap items-center gap-3 md:gap-4 text-[11px] text-gray-400">
+            <Link href="/" className="hover:text-white transition-colors">HOME</Link>
+            <span>•</span>
+            <Link href="/#cases" className="hover:text-white transition-colors">CASE STUDIES</Link>
+            <span>•</span>
+            <Link href="/#projects" className="hover:text-white transition-colors">PROJECTS</Link>
+            <span>•</span>
+            <Link href="/writeup" className="hover:text-white transition-colors">WRITEUPS</Link>
+            <span>•</span>
             <Link href="/about" className="hover:text-white transition-colors">ABOUT</Link>
             <span>•</span>
-            <Link href="/#cases" className="hover:text-white transition-colors">CASE FILES</Link>
-            <span>•</span>
-            <Link href="/#projects" className="hover:text-white transition-colors">EVIDENCE &amp; TOOLING</Link>
-            <span>•</span>
-            <Link href="/writeup" className="hover:text-white transition-colors">CASE ARCHIVE</Link>
+            <Link href="/#contact" className="hover:text-white transition-colors">CONTACT</Link>
           </div>
         </div>
       </footer>

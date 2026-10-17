@@ -15,17 +15,17 @@ export default function PenguinEditorial() {
         {/* SECTION HEADER IN DEATH NOTE LANGUAGE */}
         <div className="mb-10">
           <div className="flex items-center gap-3 text-xs font-mono text-gray-400 mb-3 uppercase tracking-[0.25em]">
-            <span className="font-bold text-white bg-black border border-white/30 px-2 py-0.5">CASE FILES</span>
+            <span className="font-bold text-white bg-black border border-white/30 px-2 py-0.5">CASE STUDIES</span>
             <span>•</span>
-            <span>DECLASSIFIED INCIDENTS &amp; AUDITS</span>
+            <span>PENTEST AUDITS &amp; LAB WALKTHROUGHS</span>
           </div>
 
           <h2 className="text-4xl sm:text-6xl md:text-7xl font-deathnote tracking-tight text-white mb-4 leading-none">
             Root the host.
           </h2>
 
-          <p className="font-mono text-xs sm:text-sm text-gray-400 max-w-2xl leading-relaxed">
-            Offensive penetration audits, Active Directory attack chains, and proving ground case files. Every target in this index was compromised, dissected, and remediated under rigorous standards.
+          <p className="font-mono text-xs sm:text-sm text-gray-300 max-w-2xl leading-relaxed">
+            Hands-on penetration audits, Active Directory attack chains, and proving ground case studies. Every target in this index was compromised, dissected, and documented under rigorous ethical standards.
           </p>
 
           {/* Rule 0 Disclaimer Callout */}
@@ -43,10 +43,10 @@ export default function PenguinEditorial() {
           <div className="flex items-center justify-between pb-4 mb-8 border-b border-white/5">
             <div className="flex items-center gap-2">
               <span className="font-deathnote text-2xl text-white tracking-wide">
-                OPEN CASES
+                FEATURED CASE STUDIES
               </span>
               <span className="text-xs font-mono text-white bg-black border border-white/30 px-2 py-0.5 rounded">
-                {writeups.length} CASEFILES
+                {writeups.length} AUDITED LABS
               </span>
             </div>
             
@@ -55,7 +55,7 @@ export default function PenguinEditorial() {
               onClick={() => soundManager.playTick()}
               className="text-xs font-mono text-gray-400 hover:text-white flex items-center gap-1.5 transition-colors group"
             >
-              <span>View Case Archive</span>
+              <span>View All Writeups Archive</span>
               <ArrowUpRight size={13} className="text-gray-400 group-hover:text-white transition-colors" />
             </Link>
           </div>

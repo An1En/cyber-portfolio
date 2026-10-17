@@ -9,12 +9,12 @@ import { cn } from "@/lib/utils";
 import { soundManager } from "@/lib/audio";
 
 const navItems = [
-  { label: "DOSSIER", href: "/", icon: Skull },
-  { label: "CASE FILES", href: "/#cases", icon: BookOpen },
-  { label: "EVIDENCE & TOOLING", href: "/#projects", icon: Code2 },
-  { label: "CASE ARCHIVE", href: "/writeup", icon: FileText },
-  { label: "ABOUT", href: "/about", icon: User },
-  { label: "CONTACT L", href: "/#contact", icon: Mail },
+  { label: "HOME", sub: "Dossier & Overview", href: "/", icon: Skull },
+  { label: "CASE STUDIES", sub: "Pentests & Audits", href: "/#cases", icon: BookOpen },
+  { label: "PROJECTS", sub: "Security Tools & AI", href: "/#projects", icon: Code2 },
+  { label: "WRITEUPS", sub: "Reports Archive", href: "/writeup", icon: FileText },
+  { label: "ABOUT", sub: "Bio & Experience", href: "/about", icon: User },
+  { label: "CONTACT", sub: "Get In Touch", href: "/#contact", icon: Mail },
 ];
 
 export default function Navbar() {
@@ -52,7 +52,7 @@ export default function Navbar() {
         <Link
           href="/"
           onClick={handleNavClick}
-          className="flex items-center gap-3 group select-none"
+          className="flex items-center gap-3 group select-none shrink-0"
         >
           <div className="w-9 h-9 rounded-full bg-[#120508] border border-[#ff1a2e]/40 flex items-center justify-center transition-transform group-hover:scale-105 group-hover:border-[#ff1a2e]">
             <span className="font-deathnote text-2xl text-[#ff1a2e] leading-none select-none deathnote-glow">
@@ -60,26 +60,34 @@ export default function Navbar() {
             </span>
           </div>
           <div className="flex flex-col">
-            <span className="font-deathnote text-sm text-white tracking-wider group-hover:text-[#ff1a2e] transition-colors">
-              AN1EN
-            </span>
-            <span className="text-[9px] font-mono text-gray-500 tracking-widest -mt-0.5">
-              SEC_DOSSIER // 0xDEAD
+            <div className="flex items-center gap-1.5">
+              <span className="font-mono font-bold text-xs text-white tracking-wide group-hover:text-[#ff1a2e] transition-colors">
+                ANLEN JEBAN
+              </span>
+              <span className="text-[10px] font-mono text-[#ff1a2e] font-semibold">
+                (AN1EN)
+              </span>
+            </div>
+            <span className="text-[9px] font-mono text-gray-400 tracking-wider -mt-0.5">
+              OFFENSIVE SECURITY // RED TEAM
             </span>
           </div>
         </Link>
 
-        {/* Live Shinigami Telemetry Pill */}
-        <div className="hidden lg:flex items-center gap-2 px-3 py-1 rounded-full bg-[#ff1a2e]/5 border border-[#ff1a2e]/20 text-[10px] font-mono text-[#ff1a2e]">
+        {/* Live Availability Status Pill */}
+        <div
+          title="Status: Online & Available for Offensive Security Engagements"
+          className="hidden lg:flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[10px] font-mono text-emerald-400 select-none shadow-[0_0_15px_rgba(16,185,129,0.15)]"
+        >
           <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ff1a2e] opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#ff1a2e]"></span>
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
           </span>
-          <span className="tracking-widest uppercase">Target Sight: Online</span>
+          <span className="tracking-wider uppercase font-semibold">AVAILABLE FOR HIRE</span>
         </div>
 
         {/* Desktop Nav Items */}
-        <div className="hidden md:flex items-center gap-1.5">
+        <div className="hidden md:flex items-center gap-1">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
             const Icon = item.icon;
@@ -89,13 +97,13 @@ export default function Navbar() {
                 href={item.href}
                 onClick={handleNavClick}
                 className={cn(
-                  "px-4 py-1.5 rounded-full text-xs font-mono transition-all duration-200 relative group flex items-center gap-1.5",
+                  "px-3 py-1.5 rounded-full text-xs font-mono transition-all duration-200 relative group flex items-center gap-1.5",
                   isActive
                     ? "text-white bg-[#ff1a2e]/15 border border-[#ff1a2e]/40 font-semibold"
-                    : "text-gray-400 hover:text-white hover:bg-white/5"
+                    : "text-gray-300 hover:text-white hover:bg-white/5"
                 )}
               >
-                <Icon size={13} className={isActive ? "text-[#ff1a2e]" : "text-gray-500 group-hover:text-gray-300"} />
+                <Icon size={13} className={isActive ? "text-[#ff1a2e]" : "text-gray-400 group-hover:text-gray-200"} />
                 <span>{item.label}</span>
                 {isActive && (
                   <motion.div
@@ -168,21 +176,31 @@ export default function Navbar() {
                       setMenuOpen(false);
                     }}
                     className={cn(
-                      "flex items-center gap-3 px-4 py-3 rounded-xl font-mono text-sm transition-colors",
+                      "flex items-center justify-between px-4 py-3 rounded-xl font-mono text-sm transition-colors",
                       isActive
                         ? "bg-[#ff1a2e]/15 border border-[#ff1a2e]/40 text-white font-bold"
-                        : "text-gray-400 hover:text-white hover:bg-white/5"
+                        : "text-gray-300 hover:text-white hover:bg-white/5"
                     )}
                   >
-                    <Icon size={16} className={isActive ? "text-[#ff1a2e]" : "text-gray-500"} />
-                    <span>{item.label}</span>
+                    <div className="flex items-center gap-3">
+                      <Icon size={16} className={isActive ? "text-[#ff1a2e]" : "text-gray-400"} />
+                      <span>{item.label}</span>
+                    </div>
+                    {item.sub && (
+                      <span className="text-[11px] text-gray-500 font-mono">
+                        {item.sub}
+                      </span>
+                    )}
                   </Link>
                 );
               })}
             </div>
-            <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between text-[11px] font-mono text-gray-500">
-              <span>TARGET SIGHT: ACTIVE</span>
-              <span className="text-[#ff1a2e]">ID: 019cfb0e-4078</span>
+            <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between text-[11px] font-mono text-gray-400">
+              <span className="flex items-center gap-1.5 text-emerald-400">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                AVAILABLE FOR HIRE
+              </span>
+              <span className="text-gray-500">ANLEN JEBAN // RED TEAM</span>
             </div>
           </motion.div>
         )}

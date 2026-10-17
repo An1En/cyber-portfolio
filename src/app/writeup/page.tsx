@@ -28,17 +28,17 @@ export default function WriteupPage() {
                 <Skull size={24} className="text-[#ff1a2e]" />
               </div>
               <div>
-                <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-gray-400 font-bold">
-                  CLASSIFIED RECON // DECLASSIFIED FILES
+                <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#ff1a2e] font-bold">
+                  TECHNICAL ARCHIVE // DECLASSIFIED SECURITY AUDITS
                 </span>
                 <h1 className="text-3xl md:text-5xl font-deathnote tracking-wider text-white">
-                  CASE ARCHIVE
+                  SECURITY WRITEUPS
                 </h1>
               </div>
             </div>
             
-            <p className="text-xs md:text-sm text-gray-400 font-mono mt-2">
-              In-depth technical forensics, Active Directory attack chains, and proving ground machine post-mortems.
+            <p className="text-xs md:text-sm text-gray-300 font-mono mt-2">
+              In-depth technical penetration testing walkthroughs, Active Directory attack chains, and proving ground machine post-mortems.
             </p>
 
             {/* Rule 0 Disclaimer Callout */}
@@ -50,9 +50,9 @@ export default function WriteupPage() {
               <span>{RULE_ZERO_DISCLAIMER}</span>
             </div>
 
-            <div className="flex items-center gap-2 text-[10px] text-gray-500 font-mono mt-4 pt-3 border-t border-white/5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#ff1a2e] animate-pulse" />
-              STATUS: {writeups.length} DECLASSIFIED CASE FILES AVAILABLE
+            <div className="flex items-center gap-2 text-[10px] text-gray-400 font-mono mt-4 pt-3 border-t border-white/5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              STATUS: {writeups.length} TECHNICAL WRITEUPS AVAILABLE
             </div>
           </div>
         </motion.div>

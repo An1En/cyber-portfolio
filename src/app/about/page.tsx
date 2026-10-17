@@ -145,7 +145,7 @@ export default function AboutPage() {
             className="hover:text-white transition-colors inline-flex items-center gap-1.5"
           >
             <Terminal size={13} className="text-[#ff1a2e]" />
-            <span>← Return to Cyber Dossier</span>
+            <span>← Return to Home Overview</span>
           </Link>
 
           <Link
@@ -153,7 +153,7 @@ export default function AboutPage() {
             onClick={() => soundManager.playTick()}
             className="hover:text-white transition-colors inline-flex items-center gap-1.5"
           >
-            <span>Explore Case Files →</span>
+            <span>Explore Case Studies →</span>
           </Link>
         </div>
 
