@@ -54,6 +54,7 @@ export default function KiraEngagementNote() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const writingTimerRef = useRef<NodeJS.Timeout | null>(null);
   const countdownTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const watchdogTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Fetch records from server API & sync with local storage
   const syncRecordsFromServer = async () => {
@@ -141,6 +142,21 @@ export default function KiraEngagementNote() {
     if (!clean) return;
 
     soundManager.playTick();
+
+    // Prime video inside user gesture
+    const video = videoRef.current;
+    if (video) {
+      try {
+        video.playsInline = true;
+        video.muted = true;
+        video.defaultMuted = true;
+        video.currentTime = 0;
+        video.load();
+      } catch (err) {
+        console.warn("Video priming deferred:", err);
+      }
+    }
+
     setPhase("writing");
     setDisplayText("");
 
@@ -209,53 +225,17 @@ export default function KiraEngagementNote() {
     }, 600);
   };
 
-  const triggerCinematicTransition = (rec: InscribedRecord) => {
+  const triggerCinematicTransition = (rec: InscribedRecord, isDirectUserGesture = false) => {
     soundManager.playHeartbeat();
     setPhase("cinematic");
     setShowPlayOverlay(false);
 
-    setTimeout(() => {
-      const video = videoRef.current;
-      if (video) {
-        // Enforce iOS WebKit inline playback attributes
-        video.setAttribute("playsinline", "true");
-        video.setAttribute("webkit-playsinline", "true");
-        video.setAttribute("x5-playsinline", "true");
-
-        video.currentTime = 0;
-        // Start with audio preference, but prepare for mobile fallback
-        video.muted = !soundEnabled;
-        setVideoMuted(!soundEnabled);
-
-        const playPromise = video.play();
-        if (playPromise !== undefined) {
-          playPromise
-            .then(() => {
-              setShowPlayOverlay(false);
-            })
-            .catch(() => {
-              // Unmuted autoplay blocked by mobile browser: immediately mute and retry
-              if (videoRef.current) {
-                videoRef.current.muted = true;
-                setVideoMuted(true);
-                videoRef.current
-                  .play()
-                  .then(() => {
-                    setShowPlayOverlay(false);
-                  })
-                  .catch(() => {
-                    // Mobile Low Power Mode or user gesture strictly required:
-                    // Show a dramatic tap-to-play overlay so user tap initiates it
-                    setShowPlayOverlay(true);
-                  });
-              }
-            });
-        }
-      }
-    }, 80);
+    if (watchdogTimerRef.current) {
+      clearTimeout(watchdogTimerRef.current);
+    }
 
     // Watchdog fallback (allow 22s buffer so video is never cut off prematurely)
-    setTimeout(() => {
+    watchdogTimerRef.current = setTimeout(() => {
       setPhase((currentPhase) => {
         if (currentPhase === "cinematic" && (!videoRef.current || videoRef.current.paused || videoRef.current.ended)) {
           finishToVerdict(rec);
@@ -263,12 +243,121 @@ export default function KiraEngagementNote() {
         return currentPhase;
       });
     }, 22000);
+
+    setTimeout(() => {
+      const video = videoRef.current;
+      if (!video) return;
+
+      // Enforce iOS WebKit inline playback attributes
+      video.playsInline = true;
+      video.setAttribute("playsinline", "true");
+      video.setAttribute("webkit-playsinline", "true");
+      video.setAttribute("x5-playsinline", "true");
+      video.currentTime = 0;
+
+      // 1. Direct user tap playback (e.g. Replay button): user activation is fresh
+      if (soundEnabled && isDirectUserGesture) {
+        video.muted = false;
+        video.defaultMuted = false;
+        setVideoMuted(false);
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => setShowPlayOverlay(false))
+            .catch(() => {
+              video.muted = true;
+              video.defaultMuted = true;
+              setVideoMuted(true);
+              video
+                .play()
+                .then(() => setShowPlayOverlay(false))
+                .catch(() => setShowPlayOverlay(true));
+            });
+        }
+        return;
+      }
+
+      // 2. Normal execution flow (writing finished after ~2.6s):
+      // On laptop, unmuted play() will succeed.
+      // On phone, mobile browser policy rejects unmuted autoplay without recent gesture.
+      // Therefore, if unmuted is rejected, IMMEDIATELY play muted without hesitation!
+      if (soundEnabled) {
+        video.muted = false;
+        video.defaultMuted = false;
+        setVideoMuted(false);
+
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              // Successfully playing unmuted (laptop/desktop)
+              setShowPlayOverlay(false);
+            })
+            .catch(() => {
+              // Mobile browser policy blocked audio autoplay:
+              // Immediately switch to muted autoplay so playback begins instantly without freezing!
+              if (videoRef.current) {
+                videoRef.current.muted = true;
+                videoRef.current.defaultMuted = true;
+                setVideoMuted(true);
+                videoRef.current
+                  .play()
+                  .then(() => {
+                    setShowPlayOverlay(false);
+                  })
+                  .catch((err) => {
+                    console.warn("Muted play blocked:", err);
+                    setShowPlayOverlay(true);
+                  });
+              }
+            });
+        }
+      } else {
+        video.muted = true;
+        video.defaultMuted = true;
+        setVideoMuted(true);
+        video
+          .play()
+          .then(() => {
+            setShowPlayOverlay(false);
+          })
+          .catch(() => {
+            setShowPlayOverlay(true);
+          });
+      }
+    }, 60);
   };
 
-  const handleManualPlay = () => {
+  // Tap anywhere on video to toggle sound / unmute instantly
+  const handleScreenTap = (e: React.MouseEvent | React.TouchEvent) => {
+    const target = e.target as HTMLElement;
+    if (target.closest("button")) return;
+
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (video.muted) {
+      video.muted = false;
+      video.defaultMuted = false;
+      setVideoMuted(false);
+      soundManager.playTick();
+    } else {
+      video.muted = true;
+      video.defaultMuted = true;
+      setVideoMuted(true);
+      soundManager.playTick();
+    }
+  };
+
+  const handleManualPlay = (e?: React.MouseEvent | React.TouchEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     const video = videoRef.current;
     if (video) {
       video.muted = !soundEnabled;
+      video.defaultMuted = !soundEnabled;
       setVideoMuted(!soundEnabled);
       video
         .play()
@@ -277,6 +366,7 @@ export default function KiraEngagementNote() {
         })
         .catch(() => {
           video.muted = true;
+          video.defaultMuted = true;
           setVideoMuted(true);
           video.play().then(() => {
             setShowPlayOverlay(false);
@@ -285,17 +375,27 @@ export default function KiraEngagementNote() {
     }
   };
 
-  const toggleVideoMute = () => {
+  const toggleVideoMute = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
     const video = videoRef.current;
     if (video) {
       const next = !video.muted;
       video.muted = next;
+      video.defaultMuted = next;
       setVideoMuted(next);
       soundManager.playTick();
     }
   };
 
   const finishToVerdict = (rec: InscribedRecord) => {
+    if (watchdogTimerRef.current) {
+      clearTimeout(watchdogTimerRef.current);
+      watchdogTimerRef.current = null;
+    }
+    const video = videoRef.current;
+    if (video) {
+      video.pause();
+    }
     soundManager.playChime();
     setPhase("verdict");
     setSecondsRemaining(40);
@@ -323,6 +423,12 @@ export default function KiraEngagementNote() {
   const handleRewrite = () => {
     if (writingTimerRef.current) clearInterval(writingTimerRef.current);
     if (countdownTimerRef.current) clearInterval(countdownTimerRef.current);
+    if (watchdogTimerRef.current) clearTimeout(watchdogTimerRef.current);
+    const video = videoRef.current;
+    if (video) {
+      video.pause();
+      video.currentTime = 0;
+    }
     soundManager.playTick();
     setTargetName("");
     setDisplayText("");
@@ -338,6 +444,17 @@ export default function KiraEngagementNote() {
     setTargetName(rec.name);
     setIsArchiveModalOpen(false);
     soundManager.playTick();
+
+    // Prime video on archive click
+    const video = videoRef.current;
+    if (video) {
+      try {
+        video.muted = true;
+        video.defaultMuted = true;
+        video.currentTime = 0;
+        video.load();
+      } catch {}
+    }
   };
 
   const handleDownloadDossier = () => {
@@ -574,19 +691,29 @@ SECURITY DISCLOSURE  : Non-destructive ethical simulation completed.
             )}
 
             {/* --------------------------------------------------------
-                PHASE 3: CINEMATIC VIDEO (16s FULL CUT // FULLSCREEN)
+                PHASE 3: CINEMATIC EXECUTION (IN-PLACE NOTEBOOK // 16s)
                -------------------------------------------------------- */}
             {phase === "cinematic" && (
-              <div className="fixed inset-0 z-[120] bg-black flex items-center justify-center overflow-hidden">
+              <div
+                className="relative w-full h-[480px] bg-black flex items-center justify-center overflow-hidden select-none"
+                onClick={handleScreenTap}
+                onTouchEnd={handleScreenTap}
+              >
                 <video
                   ref={videoRef}
                   src="/images/kira/kill2.mp4"
                   playsInline
+                  {...{
+                    "webkit-playsinline": "true",
+                    "x5-playsinline": "true",
+                    "x5-video-player-type": "h5",
+                    "x5-video-player-fullscreen": "false",
+                  }}
                   autoPlay
                   muted={videoMuted}
                   controls={false}
                   preload="auto"
-                  className="w-full h-full object-contain sm:object-cover select-none bg-black"
+                  className="w-full h-full object-contain sm:object-cover select-none bg-black pointer-events-none"
                   onPlay={() => {
                     setShowPlayOverlay(false);
                   }}
@@ -596,6 +723,9 @@ SECURITY DISCLOSURE  : Non-destructive ethical simulation completed.
                       current: video.currentTime,
                       total: video.duration || 16,
                     });
+                    if (video.duration && video.currentTime >= video.duration - 0.25) {
+                      if (currentRecord) finishToVerdict(currentRecord);
+                    }
                   }}
                   onLoadedMetadata={(e) => {
                     const video = e.currentTarget;
@@ -605,72 +735,95 @@ SECURITY DISCLOSURE  : Non-destructive ethical simulation completed.
                     }));
                   }}
                   onEnded={() => currentRecord && finishToVerdict(currentRecord)}
+                  onError={(e) => {
+                    console.warn("Video playback fallback:", e);
+                    if (currentRecord) finishToVerdict(currentRecord);
+                  }}
                 />
 
-                {/* Mobile Tap-to-Play Overlay if browser blocked initial autoplay */}
-                {showPlayOverlay && (
-                  <div
-                    onClick={handleManualPlay}
-                    className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center gap-4 cursor-pointer p-6 text-center select-none"
+                {/* Top Controls: Sound Toggle & Skip Button */}
+                <div className="absolute top-4 left-4 right-4 z-40 flex items-center justify-between pointer-events-none">
+                  {/* Sound Toggle */}
+                  <button
+                    type="button"
+                    onClick={toggleVideoMute}
+                    className="pointer-events-auto px-3 py-1.5 rounded-full bg-black/80 hover:bg-[#ff1a2e] border border-white/20 hover:border-[#ff1a2e] text-white font-mono text-[10px] sm:text-xs tracking-wider uppercase transition-all backdrop-blur-md flex items-center gap-1.5 shadow-[0_4px_25px_rgba(0,0,0,0.8)] cursor-pointer"
+                    title={videoMuted ? "Unmute Video" : "Mute Video"}
                   >
-                    <div className="w-20 h-20 rounded-full bg-[#ff1a2e] text-white flex items-center justify-center shadow-[0_0_40px_rgba(255,26,46,0.85)] animate-pulse">
-                      <Play size={36} className="ml-1" />
-                    </div>
-                    <div>
-                      <h3 className="font-deathnote text-2xl sm:text-3xl text-white tracking-widest deathnote-glow">
-                        START EXECUTION CINEMATIC
-                      </h3>
-                      <p className="text-xs font-mono text-gray-300 mt-1 uppercase tracking-wider">
-                        Tap anywhere on screen to play
-                      </p>
-                    </div>
+                    {videoMuted ? (
+                      <>
+                        <VolumeX size={13} className="text-[#ff1a2e]" />
+                        <span>MUTED (TAP FOR AUDIO)</span>
+                      </>
+                    ) : (
+                      <>
+                        <Volume2 size={13} className="text-green-400" />
+                        <span>AUDIO ON</span>
+                      </>
+                    )}
+                  </button>
+
+                  {/* Skip Button */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (currentRecord) finishToVerdict(currentRecord);
+                    }}
+                    className="pointer-events-auto px-3 py-1.5 rounded-full bg-black/80 hover:bg-[#ff1a2e] border border-white/20 hover:border-[#ff1a2e] text-white font-mono text-[10px] sm:text-xs tracking-wider uppercase transition-all backdrop-blur-md flex items-center gap-1.5 shadow-[0_4px_25px_rgba(0,0,0,0.8)] cursor-pointer"
+                  >
+                    <FastForward size={13} />
+                    <span>SKIP</span>
+                  </button>
+                </div>
+
+                {/* Center Floating Unmute Prompt if muted on mobile */}
+                {videoMuted && !showPlayOverlay && (
+                  <div
+                    onClick={toggleVideoMute}
+                    className="absolute top-14 z-40 cursor-pointer pointer-events-auto px-3.5 py-1.5 rounded-full bg-[#ff1a2e]/90 hover:bg-[#ff1a2e] text-white font-mono text-[11px] tracking-wider uppercase backdrop-blur-md flex items-center gap-1.5 shadow-[0_0_25px_rgba(255,26,46,0.8)] animate-pulse border border-white/30"
+                  >
+                    <VolumeX size={14} />
+                    <span>TAP FOR AUDIO</span>
                   </div>
                 )}
 
-                {/* Sound Toggle (Top Left) */}
-                <button
-                  type="button"
-                  onClick={toggleVideoMute}
-                  className="absolute top-6 left-6 z-50 px-3.5 py-2 rounded-full bg-black/80 hover:bg-[#ff1a2e] border border-white/20 hover:border-[#ff1a2e] text-white font-mono text-xs tracking-wider uppercase transition-all backdrop-blur-md flex items-center gap-2 shadow-[0_4px_25px_rgba(0,0,0,0.8)] cursor-pointer"
-                  title={videoMuted ? "Unmute Video" : "Mute Video"}
-                >
-                  {videoMuted ? (
-                    <>
-                      <VolumeX size={14} className="text-[#ff1a2e]" />
-                      <span className="text-[11px]">MUTED (TAP FOR SOUND)</span>
-                    </>
-                  ) : (
-                    <>
-                      <Volume2 size={14} className="text-green-400" />
-                      <span className="text-[11px]">AUDIO ON</span>
-                    </>
-                  )}
-                </button>
-
-                {/* Top Right Skip Button */}
-                <button
-                  type="button"
-                  onClick={() => currentRecord && finishToVerdict(currentRecord)}
-                  className="absolute top-6 right-6 z-50 px-4 py-2 rounded-full bg-black/80 hover:bg-[#ff1a2e] border border-white/20 hover:border-[#ff1a2e] text-white font-mono text-xs tracking-wider uppercase transition-all backdrop-blur-md flex items-center gap-2 shadow-[0_4px_25px_rgba(0,0,0,0.8)] cursor-pointer"
-                >
-                  <FastForward size={14} />
-                  <span>SKIP CINEMATIC</span>
-                </button>
+                {/* Mobile Tap-to-Play Overlay (Only if browser strictly blocked even muted autoplay, e.g. iOS Low Power Mode) */}
+                {showPlayOverlay && (
+                  <button
+                    type="button"
+                    onClick={handleManualPlay}
+                    onTouchEnd={handleManualPlay}
+                    className="absolute inset-0 z-50 bg-black/85 backdrop-blur-md flex flex-col items-center justify-center gap-4 cursor-pointer p-6 text-center select-none w-full border-0"
+                  >
+                    <div className="w-16 h-16 rounded-full bg-[#ff1a2e] text-white flex items-center justify-center shadow-[0_0_30px_rgba(255,26,46,0.85)] animate-pulse">
+                      <Play size={30} className="ml-1" />
+                    </div>
+                    <div>
+                      <h3 className="font-deathnote text-xl sm:text-2xl text-white tracking-widest deathnote-glow">
+                        START EXECUTION CINEMATIC
+                      </h3>
+                      <p className="text-xs font-mono text-gray-300 mt-1 uppercase tracking-wider">
+                        Tap anywhere on video to play
+                      </p>
+                    </div>
+                  </button>
+                )}
 
                 {/* Bottom Timeline & Subtitle */}
-                <div className="absolute bottom-6 left-6 right-6 z-40 max-w-xl mx-auto flex flex-col items-center gap-2">
-                  <div className="font-deathnote text-sm sm:text-base text-white/90 tracking-[0.25em] drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] uppercase text-center">
+                <div className="absolute bottom-4 left-4 right-4 z-40 max-w-lg mx-auto flex flex-col items-center gap-1.5 pointer-events-none">
+                  <div className="font-deathnote text-xs sm:text-sm text-white/90 tracking-[0.2em] drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] uppercase text-center truncate max-w-full">
                     KIRA EXECUTION PROTOCOL IN EFFECT
                   </div>
                   {currentRecord && (
-                    <div className="text-xs font-mono text-[#ff1a2e] tracking-widest uppercase drop-shadow-[0_2px_8px_rgba(255,26,46,0.6)] text-center">
+                    <div className="text-[10px] sm:text-xs font-mono text-[#ff1a2e] tracking-widest uppercase drop-shadow-[0_2px_8px_rgba(255,26,46,0.6)] text-center truncate max-w-full">
                       TARGET: {currentRecord.name}
                     </div>
                   )}
 
                   {/* Progress timeline bar */}
-                  <div className="w-full flex items-center gap-3 font-mono text-[11px] text-gray-400 mt-1">
-                    <span className="w-8 text-right">{Math.floor(videoProgress.current)}s</span>
+                  <div className="w-full flex items-center gap-2 font-mono text-[10px] text-gray-400 mt-0.5">
+                    <span className="w-7 text-right">{Math.floor(videoProgress.current)}s</span>
                     <div className="flex-1 h-1.5 bg-white/20 rounded-full overflow-hidden">
                       <div
                         className="h-full bg-[#ff1a2e] transition-all duration-100"
@@ -679,7 +832,7 @@ SECURITY DISCLOSURE  : Non-destructive ethical simulation completed.
                         }}
                       />
                     </div>
-                    <span className="w-8">{Math.floor(videoProgress.total || 16)}s</span>
+                    <span className="w-7">{Math.floor(videoProgress.total || 16)}s</span>
                   </div>
                 </div>
               </div>
@@ -769,7 +922,7 @@ SECURITY DISCLOSURE  : Non-destructive ethical simulation completed.
                   </button>
 
                   <button
-                    onClick={() => currentRecord && triggerCinematicTransition(currentRecord)}
+                    onClick={() => currentRecord && triggerCinematicTransition(currentRecord, true)}
                     type="button"
                     className="py-3 px-4 rounded-xl bg-white/10 hover:bg-[#ff1a2e]/30 border border-white/10 text-white font-mono text-xs flex items-center gap-2 transition-all cursor-pointer"
                   >
@@ -988,15 +1141,6 @@ SECURITY DISCLOSURE  : Non-destructive ethical simulation completed.
         )}
       </AnimatePresence>
 
-      {/* Hidden preloader so mobile devices buffer the video in background */}
-      <video
-        src="/images/kira/kill2.mp4"
-        preload="auto"
-        muted
-        playsInline
-        className="hidden"
-        aria-hidden="true"
-      />
     </section>
   );
 }
